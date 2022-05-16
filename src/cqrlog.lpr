@@ -99,6 +99,7 @@ begin
   Application.CreateForm(Tfrmxfldigi, frmxfldigi);
   Application.CreateForm(TdmMembership, dmMembership);
   Application.CreateForm(TdmSatellite, dmSatellite);
+  Application.CreateForm(TfrmProgress, frmProgress);
 
   Splash.Update;
   application.ProcessMessages;
