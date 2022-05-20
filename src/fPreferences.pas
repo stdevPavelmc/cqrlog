@@ -531,6 +531,10 @@ type
     edtUsr3R1: TEdit;
     edtClub: TEdit;
     edtCWPort2: TEdit;
+    edtDataMode2: TEdit;
+    edtDataMode1: TEdit;
+    edtCMD2: TEdit;
+    edtCMD1: TEdit;
     edteQSLDnlAddr: TEdit;
     edteQSLStartAddr: TEdit;
     edteQSLViewAddr: TEdit;
@@ -702,9 +706,9 @@ type
     GroupBox34: TGroupBox;
     GroupBox35: TGroupBox;
     gbeQSL: TGroupBox;
-    GroupBox37: TGroupBox;
+    gbRadioOne: TGroupBox;
     GroupBox38: TGroupBox;
-    GroupBox39: TGroupBox;
+    gbRadioTwo: TGroupBox;
     gbProfiles: TGroupBox;
     grbRadio2: TGroupBox;
     grbRigctldPath: TGroupBox;
@@ -774,9 +778,21 @@ type
     lbleQSLUsr: TLabel;
     lbleQSLPass: TLabel;
     Label11: TLabel;
-    Label110: TLabel;
+    lbRadio2Mode: TLabel;
     Label111: TLabel;
     Label112: TLabel;
+    lbRadio2BW: TLabel;
+    lbRadio2Cw: TLabel;
+    lblHzCw2: TLabel;
+    lblHzSSB2: TLabel;
+    lbRadio2SSB: TLabel;
+    lbRadio2DATA: TLabel;
+    lblHzAM2: TLabel;
+    Label12: TLabel;
+    lblHzFM2: TLabel;
+    lbRadio2AM: TLabel;
+    lbRadio2FM: TLabel;
+    lblHzDATA2: TLabel;
     Label113: TLabel;
     Label114: TLabel;
     Label115: TLabel;
@@ -874,6 +890,10 @@ type
     lblHamLibSpeed: TLabel;
     lblHamLibWPM: TLabel;
     Label202: TLabel;
+    lblRig2Cmd: TLabel;
+    lblRig1DataMode: TLabel;
+    lblRig2DataMode: TLabel;
+    lblRig1cmd: TLabel;
     lblADIFport: TLabel;
     lblADIFaddr: TLabel;
     lblWinPort2: TLabel;
@@ -896,6 +916,21 @@ type
     lblModelR1: TLabel;
     lblDevieR2: TLabel;
     Label23: TLabel;
+    Label24: TLabel;
+    Label25: TLabel;
+    Label27: TLabel;
+    lbRadio1Mode: TLabel;
+    lbRadio1BW: TLabel;
+    lbRadio1Cw: TLabel;
+    lbRadio1SSB: TLabel;
+    lbRadio1DATA: TLabel;
+    lbRadio1AM: TLabel;
+    lbRadio1FM: TLabel;
+    lblHzCw1: TLabel;
+    lblHzSSB1: TLabel;
+    lblHzAM1: TLabel;
+    lblHzFM1: TLabel;
+    lblHzDATA1: TLabel;
     lblModelR2: TLabel;
     lblExtra2: TLabel;
     lblPollR1: TLabel;
@@ -1425,12 +1460,16 @@ begin
   cqrini.WriteInteger('Band1', 'RTTY', edtRTTY1.Value);
   cqrini.WriteInteger('Band1', 'AM', edtAM1.Value);
   cqrini.WriteInteger('Band1', 'FM', edtFM1.Value);
+  cqrini.WriteString ('Band1', 'Datacmd', edtCMD1.Text);
+  cqrini.WriteString ('Band1', 'Datamode', edtDataMode1.Text);
 
   cqrini.WriteInteger('Band2', 'CW', edtCW2.Value);
   cqrini.WriteInteger('Band2', 'SSB', edtSSB2.Value);
   cqrini.WriteInteger('Band2', 'RTTY', edtRTTY2.Value);
   cqrini.WriteInteger('Band2', 'AM', edtAM2.Value);
   cqrini.WriteInteger('Band2', 'FM', edtFM2.Value);
+  cqrini.WriteString ('Band2', 'Datacmd', edtCMD2.Text);
+  cqrini.WriteString ('Band2', 'Datamode', edtDataMode2.Text);
 
   cqrini.WriteString('Modes', 'Digi', edtDigiModes.Text);
 
@@ -3015,12 +3054,16 @@ begin
   edtRTTY1.Value := cqrini.ReadInteger('Band1', 'RTTY', 500);
   edtAM1.Value := cqrini.ReadInteger('Band1', 'AM', 3000);
   edtFM1.Value := cqrini.ReadInteger('Band1', 'FM', 2500);
+  edtCMD1.Text := cqrini.ReadString('Band1', 'Datacmd', 'RTTY');
+  edtDataMode1.Text := cqrini.ReadString('Band1', 'Datamode', 'RTTY');
 
   edtCW2.Value := cqrini.ReadInteger('Band2', 'CW', 500);
   edtSSB2.Value := cqrini.ReadInteger('Band2', 'SSB', 1800);
   edtRTTY2.Value := cqrini.ReadInteger('Band2', 'RTTY', 500);
   edtAM2.Value := cqrini.ReadInteger('Band2', 'AM', 3000);
   edtFM2.Value := cqrini.ReadInteger('Band2', 'FM', 2500);
+  edtCMD2.Text := cqrini.ReadString('Band2', 'Datacmd', 'RTTY');
+  edtDataMode2.Text := cqrini.ReadString('Band2', 'Datamode', 'RTTY');
 
   cmbModelRig1Change(nil);
   cmbModelRig2Change(nil);

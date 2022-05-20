@@ -156,6 +156,8 @@ type
     procedure SetMode(mode : String; bandwidth : Integer);
     procedure ClearButtonsColor;
     procedure UpdateModeButtons(mode : String);
+    procedure CheckUserMode(var mode : String);
+
     procedure UserButton(r, b : Char);
   public
     AutoMode : Boolean;
@@ -1123,6 +1125,8 @@ procedure TfrmTRXControl.SetMode(mode : String; bandwidth : Integer);
 var
   rmode : TRigMode;
 begin
+  CheckUserMode(mode);
+
   if Assigned(radio) then
   begin
     rmode.mode := mode;
@@ -1302,6 +1306,7 @@ begin
         mode := 'LSB';
     end;
   end;
+  CheckUserMode(mode);
 
   if Assigned(radio) then
   begin
@@ -1402,44 +1407,47 @@ begin
 end;
 
 procedure TfrmTRXControl.UpdateModeButtons(mode : String);
-begin
-  btnCW.Font.Color := COLOR_WINDOWTEXT;
-  btnSSB.Font.Color := COLOR_WINDOWTEXT;
-  btnRTTY.Font.Color := COLOR_WINDOWTEXT;
-  btnAM.Font.Color := COLOR_WINDOWTEXT;
-  btnFM.Font.Color := COLOR_WINDOWTEXT;
-  if mode = 'CW' then
-    btnCW.Font.Color := clRed
-  else
-  if mode = 'SSB' then
-    btnSSB.Font.Color := clRed
-  else
-  if mode = 'RTTY' then
-    btnRTTY.Font.Color := clRed
-  else
-  if mode = 'AM' then
-    btnAM.Font.Color := clRed
-  else
-  if mode = 'FM' then
-    btnFM.Font.Color := clRed;
+var
+  usermode :String;
+  n        :String;
 
-  if Assigned(radio) then
-  begin
-    case radio.GetCurrVFO of
-      VFOA: begin
-        btnVFOA.Font.Color := clRed;
-        btnVFOB.Font.Color := clDefault;
-      end;
-      VFOB: begin
-        btnVFOB.Font.Color := clRed;
-        btnVFOA.Font.Color := clDefault;
-      end;
-      else begin
-        btnVFOB.Font.Color := clDefault;
-        btnVFOA.Font.Color := clDefault;
-      end;
+begin
+  btnCW.Font.Color    := COLOR_WINDOWTEXT;
+  btnSSB.Font.Color   := COLOR_WINDOWTEXT;
+  btnRTTY.Font.Color  := COLOR_WINDOWTEXT;
+  btnAM.Font.Color    := COLOR_WINDOWTEXT;
+  btnFM.Font.Color    := COLOR_WINDOWTEXT;
+
+  if frmTRXControl.rbRadio1.Checked then n := '1' else  n := '2';
+  usermode:=cqrini.ReadString('Band'+n, 'Datacmd', 'RTTY');
+
+  if mode = usermode then btnRTTY.Font.Color := clRed
+     else
+       case mode of
+        'CW' : btnCW.Font.Color := clRed;
+        'SSB' : btnSSB.Font.Color := clRed;
+        'AM' : btnAM.Font.Color := clRed;
+        'FM' : btnFM.Font.Color := clRed;
+       end;
+   //update vfobuttons if vfo is known by radio.vfostr
+   if Assigned(radio) then
+    Begin
+       case radio.GetCurrVFO of
+         VFOA    : Begin
+                    btnVFOA.Font.Color:=clRed;
+                    btnVFOB.Font.Color:=clDefault;
+                   end;
+         VFOB    : Begin
+                    btnVFOB.Font.Color:=clRed;
+                    btnVFOA.Font.Color:=clDefault;
+                   end;
+         else
+                   Begin
+                    btnVFOB.Font.Color:=clDefault;
+                    btnVFOA.Font.Color:=clDefault;
+                   end;
+       end;
     end;
-  end;
 end;
 
 procedure TfrmTRXControl.Split(Up : Integer);
@@ -1551,30 +1559,34 @@ end;
 
 procedure TfrmTRXControl.LoadBandButtons;
 begin
-  btn160MBand := dmUtils.GetBandFromFreq(
-    FloatToStr(cqrini.ReadFloat('DefFreq', '160cw', 1830) / 1000));
-  btn80MBand := dmUtils.GetBandFromFreq(
-    FloatToStr(cqrini.ReadFloat('DefFreq', '80cw', 3525) / 1000));
-  btn40MBand := dmUtils.GetBandFromFreq(
-    FloatToStr(cqrini.ReadFloat('DefFreq', '40cw', 7015) / 1000));
-  btn30MBand := dmUtils.GetBandFromFreq(
-    FloatToStr(cqrini.ReadFloat('DefFreq', '30cw', 10110) / 1000));
-  btn20MBand := dmUtils.GetBandFromFreq(
-    FloatToStr(cqrini.ReadFloat('DefFreq', '20cw', 14025) / 1000));
-  btn17MBand := dmUtils.GetBandFromFreq(
-    FloatToStr(cqrini.ReadFloat('DefFreq', '17cw', 18080) / 1000));
-  btn15MBand := dmUtils.GetBandFromFreq(
-    FloatToStr(cqrini.ReadFloat('DefFreq', '15cw', 21025) / 1000));
-  btn12MBand := dmUtils.GetBandFromFreq(
-    FloatToStr(cqrini.ReadFloat('DefFreq', '12cw', 24895) / 1000));
-  btn10MBand := dmUtils.GetBandFromFreq(
-    FloatToStr(cqrini.ReadFloat('DefFreq', '10cw', 28025) / 1000));
-  btn6MBand := dmUtils.GetBandFromFreq(
-    FloatToStr(cqrini.ReadFloat('DefFreq', '6cw', 50090) / 1000));
-  btn2MBand := dmUtils.GetBandFromFreq(
-    FloatToStr(cqrini.ReadFloat('DefFreq', '2cw', 144050) / 1000));
-  btn70CMBand := dmUtils.GetBandFromFreq(
-    FloatToStr(cqrini.ReadFloat('DefFreq', '70cw', 430000) / 1000));
+  btn160MBand := dmUtils.GetBandFromFreq(FloatToStr(cqrini.ReadFloat('DefFreq','160cw',1830)/1000));
+  btn80MBand  := dmUtils.GetBandFromFreq(FloatToStr(cqrini.ReadFloat('DefFreq','80cw',3525)/1000));
+  btn40MBand  := dmUtils.GetBandFromFreq(FloatToStr(cqrini.ReadFloat('DefFreq','40cw',7015)/1000));
+  btn30MBand  := dmUtils.GetBandFromFreq(FloatToStr(cqrini.ReadFloat('DefFreq','30cw',10110)/1000));
+  btn20MBand  := dmUtils.GetBandFromFreq(FloatToStr(cqrini.ReadFloat('DefFreq','20cw',14025)/1000));
+  btn17MBand  := dmUtils.GetBandFromFreq(FloatToStr(cqrini.ReadFloat('DefFreq','17cw',18080)/1000));
+  btn15MBand  := dmUtils.GetBandFromFreq(FloatToStr(cqrini.ReadFloat('DefFreq','15cw',21025)/1000));
+  btn12MBand  := dmUtils.GetBandFromFreq(FloatToStr(cqrini.ReadFloat('DefFreq','12cw',24895)/1000));
+  btn10MBand  := dmUtils.GetBandFromFreq(FloatToStr(cqrini.ReadFloat('DefFreq','10cw',28025)/1000));
+  btn6MBand   := dmUtils.GetBandFromFreq(FloatToStr(cqrini.ReadFloat('DefFreq','6cw',50090)/1000));
+  btn2MBand   := dmUtils.GetBandFromFreq(FloatToStr(cqrini.ReadFloat('DefFreq','2cw',144050)/1000));
+  btn70CMBand := dmUtils.GetBandFromFreq(FloatToStr(cqrini.ReadFloat('DefFreq','70cw',430000)/1000))
 end;
+
+procedure TfrmTRXControl.CheckUserMode(var mode : String);
+var
+  usermode,
+  usercmd,
+  n       :String;
+
+begin
+  if frmTRXControl.rbRadio1.Checked then n := '1' else  n := '2';
+  usercmd:=cqrini.ReadString('Band'+n, 'Datacmd', 'RTTY');
+  usermode:=cqrini.ReadString('Band'+n, 'Datamode', 'RTTY');
+
+  if ((Upcase(mode)='RTTY') or (Upcase(mode)=Upcase(usermode))) then
+     mode := usercmd;
+
+  end;
 
 end.
