@@ -3081,9 +3081,10 @@ object frmNewQSO: TfrmNewQSO
           Width = 63
           Anchors = [akTop, akRight]
           BorderSpacing.Left = 4
-          Caption = 'AUTO'
+          Caption = 'Auto'
           Checked = True
           OnChange = chkAutoModeChange
+          PopupMenu = popMode
           State = cbChecked
           TabOrder = 26
         end
@@ -7122,5 +7123,18 @@ object frmNewQSO: TfrmNewQSO
     OnTimer = tmrADIFTimer
     Left = 800
     Top = 32
+  end
+  object popMode: TPopupMenu
+    OnPopup = popModePopup
+    Left = 872
+    Top = 32
+    object MenuItem95: TMenuItem
+      Caption = 'Auto'
+      OnClick = MenuItem95Click
+    end
+    object MenuItem96: TMenuItem
+      Caption = 'Auto+RigCmd2DataMode'
+      OnClick = MenuItem96Click
+    end
   end
 end

@@ -141,6 +141,8 @@ type
     MenuItem58: TMenuItem;
     MenuItem63: TMenuItem;
     MenuItem94 : TMenuItem;
+    MenuItem95: TMenuItem;
+    MenuItem96: TMenuItem;
     mnueQSLView: TMenuItem;
     mnuRemoteModeADIF: TMenuItem;
     mnuReminder: TMenuItem;
@@ -346,6 +348,7 @@ type
     pnlSbtn6: TPanel;
     pnlSbtn7: TPanel;
     popEditQSO: TPopupMenu;
+    popMode: TPopupMenu;
     sbNewQSO: TStatusBar;
     sbtnAttach: TSpeedButton;
     sbtneQSL: TSpeedButton;
@@ -451,6 +454,8 @@ type
     procedure MenuItem11Click(Sender: TObject);
     procedure MenuItem12Click(Sender: TObject);
     procedure MenuItem17Click(Sender: TObject);
+    procedure MenuItem95Click(Sender: TObject);
+    procedure MenuItem96Click(Sender: TObject);
     procedure mnuQrzClick(Sender: TObject);
     procedure mnuIK3QARClick(Sender: TObject);
     procedure mnuHamQthClick(Sender : TObject);
@@ -565,6 +570,7 @@ type
     procedure mnuIOTAClick(Sender: TObject);
     procedure mnuQSOBeforeClick(Sender: TObject);
     procedure mnuQSOListClick(Sender: TObject);
+    procedure popModePopup(Sender: TObject);
     procedure popEditQSOPopup(Sender: TObject);
     procedure sbtnAttachClick(Sender: TObject);
     procedure sbtnLocatorMapClick(Sender: TObject);
@@ -674,6 +680,7 @@ type
 
     function CheckFreq(freq : String) : String;
     procedure WaitWeb(secs:integer);
+    function RigCmd2DataMode(mode:String):String;
     procedure ShowOperator;
     procedure StartUpRemote;
     procedure NewLogSplash;
@@ -855,6 +862,21 @@ begin
      if dmData.DebugLevel>=1 then writeln (data);
   end
 end;
+function TfrmNewQSO.RigCmd2DataMode(mode:String):String;
+var
+   DatCmd,
+   n      :String;
+Begin
+   if frmTRXControl.rbRadio1.Checked then n := '1' else  n := '2';
+
+   DatCmd :=  upcase(cqrini.ReadString('Band'+n, 'Datacmd', 'RTTY'));
+   if (DatCmd = 'USB') or (DatCmd = 'LSB') then DatCmd := 'SSB'; //this is what RigControl responses
+
+   if cqrini.ReadBool('Modes', 'Rig2Data', False) and (mode = DatCmd) then
+            Result := cqrini.ReadString('Band'+n, 'Datamode', 'RTTY')
+     else   Result := mode;
+end;
+
 
 procedure TDOKTabThread.Execute;
 var
@@ -1849,7 +1871,7 @@ begin
   edtCall.SetFocus;
   tmrRadio.Enabled := True;
   tmrStart.Enabled := True;
-
+  if cqrini.ReadBool('Modes', 'Rig2Data', False) then chkAutoMode.Font.Color:=clRed;
   dmUtils.UpdateHelpBrowser;
   dmSatellite.SetListOfSatellites(cmbSatellite); //load combo box lists
   dmSatellite.SetListOfPropModes(cmbPropagation);
@@ -2255,7 +2277,7 @@ begin
       if (frmTRXControl.GetModeFreqNewQSO(mode,freq)) then
       begin
         if( mode <> '') and chkAutoMode.Checked then
-          cmbMode.Text := mode;
+           cmbMode.Text := RigCmd2DataMode(mode);
         if (freq <> empty_freq) then
         begin
           cmbFreq.Text := freq;
@@ -5032,6 +5054,23 @@ procedure TfrmNewQSO.mnuHamQthClick(Sender : TObject);
 begin
   dmUtils.ShowHamQTHInBrowser(dmData.qQSOBefore.Fields[4].AsString)
 end;
+procedure TfrmNewQSO.popModePopup(Sender: TObject);
+begin
+    MenuItem96.RadioItem:= cqrini.ReadBool('Modes', 'Rig2Data', False);
+    MenuItem95.RadioItem:= not  MenuItem96.RadioItem;
+end;
+
+procedure TfrmNewQSO.MenuItem95Click(Sender: TObject);
+begin
+     chkAutoMode.Font.Color:=clDefault;
+     cqrini.WriteBool('Modes', 'Rig2Data', False);
+end;
+
+procedure TfrmNewQSO.MenuItem96Click(Sender: TObject);
+begin
+    chkAutoMode.Font.Color:=clRed;
+    cqrini.WriteBool('Modes', 'Rig2Data', True);
+end;
 
 procedure TfrmNewQSO.acNewQSOExecute(Sender: TObject);
 begin
@@ -5399,7 +5438,7 @@ begin
     if (not (fViewQSO or fEditQSO or cbOffline.Checked)) and (frmTRXControl.GetModeFreqNewQSO(mode,freq)) then
     begin
       if chkAutoMode.Checked then
-        cmbMode.Text := mode;
+        cmbMode.Text := RigCmd2DataMode(mode);
       cmbFreq.Text := freq;
       edtHisRST.SetFocus;
       edtHisRST.SelStart  := 1;
@@ -6697,7 +6736,7 @@ begin
     edtCall.Text := call;
     cmbFreq.Text := freq;
     if chkAutoMode.Checked then
-      cmbMode.Text := mode;
+       cmbMode.Text := RigCmd2DataMode(mode);
     freq := FloatToStr(etmp);
     if not FromRbn then
       mode := dmUtils.GetModeFromFreq(freq);
