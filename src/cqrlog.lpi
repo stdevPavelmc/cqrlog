@@ -105,7 +105,7 @@
         <MinVersion Major="1" Minor="2" Release="1" Valid="True"/>
       </Item10>
     </RequiredPackages>
-    <Units Count="121">
+    <Units Count="122">
       <Unit0>
         <Filename Value="cqrlog.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -896,6 +896,13 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
       </Unit120>
+      <Unit121>
+        <Filename Value="fProgress.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="frmProgress"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+      </Unit121>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
@@ -924,6 +931,7 @@
         <ShowNotes Value="False"/>
         <ShowHints Value="False"/>
         <ShoLineNum Value="True"/>
+        <ShowDebugInfo Value="True"/>
       </Verbosity>
       <CustomOptions Value="-dNO_CONTEST"/>
       <CreateMakefileOnBuild Value="True"/>
