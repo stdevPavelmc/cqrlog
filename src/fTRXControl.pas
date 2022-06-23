@@ -669,7 +669,6 @@ begin
   end
   else begin
     pnlPower.Visible := True;
-    btPonClick(nil); //setting buttons visible sends PwrOn to sync button colors
     mnuShowPwr.Checked := True;
   end;
   cqrini.WriteBool('TRX', 'PowerButtons', pnlPower.Visible);
