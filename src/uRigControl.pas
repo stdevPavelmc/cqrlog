@@ -44,8 +44,7 @@ type TRigControl = class
     fTXOffset    : Double;
     fMorse       : boolean;
     fPower       : boolean;
-    CanCommand   : boolean; //may commands to be sent to rig
-    StartUp      : integer; //things to do before start polling
+    AllowCommand      : integer; //things to do before start polling
 
     function  RigConnected   : Boolean;
     function  StartRigctld   : Boolean;
@@ -248,18 +247,17 @@ begin
     result := True;
     if RigChkVfo then
       Begin
-        StartUp:=2;  //2) chkvfo, 1)dump caps.
+        AllowCommand:=2;  //2) chkvfo, 1)dump caps.
         ParmVfoChkd:=false;
       end
      else
       Begin
-        StartUp:=1;  //1) dump caps
+        AllowCommand:=1;  //1) dump caps
         ParmVfoChkd:=false;
       end;
     ParmHasVfo:=0;   //default: "--vfo" is not used as start parameter
     tmrRigPoll.Interval := fRigPoll;
     tmrRigPoll.Enabled  := True;
-    CanCommand := false; //no commands to rig yet.
     RigCommand.Clear;
   end
   else begin
@@ -323,15 +321,16 @@ begin
 end;
 procedure TRigControl.PwrOn;
 begin
-  RigCommand.Add(#$87+' 1')
+   RigctldConnect.SendMessage('+\set_powerstat 1'+LineEnding);
+   //this bypasses canceled commanding
 end;
 procedure TRigControl.PwrOff;
 begin
-  RigCommand.Add(#$87+' 0')
+  RigCommand.Add('+\set_powerstat 0')
 end;
 procedure TRigControl.PwrStBy;
 begin
-  RigCommand.Add(#$87+' 2')
+  RigCommand.Add('+\set_powerstat 2')
 end;
 procedure TRigControl.UsrCmd(cmd:String);
 begin
@@ -477,6 +476,7 @@ begin
            end
           else
            fFReq := 0;
+          AllowCommand:=0; //free to start poll
        end;
 
       if b[0]='MODE:' then
@@ -486,7 +486,8 @@ begin
          if (fMode.mode = 'USB') or (fMode.mode = 'LSB') then
            fMode.mode := 'SSB';
          if fMode.mode = 'CWR' then
-           fMode.mode := 'CW'
+           fMode.mode := 'CW';
+         AllowCommand:=0; //free to start poll
         end;
 
       //FT-920 returned VFO as MEM
@@ -508,6 +509,7 @@ begin
           else
             fVFO := VFOA;
          end;
+         AllowCommand:=0; //free to start poll
         end;
 
 
@@ -518,7 +520,7 @@ begin
                         ParmHasVfo := 1;
          if DebugMode then Writeln('"--vfo" checked:',ParmHasVfo);
          if ParmHasVfo > 0 then VfoStr:=' currVFO';  //note set leading one space to string!
-         StartUp:=1; //next dump caps
+         AllowCommand:=1; //next dump caps
         end;
 
        if b[0]='CHKVFO' then //Hamlib 3.1
@@ -528,7 +530,7 @@ begin
                         ParmHasVfo := 2;
          if DebugMode then Writeln('"--vfo" checked:',ParmHasVfo);
          if ParmHasVfo > 0 then VfoStr:=' currVFO';  //note set leading one space to string!
-         StartUp:=1; //next dump caps
+         AllowCommand:=1; //next dump caps
         end;
 
       if pos('CAN SET POWER STAT:',a[i])>0 then
@@ -541,9 +543,22 @@ begin
        Begin
          fMorse:= b[3]='Y';
          if DebugMode then Writeln('Send Morse: ',fMorse);
-         StartUp:=0; //free to start poll
+         AllowCommand:=0; //free to start poll
        end;
 
+       if pos('SET_POWERSTAT:',a[i])>0 then
+       Begin
+        if pos('1',a[i])>0 then //line may have 'STAT: 1' or 'STAT: CURRVFO 1'
+          Begin
+            if DebugMode then Writeln('Power on, start polling');
+            AllowCommand:=99;
+          end
+         else
+          Begin
+            if DebugMode then Writeln('Power off, stop polling');
+            AllowCommand:=-1;
+          end;
+       end;
    end;
   end;
 
@@ -554,48 +569,50 @@ var
   cmd : String;
   i   : Integer;
 begin
- case StartUp of
+ case AllowCommand of
+         //pass one timer round
+     99:  AllowCommand:=98;
+     98:  AllowCommand:=0;
+
       2:  Begin
                RigctldConnect.SendMessage('+\chk_vfo'+LineEnding);
-               StartUp:=-1; //waiting for reply
+               AllowCommand:=-1; //waiting for reply
           end;
       1:  Begin
                RigctldConnect.SendMessage('+\dump_caps'+LineEnding);
-               StartUp:=-1; //waiting for reply
+               AllowCommand:=-1; //waiting for reply
           end;
-      0:  CanCommand:=true;
+      0:  Begin
+            if (RigCommand.Text<>'') then
+              begin
+                for i:=0 to RigCommand.Count-1 do
+                begin
+                  sleep(100);
+                  cmd := RigCommand.Strings[i]+LineEnding;
+                  RigctldConnect.SendMessage(cmd);
+                  if DebugMode then
+                     Writeln('Sending: '+cmd)
+                end;
+                AllowCommand:=-1; //waiting for reply
+                RigCommand.Clear
+              end
+            else
+             begin
+               if  ParmHasVfo=2 then
+                 cmd := '+f'+VfoStr+' +m'+VfoStr+' +v'+VfoStr+LineEnding //chk this with rigctld v3.1
+                else
+                 cmd := '+f'+VfoStr+' +m'+VfoStr+' +v'+LineEnding;
 
-      //todo remove CanCOmmand, rename Startup we can do all with it
-      //set power buttons enable by fPower
-      //do we need to use fMorse to enable hamlib keying?
-  end;
+               if DebugMode then
+                   Writeln('Poll Sending: '+cmd);
+               RigctldConnect.SendMessage(cmd);
+               AllowCommand:=-1; //waiting for reply
+             end;
+            end;
 
- if CanCommand then
-  Begin
-    if (RigCommand.Text<>'') then
-      begin
-        for i:=0 to RigCommand.Count-1 do
-        begin
-          sleep(100);
-          cmd := RigCommand.Strings[i]+LineEnding;
-          RigctldConnect.SendMessage(cmd);
-          if DebugMode then
-             Writeln('Sending: '+cmd)
-        end;
-        RigCommand.Clear
-      end
-    else
-     begin
-       if  ParmHasVfo=2 then
-         cmd := '+f'+VfoStr+' +m'+VfoStr+' +v'+VfoStr+LineEnding //chk this with rigctld v3.1
-        else
-         cmd := '+f'+VfoStr+' +m'+VfoStr+' +v'+LineEnding;
+          end;//case
 
-       if DebugMode then
-           Writeln('Poll Sending: '+cmd);
-       RigctldConnect.SendMessage(cmd)
-     end;
-    end;
+
 end;
 
 procedure TRigControl.Restart;
