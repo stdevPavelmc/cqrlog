@@ -368,6 +368,8 @@ begin
   frmBandMap.CurrentBand := b;
   frmBandMap.CurrentFreq := f * 1000;
   frmBandMap.CurrentMode := m;
+  if Assigned(radio) then
+            pnlPower.Enabled:=radio.Power;
 end;
 
 function TfrmTRXControl.GetModeNumber(mode : String) : Cardinal;
@@ -671,7 +673,6 @@ begin
   end
   else begin
     pnlPower.Visible := True;
-    btPonClick(nil); //setting buttons visible sends PwrOn to sync button colors
     mnuShowPwr.Checked := True;
   end;
   cqrini.WriteBool('TRX', 'PowerButtons', pnlPower.Visible);
@@ -1089,36 +1090,34 @@ begin
 
   pnlPower.Visible := cqrini.ReadBool('TRX', 'PowerButtons', False);
   mnuShowPwr.Checked := pnlPower.Visible;
-  if pnlPower.Visible then btPonClick(nil);
-  // all rigs do not support rigctld power switching
-  //so we just put pwr button ON and send rigctld PWR ON cmd
-  //if rig does not support it that makes no harm.
-  //if supports we do know pwr state from now on.
+
+
 
   if not radio.Connected then
-  begin
-    FreeAndNil(radio);
-  end
+      begin
+        FreeAndNil(radio);
+      end
   else  //radio changed, restart CW interface
-  begin
-    //we check this again although preferences prevent false setting
-    if (cqrini.ReadBool('CW', 'NoReset', False) //is set: user does not want reset
-      and (cqrini.ReadInteger('CW', 'Type1', 0) =
-      cqrini.ReadInteger('CW', 'Type2', 0)) //both keyers are same
-      and (cqrini.ReadInteger('CW', 'Type1', 0) <> 4)  //type is not HamLib
-      ) then //no restart keyer it is same device for both radios.
     begin
-      if ((dmData.DebugLevel >= 1) or ((abs(dmData.DebugLevel) and 8) = 8)) then
-        Writeln('User ask: No reset and keyer not Hamlib: No restart by TRControl radio'
-          + n + ' change');
-    end
-    else begin
-      frmNewQSO.InitializeCW;
-      if ((dmData.DebugLevel >= 1) or ((abs(dmData.DebugLevel) and 8) = 8)) then
-        Writeln('CW keyer reloaded by TRControl radio' + n + ' change');
-    end;
+      //we check this again although preferences prevent false setting
+      if (cqrini.ReadBool('CW', 'NoReset', False) //is set: user does not want reset
+        and (cqrini.ReadInteger('CW', 'Type1', 0) =
+        cqrini.ReadInteger('CW', 'Type2', 0)) //both keyers are same
+        and (cqrini.ReadInteger('CW', 'Type1', 0) <> 4)  //type is not HamLib
+        ) then //no restart keyer it is same device for both radios.
+            begin
+              if ((dmData.DebugLevel >= 1) or ((abs(dmData.DebugLevel) and 8) = 8)) then
+                Writeln('User ask: No reset and keyer not Hamlib: No restart by TRControl radio'
+                  + n + ' change');
+            end
+      else
+        Begin
+          frmNewQSO.InitializeCW;
+          if ((dmData.DebugLevel >= 1) or ((abs(dmData.DebugLevel) and 8) = 8)) then
+            Writeln('CW keyer reloaded by TRControl radio' + n + ' change');
+        end;
 
-  end;
+    end;
 end;
 
 procedure TfrmTRXControl.SetMode(mode : String; bandwidth : Integer);
