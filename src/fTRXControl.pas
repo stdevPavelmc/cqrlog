@@ -1429,24 +1429,27 @@ begin
         'FM' : btnFM.Font.Color := clRed;
        end;
    //update vfobuttons if vfo is known by radio.vfostr
-   if Assigned(radio) then
-    Begin
-       case radio.GetCurrVFO of
-         VFOA    : Begin
-                    btnVFOA.Font.Color:=clRed;
-                    btnVFOB.Font.Color:=clDefault;
-                   end;
-         VFOB    : Begin
-                    btnVFOB.Font.Color:=clRed;
-                    btnVFOA.Font.Color:=clDefault;
-                   end;
-         else
-                   Begin
-                    btnVFOB.Font.Color:=clDefault;
-                    btnVFOA.Font.Color:=clDefault;
-                   end;
-       end;
-    end;
+  if Assigned(radio) then
+  begin
+     if radio.CanGetVfo then
+     begin
+      case radio.GetCurrVFO of
+      VFOA: begin
+              btnVFOA.Font.Color := clRed;
+              btnVFOB.Font.Color := clDefault;
+            end;
+      VFOB: begin
+              btnVFOB.Font.Color := clRed;
+              btnVFOA.Font.Color := clDefault;
+            end;
+      end;
+     end
+    else
+     begin
+      btnVFOB.Font.Color := clDefault;
+      btnVFOA.Font.Color := clDefault;
+     end;
+  end;
 end;
 
 procedure TfrmTRXControl.Split(Up : Integer);

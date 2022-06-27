@@ -44,6 +44,8 @@ type TRigControl = class
     fTXOffset    : Double;
     fMorse       : boolean;
     fPower       : boolean;
+    fGetVfo      : boolean;
+
     AllowCommand      : integer; //things to do before start polling
 
     function  RigConnected   : Boolean;
@@ -92,6 +94,8 @@ public
     //can rig send CW
     property Power      : Boolean read fPower;
     //can rig switch power
+    property CanGetVfo  : Boolean read fGetVfo;
+    //can rig show vfo (many Icoms can not)
     property LastError   : String  read fLastError;
     //last error during operation
 
@@ -549,10 +553,16 @@ begin
          if DebugMode then Writeln('Switch power: ',fPower);
        end;
 
+      if pos('CAN GET VFO:',a[i])>0 then
+       Begin
+         fGetVfo:= b[3]='Y';
+         if DebugMode then Writeln(LineEnding+'Get VFO: ',fGetVfo);
+       end;
+
       if pos('CAN SEND MORSE:',a[i])>0 then
        Begin
          fMorse:= b[3]='Y';
-         if DebugMode then Writeln('Send Morse: ',fMorse);
+         if DebugMode then Writeln('Send Morse: ',fMorse,LineEnding);
          if fPower then
             AllowCommand:=8 //issue power on
           else
