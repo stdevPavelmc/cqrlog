@@ -621,29 +621,17 @@ begin
       1:  Begin
             if (RigCommand.Text<>'') then
               begin
-                  cmd := RigCommand.Strings[0]+LineEnding;
-                  RigctldConnect.SendMessage(cmd);
-                  if DebugMode then
-                     Writeln('Queue Sending: '+cmd);
-                  if RigCommand.Count>1 then
+                 for i:=0 to RigCommand.Count-1 do
                    Begin
-                    for i:=1 to RigCommand.Count-1 do
-                     RigCommand.Strings[i-1]:=RigCommand.Strings[i];
-                     AllowCommand:=1; //call again
+                     cmd := RigCommand.Strings[i]+LineEnding;
+                     RigctldConnect.SendMessage(cmd);
+                     if DebugMode then
+                          Writeln('Queue Sending: [',i,'] '+cmd);
                    end
-                  else
-                    Begin
-                      RigCommand.Clear;
-                      AllowCommand:=0; //polling
-                    end;
-              end
-             else
-              Begin
-                RigCommand.Clear;
-                AllowCommand:=0; //polling
-              end;
-            end;
-
+               end;
+              RigCommand.Clear;
+              AllowCommand:=0; //polling
+          end;
        //polling has lowest prority, do if there is nothing else to do
        0:  begin
                if  ParmHasVfo=2 then
@@ -675,6 +663,7 @@ Begin
         AllowCommand:=9;  //otherwise start with dump caps
         ParmVfoChkd:=false;
       end;
+    RigCommand.Clear;
 end;
 
 procedure TRigControl.Restart;
