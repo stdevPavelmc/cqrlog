@@ -45,7 +45,6 @@ type TRigControl = class
     fMorse       : boolean;
     fPower       : boolean;
     AllowCommand      : integer; //things to do before start polling
-    ConnectStatus : boolean;
 
     function  RigConnected   : Boolean;
     function  StartRigctld   : Boolean;
@@ -202,8 +201,6 @@ function TRigControl.RigConnected  : Boolean;
 const
   ERR_MSG = 'Could not connect to rigctld';
 
-var c     :integer;
-
 begin
   if fDebugMode then
   begin
@@ -250,31 +247,12 @@ begin
   RigctldConnect.Host := fRigCtldHost;
   RigctldConnect.Port := fRigCtldPort;
 
-  c:=10000;
-  ConnectStatus:=false;
-  if RigctldConnect.Connect(fRigCtldHost,fRigCtldPort) then //this does not work, is always true!!
-   while (c>1) and not ConnectStatus do
-      Begin
-        Application.ProcessMessages;
-        sleep(10);
-        dec(c);
-      end;
-  if ConnectStatus then
+  if RigctldConnect.Connect(fRigCtldHost,fRigCtldPort) then //this does not work as connection indicator, is always true!!
+                                                            //even when it can not connect rigctld.
   begin
-    if fDebugMode then Writeln('Connected to rigctld @ ',fRigCtldHost,':',fRigCtldPort);
+    if fDebugMode then Writeln('Waiting for rigctld @ ',fRigCtldHost,':',fRigCtldPort);
     result := True;
-
-    if RigChkVfo then
-      Begin
-        AllowCommand:=10;  //start with chkvfo
-        ParmVfoChkd:=false;
-      end
-     else
-      Begin
-        AllowCommand:=9;  //otherwise start with dump caps
-        ParmVfoChkd:=false;
-      end;
-
+    AllowCommand:=-1;
     ParmHasVfo:=0;   //default: "--vfo" is not used as start parameter
     tmrRigPoll.Interval := fRigPoll;
     tmrRigPoll.Enabled  := True;
@@ -489,7 +467,7 @@ begin
     msg := StringReplace(upcase(trim(msg)),#$09,' ',[rfReplaceAll]); //note the char case upper for now on! Remove TABs
 
     if DebugMode then
-         Writeln('Msg from rig:|',msg,'|');
+         Writeln('Msg from rig:|',msg,'|'+LineEnding);
 
     a := Explode(LineEnding,msg);
     for i:=0 to Length(a)-1 do     //this handles received message line by line
@@ -685,7 +663,18 @@ begin
 end;
 procedure TRigControl.OnConnectRigctldConnect(aSocket: TLSocket);
 Begin
-    ConnectStatus:=true;
+  if DebugMode then
+                   Writeln('Connected to rigctld');
+    if RigChkVfo then
+      Begin
+        AllowCommand:=10;  //start with chkvfo
+        ParmVfoChkd:=false;
+      end
+     else
+      Begin
+        AllowCommand:=9;  //otherwise start with dump caps
+        ParmVfoChkd:=false;
+      end;
 end;
 
 procedure TRigControl.Restart;
