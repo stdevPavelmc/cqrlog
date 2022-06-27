@@ -9,7 +9,7 @@ uses
 
 type TRigMode =  record
     mode : String[10];
-    pass : word;
+    pass : integer;   //this can not be word as rigctld uses "-1"="keep as is" IntToStr gives 65535 for word with -1
     raw  : String[10];
 end;
 
@@ -287,6 +287,7 @@ begin
   if (mode.mode='CW') and fRigSendCWR then
     mode.mode := 'CWR';
   RigCommand.Add('+M'+VfoStr+' '+mode.mode+' '+IntToStr(mode.pass));
+  writeln(IntToStr(mode.pass));
   AllowCommand:=1; //call queue
 end;
 
