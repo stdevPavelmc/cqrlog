@@ -1424,20 +1424,24 @@ begin
 
   if Assigned(radio) then
   begin
-    case radio.GetCurrVFO of
+     if radio.CanGetVfo then
+     begin
+      case radio.GetCurrVFO of
       VFOA: begin
-        btnVFOA.Font.Color := clRed;
-        btnVFOB.Font.Color := clDefault;
-      end;
+              btnVFOA.Font.Color := clRed;
+              btnVFOB.Font.Color := clDefault;
+            end;
       VFOB: begin
-        btnVFOB.Font.Color := clRed;
-        btnVFOA.Font.Color := clDefault;
+              btnVFOB.Font.Color := clRed;
+              btnVFOA.Font.Color := clDefault;
+            end;
       end;
-      else begin
-        btnVFOB.Font.Color := clDefault;
-        btnVFOA.Font.Color := clDefault;
-      end;
-    end;
+     end
+    else
+     begin
+      btnVFOB.Font.Color := clDefault;
+      btnVFOA.Font.Color := clDefault;
+     end;
   end;
 end;
 
