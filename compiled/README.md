@@ -1,5 +1,5 @@
 
-##THIS COMPILED DIRECTORY IS CURRENTLY BROKEN. WAIT FOR FIX.
+##THIS COMPILED DIRECTORY HAS ONLY alpha binaries for x86-64 at the moment.
 
 
 Latest cqrlog alpha test binaries can be found from this folder.
@@ -21,12 +21,12 @@ LAST UPDATE
 BINARIES:
 ---------
 
-  - **cqr0.zip  holds binary for  64bit systems compiled for GTK2 widgets from latest official source (without additions) using linux Mint20**
-  - **cqr1.zip  holds binary for  32bit systems compiled for GTK2 widgets from latest official source (without additions) using Ubuntu 18 LTS**
+[//]: # (  - **cqr0.zip  holds binary for  64bit systems compiled for GTK2 widgets from latest official source (without additions) using linux Mint20**)
+[//]: # (  - **cqr1.zip  holds binary for  32bit systems compiled for GTK2 widgets from latest official source (without additions) using Ubuntu 18 LTS**)
   - **cqr2.zip  holds binary for  64bit systems compiled for GTK2 widgets (official release of cqrlog with additions)**
-  - **cqr3.zip  holds binary for  32bit systems compiled for GTK2 widgets (official release of cqrlogwith additions, poorly tested)**
-  - **cqr4.zip  holds binary for  Arm systems (RPi) compiled for GTK2 widgets (official release of cqrlogwith additions, poorly tested)**
-  - **cqr5.zip  holds binary for  64bit systems compiled for QT5 widgets (you may need to install libqt5pas to run this)**
+[//]: # (  - **cqr3.zip  holds binary for  32bit systems compiled for GTK2 widgets (official release of cqrlogwith additions, poorly tested)**)
+[//]: # (  - **cqr4.zip  holds binary for  Arm systems (RPi) compiled for GTK2 widgets (official release of cqrlog without additions, poorly tested)**)
+  - **cqr5.zip  holds binary for  64bit systems compiled for QT5 widgets (official release of cqrlog with additions,you may need to install libqt5pas to run this)**
   - **help.tgz  holds latest help files**
   - **newupdate.zip holds the newupdate.sh script for easy update**
 
