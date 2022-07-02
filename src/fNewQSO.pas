@@ -3180,6 +3180,7 @@ var
   ShowMain : Boolean = False;
   date     : TDate;
   RxFreq   : Double = 0;
+  key      : word = $24; //Home-key
 begin
   ShowMain := (fEditQSO or fViewQSO) and (not fromNewQSO);
   if not cbOffline.Checked then
@@ -3436,8 +3437,10 @@ begin
     frmTRXControl.ClearRIT;
 
   if (cqrini.ReadBool('NewQSO','RefreshAfterSave', True) and frmMain.Showing) then
+   begin
     frmMain.acRefresh.Execute;
-
+    frmMain.dbgrdMainKeyUp(nil,key,[ssCtrl]); //shows last logged qso
+   end;
   UploadAllQSOOnline;
   if frmWorkedGrids.Showing then frmWorkedGrids.UpdateMap;
   Op := cqrini.ReadString('TMPQSO','OP','');

@@ -933,7 +933,7 @@ begin
     dmData.RefreshMainDatabase(idx);
     RefreshQSODXCCCount
   finally
-    InRefresh := False
+    InRefresh := False;
   end
 end;
 
