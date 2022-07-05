@@ -17,11 +17,11 @@ const
   {$ENDIF}
 
   cMAJOR      = 2;
-  cMINOR      = 5;
-  cRELEAS     = 2;
+  cMINOR      = 6;
+  cRELEAS     = 0;
   cBUILD      = 1;
 
-  cBUILD_DATE = '2022-07-01';
+  cBUILD_DATE = '2022-07-05';
 
 implementation
 
