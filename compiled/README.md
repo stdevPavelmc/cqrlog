@@ -9,6 +9,8 @@ They contain all accepted pull requests from official source (that may not be re
 ## ABOUT THIS ALPHA TEST VERSION:
  These alpha test binaries also include latest official source updates up to commit:
 
+    Commits on Jun 11, 2022 Merge pull request #515 from OH1KH/gtk3_compiles
+    and in addition also pull requesets up to:    Fix for RBNMonitor #526
     
 
  To see what are the latest official updates look at <https://github.com/ok2cqr/cqrlog/commits/master>
