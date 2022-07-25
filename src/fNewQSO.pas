@@ -3426,7 +3426,7 @@ begin
   if not AnyRemoteOn then
                        UnsetEditLabel;
   dmData.qQSOBefore.Close;
-  fEditQSO := False;
+
   was_call := edtCall.Text;
   edtCall.Text := ''; //calls ClearAll
   old_ccall := '';
@@ -3439,8 +3439,12 @@ begin
   if (cqrini.ReadBool('NewQSO','RefreshAfterSave', True) and frmMain.Showing) then
    begin
     frmMain.acRefresh.Execute;
-    frmMain.dbgrdMainKeyUp(nil,key,[ssCtrl]); //shows last logged qso
+    if not fEditQso then
+                  frmMain.dbgrdMainKeyUp(nil,key,[ssCtrl]); //shows last logged qso
+
    end;
+
+  fEditQSO := False;
   UploadAllQSOOnline;
   if frmWorkedGrids.Showing then frmWorkedGrids.UpdateMap;
   Op := cqrini.ReadString('TMPQSO','OP','');

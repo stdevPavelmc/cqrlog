@@ -287,7 +287,6 @@ begin
   if (mode.mode='CW') and fRigSendCWR then
     mode.mode := 'CWR';
   RigCommand.Add('+M'+VfoStr+' '+mode.mode+' '+IntToStr(mode.pass));
-  writeln(IntToStr(mode.pass));
   AllowCommand:=1; //call queue
 end;
 
