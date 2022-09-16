@@ -119,6 +119,7 @@ var
   EscFirstTime: boolean = False;
   DupeFromDate :string = '1900-01-01';
   MsgIs        :integer = 0;
+  MWC40,MWC80  :integer;
 
 implementation
 
@@ -535,6 +536,8 @@ begin
   cmbContestName.Text := cqrini.ReadString('frmContest', 'ContestName','');
   btDupChkStart.Caption := 'from '+DupeFromDate;
   btDupChkStart.Visible:=not(rbIgnoreDupes.Checked);
+  MWC40:=0;
+  MWC80:=0;
 end;
 
 procedure TfrmContest.MsgIsPopChk(nr:integer);
@@ -776,8 +779,8 @@ begin
 end;
 procedure  TfrmContest.MWCmultip;
 var
-   Mlist         : String;
-   Mstr          : String;
+   Mlist,Mstr,
+   Band          : String;
    QSOc,MULc,f,p : integer;
    M             : char;
 Begin
@@ -785,9 +788,13 @@ Begin
    try
     MULc:=0;
     Mlist:='...................................' ; //A-Z0-9
+    band:=dmUtils.GetBandFromFreq(FloatToStr(frmTRXControl.GetFreqMHz));
+    if not ((band='80M') or (band='40M')) then band:='none'; //not find anything then 2band contest
     dmData.Q.Close;
     if dmData.trQ.Active then dmData.trQ.Rollback;
-    dmData.Q.SQL.Text := 'SELECT callsign FROM cqrlog_main WHERE contestname='+QuotedStr(cmbContestName.Text);
+    dmData.Q.SQL.Text := 'SELECT callsign FROM cqrlog_main WHERE contestname='+
+                         QuotedStr(cmbContestName.Text)+' AND band='+QuotedStr(band)+
+                         ' AND mode='+QuotedStr('CW');
     dmData.trQ.StartTransaction;
     if dmData.DebugLevel >=1 then
       Writeln(dmData.Q.SQL.Text);
@@ -803,9 +810,12 @@ Begin
              Begin
                M:=Mstr[length(Mstr)];
                writeln(Mstr,'  ',M);
-               p:=-1;
-               if M in ['A'..'Z'] then p:=0;
-               if M in ['0'..'9'] then p:=42;
+               case M of
+                    'A'..'Z' : p:=0;
+                    '0'..'9' : p:=42;
+                 else
+                   p:=-1;
+               end;
                if p>-1 then
                 begin
                  if  (pos(M,Mlist)=0) then
@@ -822,9 +832,14 @@ Begin
     dmData.Q.Close();
     dmData.trQ.Rollback;
    finally
+     case band of
+          '80M' : MWC80:= (MULc*QSOc);
+          '40M' : MWC40:= (MULc*QSOc);
+     end;
      sbContest.Panels.Items[0].Text := '   Multipliers: '+Mlist+'   count:'+IntToStr(MULc);
      sbContest.Panels.Items[1].Text := 'QSOs:' + IntToStr(QSOc);
-     sbContest.Panels.Items[3].Text := 'Score:' + IntToStr(MULc*QSOc);
+     sbContest.Panels.Items[2].Text := 'Score:' + IntToStr(MULc*QSOc);
+     sbContest.Panels.Items[3].Text := 'Total:' + IntToStr(MWC80+MWC40);
    end;
   end;
 end;
