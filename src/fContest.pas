@@ -104,6 +104,7 @@ type
     procedure ClearStatusBar;
     procedure ShowStatusBarInfo;
     procedure MsgIsPopChk(nr:integer);
+    procedure MWCmultip;
 
   public
     { public declarations }
@@ -759,18 +760,74 @@ var
 begin
   for i:=0 to sbContest.Panels.Count-1 do
     sbContest.Panels.Items[i].Text := '';
+
+  if ((pos('MWC',uppercase(cmbContestName.Text))>0)
+   or (pos('OK1WC',uppercase(cmbContestName.Text))>0)) then
+      MWCMultip;
 end;
 
 procedure TfrmContest.ShowStatusBarInfo;
 begin
-  sbContest.Panels.Items[0].Text := ExtractWord(1,Trim(frmNewQSO.mCountry.Text),[#$0A]);
-  sbContest.Panels.Items[1].Text := 'WAZ: ' + frmNewQSO.lblWAZ.Caption;
-  sbContest.Panels.Items[2].Text := 'ITU: ' + frmNewQSO.lblITU.Caption;
-  sbContest.Panels.Items[3].Text := 'AZ: ' + frmNewQSO.lblAzi.Caption;
-  sbContest.Panels.Items[4].Text := frmNewQSO.lblCont.Caption;
+      sbContest.Panels.Items[0].Text := ExtractWord(1,Trim(frmNewQSO.mCountry.Text),[#$0A]);
+      sbContest.Panels.Items[1].Text := 'WAZ: ' + frmNewQSO.lblWAZ.Caption;
+      sbContest.Panels.Items[2].Text := 'ITU: ' + frmNewQSO.lblITU.Caption;
+      sbContest.Panels.Items[3].Text := 'AZ: ' + frmNewQSO.lblAzi.Caption;
+      sbContest.Panels.Items[4].Text := frmNewQSO.lblCont.Caption;
 end;
+procedure  TfrmContest.MWCmultip;
+var
+   Mlist         : String;
+   Mstr          : String;
+   QSOc,MULc,f,p : integer;
+   M             : char;
+Begin
+  Begin
+   try
+    MULc:=0;
+    Mlist:='...................................' ; //A-Z0-9
+    dmData.Q.Close;
+    if dmData.trQ.Active then dmData.trQ.Rollback;
+    dmData.Q.SQL.Text := 'SELECT callsign FROM cqrlog_main WHERE contestname='+QuotedStr(cmbContestName.Text);
+    dmData.trQ.StartTransaction;
+    if dmData.DebugLevel >=1 then
+      Writeln(dmData.Q.SQL.Text);
+    dmData.Q.Open();
+    dmData.Q.First;
+    QSOc:=dmData.Q.RecordCount;
+    if QSOc>0 then
+     begin
+        for f:=1 to QSOc do
+          Begin
+            Mstr:= dmData.Q.Fields[0].AsString;
+            if Mstr<>'' then
+             Begin
+               M:=Mstr[length(Mstr)];
+               writeln(Mstr,'  ',M);
+               p:=-1;
+               if M in ['A'..'Z'] then p:=0;
+               if M in ['0'..'9'] then p:=42;
+               if p>-1 then
+                begin
+                 if  (pos(M,Mlist)=0) then
+                  Begin
+                    inc(MULc);
+                    Mlist[ord(M)+p-64]:=M;
+                  end;
+                end;
+             end;
+            dmData.Q.Next;
+          end;
+     end;
 
-initialization
+    dmData.Q.Close();
+    dmData.trQ.Rollback;
+   finally
+     sbContest.Panels.Items[0].Text := '   Multipliers: '+Mlist+'   count:'+IntToStr(MULc);
+     sbContest.Panels.Items[1].Text := 'QSOs:' + IntToStr(QSOc);
+     sbContest.Panels.Items[3].Text := 'Score:' + IntToStr(MULc*QSOc);
+   end;
+  end;
+end;
 
 
 end.
