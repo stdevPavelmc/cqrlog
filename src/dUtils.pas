@@ -551,7 +551,8 @@ begin
       end
     end
   finally
-    cqrini.SaveToDisk;
+    //cqrini.SaveToDisk; WHY we save when load? Is this unchecked direct copy from SaveForm source abowe?
+                      // There is no cqrini writing done, so why need to save?
     l.Free
   end
 end;
