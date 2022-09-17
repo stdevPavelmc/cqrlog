@@ -4,7 +4,7 @@ unit uVersion;
 interface
 
 const
-  cVersionBase     = '2.6.0 (103)';
+  cVersionBase     = '2.6.0 (104)';
 
   {$IFDEF LCLGtk2}
   cVERSION    = cVersionBase+' Gtk2';
@@ -21,7 +21,7 @@ const
   cRELEAS     = 0;
   cBUILD      = 1;
 
-  cBUILD_DATE = '2022-07-25';
+  cBUILD_DATE = '2022-9-17';
 
 implementation
 
