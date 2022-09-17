@@ -104,6 +104,7 @@ type
     procedure ClearStatusBar;
     procedure ShowStatusBarInfo;
     procedure MsgIsPopChk(nr:integer);
+    procedure MWCmultip;
 
   public
     { public declarations }
@@ -118,6 +119,7 @@ var
   EscFirstTime: boolean = False;
   DupeFromDate :string = '1900-01-01';
   MsgIs        :integer = 0;
+  MWC40,MWC80  :integer;
 
 implementation
 
@@ -534,6 +536,8 @@ begin
   cmbContestName.Text := cqrini.ReadString('frmContest', 'ContestName','');
   btDupChkStart.Caption := 'from '+DupeFromDate;
   btDupChkStart.Visible:=not(rbIgnoreDupes.Checked);
+  MWC40:=0;
+  MWC80:=0;
 end;
 
 procedure TfrmContest.MsgIsPopChk(nr:integer);
@@ -759,18 +763,86 @@ var
 begin
   for i:=0 to sbContest.Panels.Count-1 do
     sbContest.Panels.Items[i].Text := '';
+
+  if ((pos('MWC',uppercase(cmbContestName.Text))>0)
+   or (pos('OK1WC',uppercase(cmbContestName.Text))>0)) then
+      MWCMultip;
 end;
 
 procedure TfrmContest.ShowStatusBarInfo;
 begin
-  sbContest.Panels.Items[0].Text := ExtractWord(1,Trim(frmNewQSO.mCountry.Text),[#$0A]);
-  sbContest.Panels.Items[1].Text := 'WAZ: ' + frmNewQSO.lblWAZ.Caption;
-  sbContest.Panels.Items[2].Text := 'ITU: ' + frmNewQSO.lblITU.Caption;
-  sbContest.Panels.Items[3].Text := 'AZ: ' + frmNewQSO.lblAzi.Caption;
-  sbContest.Panels.Items[4].Text := frmNewQSO.lblCont.Caption;
+      sbContest.Panels.Items[0].Text := ExtractWord(1,Trim(frmNewQSO.mCountry.Text),[#$0A]);
+      sbContest.Panels.Items[1].Text := 'WAZ: ' + frmNewQSO.lblWAZ.Caption;
+      sbContest.Panels.Items[2].Text := 'ITU: ' + frmNewQSO.lblITU.Caption;
+      sbContest.Panels.Items[3].Text := 'AZ: ' + frmNewQSO.lblAzi.Caption;
+      sbContest.Panels.Items[4].Text := frmNewQSO.lblCont.Caption;
 end;
+procedure  TfrmContest.MWCmultip;
+var
+   Mlist,Mstr,
+   Band          : String;
+   QSOc,MULc,f,p : integer;
+   M             : char;
+Begin
+  Begin
+   try
+    MULc:=0;
+    Mlist:='...................................' ; //A-Z0-9
+    band:=dmUtils.GetBandFromFreq(FloatToStr(frmTRXControl.GetFreqMHz));
+    if not ((band='80M') or (band='40M')) then band:='none'; //not find anything then 2band contest
+    dmData.Q.Close;
+    if dmData.trQ.Active then dmData.trQ.Rollback;
+    dmData.Q.SQL.Text := 'SELECT callsign FROM cqrlog_main WHERE contestname='+
+                         QuotedStr(cmbContestName.Text)+' AND band='+QuotedStr(band)+
+                         ' AND mode='+QuotedStr('CW');
+    dmData.trQ.StartTransaction;
+    if dmData.DebugLevel >=1 then
+      Writeln(dmData.Q.SQL.Text);
+    dmData.Q.Open();
+    dmData.Q.First;
+    QSOc:=dmData.Q.RecordCount;
+    if QSOc>0 then
+     begin
+        for f:=1 to QSOc do
+          Begin
+            Mstr:= dmData.Q.Fields[0].AsString;
+            if Mstr<>'' then
+             Begin
+               M:=Mstr[length(Mstr)];
+               writeln(Mstr,'  ',M);
+               case M of
+                    'A'..'Z' : p:=0;
+                    '0'..'9' : p:=42;
+                 else
+                   p:=-1;
+               end;
+               if p>-1 then
+                begin
+                 if  (pos(M,Mlist)=0) then
+                  Begin
+                    inc(MULc);
+                    Mlist[ord(M)+p-64]:=M;
+                  end;
+                end;
+             end;
+            dmData.Q.Next;
+          end;
+     end;
 
-initialization
+    dmData.Q.Close();
+    dmData.trQ.Rollback;
+   finally
+     case band of
+          '80M' : MWC80:= (MULc*QSOc);
+          '40M' : MWC40:= (MULc*QSOc);
+     end;
+     sbContest.Panels.Items[0].Text := '   Multipliers: '+Mlist+'   count:'+IntToStr(MULc);
+     sbContest.Panels.Items[1].Text := 'QSOs:' + IntToStr(QSOc);
+     sbContest.Panels.Items[2].Text := 'Score:' + IntToStr(MULc*QSOc);
+     sbContest.Panels.Items[3].Text := 'Total:' + IntToStr(MWC80+MWC40);
+   end;
+  end;
+end;
 
 
 end.

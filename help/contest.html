@@ -138,7 +138,23 @@ ADIF exports fields to right tags.<br><br>
 HTML export will look like this:<br>
 <img src="img/contest_html_export.png">
 </p>
+<p align="center">
+<img src="img/contest_mwc.png">
+</p><p>
+Contest window supports <b>OK1WC memorial contest</b> scoring in statusbar.
+<br>If contest name has "mwc" or "ok1wc" included (no case sensitive) then score counting is activated. At the start of contest it can be seen by pressing <b>2xESC</b>.
+After that every qso saving will update status bar view.
+<br><br> Scoring is simple: 1 point per qso and multipliers are the last letter of callsign suffix A..Z.
+<br>Also numbers 0..9 are multipliers so it is assumed that in case of additional part of suffix exists (like OH1KH/M OH1KH/OH9) then
+ the last letter of additional part is counted as multiplier. (This was asked from organizer, but newer answered).
+</br>
+Only bands 80M and 40M and mode CW are counted.(See rules of contest) The view is based for current band. How ever <b>Total</b> shows score from both bands.
+If you have to close Cqrlog during contest and when you have contest window open again press <b>2xESC</b> on 80M band and change to 40M and press again <b>2xESC</b>.
+This updates the Total counter.
+<br><br>
+</p>
 <p>
+</br>
 </br>
 Most contests expect <b>Cabrillo</b> log format. Cqrlog has a limited support of Cabrillo exports. Mostly enough for a Sunday contester.
 <br>In case you want to use external Cabrillo program you have to make ADIF export of qsos</b>
