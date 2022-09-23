@@ -807,7 +807,7 @@ Begin
          inc(QSOc);
          case f of
               65..90 : p:=0;
-              48..57 : p:=42;
+              48..57 : p:=43;
            else
              p:=-1;
          end;
