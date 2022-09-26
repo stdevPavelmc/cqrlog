@@ -18,6 +18,7 @@ type
     btClearQso : TButton;
     btDupChkStart: TButton;
     cdDupeDate: TCalendarDialog;
+    chkSP: TCheckBox;
     chkTabAll: TCheckBox;
     chkQsp: TCheckBox;
     chkTrueRST: TCheckBox;
@@ -33,7 +34,6 @@ type
     edtRSTr: TEdit;
     edtSRX: TEdit;
     edtSRXStr: TEdit;
-    Label1: TLabel;
     lblSpeed: TLabel;
     lblContestName: TLabel;
     lblCall: TLabel;
@@ -105,7 +105,7 @@ type
     procedure ShowStatusBarInfo;
     procedure MsgIsPopChk(nr:integer);
     procedure MWCmultip;
-
+    procedure SendCwFmacro(key:word);
   public
     { public declarations }
     procedure SaveSettings;
@@ -177,12 +177,8 @@ begin
     if (frmNewQSO.cmbMode.Text = 'SSB') then
       frmNewQSO.RunVK(dmUtils.GetDescKeyFromCode(Key))
     else
-    if Assigned(frmNewQSO.CWint) then
-      frmNewQSO.CWint.SendText(dmUtils.GetCWMessage(
-        dmUtils.GetDescKeyFromCode(Key),edtCall.Text,
-      edtRSTs.Text, edtSTX.Text,edtSTXStr.Text,
-      frmNewQSO.edtName.Text,frmNewQSO.lblGreeting.Caption,''));
-    key := 0;
+     SendCwFmacro(key);
+     key := 0;
   end;
 
   if (key = 33) then//pgup
@@ -196,6 +192,14 @@ begin
     end;
     key := 0;
   end;
+
+  //S&P mode toggle
+  if (key = VK_Tab) and (Shift = [ssShift]) then
+    Begin
+        chkSP.Checked:= not chkSP.Checked;
+        key:=0;
+    end;
+
 
   if (key = 34) then//pgup
   begin
@@ -221,7 +225,14 @@ begin
   if ((Shift = [ssCTRL]) and (key = VK_0)) then
     frmTRXControl.DisableSplit;
 end;
-
+procedure TfrmContest.SendCwFmacro(key:word);
+Begin
+  if Assigned(frmNewQSO.CWint) then
+      frmNewQSO.CWint.SendText(dmUtils.GetCWMessage(
+        dmUtils.GetDescKeyFromCode(Key),edtCall.Text,
+      edtRSTs.Text, edtSTX.Text,edtSTXStr.Text,
+      frmNewQSO.edtName.Text,frmNewQSO.lblGreeting.Caption,''));
+end;
 
 procedure TfrmContest.edtCallExit(Sender: TObject);
 var
@@ -252,12 +263,18 @@ begin
          edtCall.Font.Color:=clRed;
          edtCall.Font.Style:= [fsBold];
          frmNewQSO.edtRemQSO.Caption:='Dupe';
+         //CW send macro F3
+         if (frmNewQSO.cmbMode.Text='CW') and (not chkSP.Checked) and (length(edtCall.Text)>2) then
+                                                                SendCwFMacro(VK_F3);
        end
     else
         Begin
          edtCall.Font.Color:=clDefault;
          edtCall.Font.Style:= [];
          frmNewQSO.edtRemQSO.Caption:='';
+         //CW send macro F2
+         if (frmNewQSO.cmbMode.Text='CW') and (not chkSP.Checked) and (length(edtCall.Text)>2) then
+                                                                  SendCwFMacro(VK_F2);
         end;
    end;
   //report in NEwQSO changes to 59 to late (after passing cmbMode)
@@ -316,6 +333,8 @@ begin
   frmNewQSO.edtContestExchangeMessageSent.Text := edtSTXStr.Text;
   frmNewQSO.edtContestName.Text := ExtractWord(1,cmbContestName.Text,['|']);
 
+  if (frmNewQSO.cmbMode.Text='CW') and (not chkSP.Checked) then
+                       SendCwFMacro(VK_F4);
   frmNewQSO.btnSave.Click;
   if dmData.DebugLevel >= 1 then
     Writeln('input finale');
@@ -487,7 +506,7 @@ begin
   cqrini.WriteString('frmContest', 'STX', edtSTX.Text);
   cqrini.WriteString('frmContest', 'STXStr', edtSTXStr.Text);
   cqrini.WriteString('frmContest', 'ContestName', cmbContestName.Text);
-
+  cqrini.WriteBool('frmContest', 'SP', chkSP.Checked);
 end;
 procedure TfrmContest.FormClose(Sender: TObject; var CloseAction: TCloseAction);
 Begin
@@ -519,6 +538,7 @@ begin
   chkLoc.Checked := cqrini.ReadBool('frmContest', 'Loc', False);
   chkLoc.Caption:=cqrini.ReadString('frmContest','MsgIsStr','MSG is Grid');
   MsgIs:=cqrini.ReadInteger('frmContest','MsgIs',1); //defaults to MSG is Grid
+  chkSP.Checked := cqrini.ReadBool('frmContest', 'SP', False);
 
   edtSTX.Text := cqrini.ReadString('frmContest', 'STX', '');
   edtSTXStr.Text := cqrini.ReadString('frmContest', 'STXStr', '');

@@ -13,7 +13,7 @@ object frmContest: TfrmContest
   OnHide = FormHide
   OnKeyDown = FormKeyDown
   OnShow = FormShow
-  LCLVersion = '2.0.12.0'
+  LCLVersion = '2.2.2.0'
   object edtCall: TEdit
     AnchorSideLeft.Control = lblContestName
     AnchorSideTop.Control = lblCall
@@ -724,12 +724,17 @@ object frmContest: TfrmContest
     TabOrder = 22
     TabStop = False
   end
-  object Label1: TLabel
-    Left = 270
-    Height = 1
-    Top = 150
-    Width = 1
-    ParentColor = False
+  object chkSP: TCheckBox
+    AnchorSideLeft.Control = edtSTXStr
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = chkQsp
+    AnchorSideTop.Side = asrCenter
+    Left = 357
+    Height = 23
+    Top = 93
+    Width = 52
+    Caption = 'S&&P'
+    TabOrder = 23
   end
   object tmrESC2: TTimer
     Enabled = False
