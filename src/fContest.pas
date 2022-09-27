@@ -34,6 +34,7 @@ type
     edtRSTr: TEdit;
     edtSRX: TEdit;
     edtSRXStr: TEdit;
+    gbStatus: TGroupBox;
     lblSpeed: TLabel;
     lblContestName: TLabel;
     lblCall: TLabel;
@@ -44,6 +45,7 @@ type
     lblMSGr: TLabel;
     lblNRs: TLabel;
     btnHelp : TSpeedButton;
+    mStatus: TMemo;
     mnuGrid: TMenuItem;
     mnyIOTA: TMenuItem;
     mnuState: TMenuItem;
@@ -68,6 +70,7 @@ type
     procedure chkQspChange(Sender: TObject);
     procedure chkTrueRSTChange(Sender: TObject);
     procedure chkTabAllChange(Sender: TObject);
+    procedure cmbContestNameExit(Sender: TObject);
     procedure edtCallChange(Sender: TObject);
     procedure edtCallExit(Sender: TObject);
     procedure edtCallKeyDown(Sender: TObject; var Key: word; Shift: TShiftState);
@@ -82,6 +85,7 @@ type
     procedure FormCreate(Sender: TObject);
     procedure FormHide(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: word; Shift: TShiftState);
+    procedure FormResize(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure btnHelpClick(Sender : TObject);
     procedure mnuGridClick(Sender: TObject);
@@ -106,6 +110,7 @@ type
     procedure MsgIsPopChk(nr:integer);
     procedure MWCmultip;
     procedure SendCwFmacro(key:word);
+    function CheckDupe(call:string):boolean;
   public
     { public declarations }
     procedure SaveSettings;
@@ -120,6 +125,7 @@ var
   DupeFromDate :string = '1900-01-01';
   MsgIs        :integer = 0;
   MWC40,MWC80  :integer;
+  formHeight   : integer;
 
 implementation
 
@@ -225,13 +231,12 @@ begin
   if ((Shift = [ssCTRL]) and (key = VK_0)) then
     frmTRXControl.DisableSplit;
 end;
-procedure TfrmContest.SendCwFmacro(key:word);
-Begin
-  if Assigned(frmNewQSO.CWint) then
-      frmNewQSO.CWint.SendText(dmUtils.GetCWMessage(
-        dmUtils.GetDescKeyFromCode(Key),edtCall.Text,
-      edtRSTs.Text, edtSTX.Text,edtSTXStr.Text,
-      frmNewQSO.edtName.Text,frmNewQSO.lblGreeting.Caption,''));
+
+procedure TfrmContest.FormResize(Sender: TObject);
+begin
+  formHeight:=frmContest.Height;
+  if gbStatus.Visible then
+   formHeight:=formHeight-gbStatus.Height;
 end;
 
 procedure TfrmContest.edtCallExit(Sender: TObject);
@@ -251,46 +256,15 @@ begin
 
   frmNewQSO.edtCall.Text := edtCall.Text;
 
-  if not (rbIgnoreDupes.Checked) then
-  begin
-    //dupe check
-    dupe := frmWorkedGrids.WkdCall(edtCall.Text, dmUtils.GetBandFromFreq(frmNewQSO.cmbFreq.Text) ,frmNewQSO.cmbMode.Text);
-    // 1= wkd this band and mode
-    // 2= wkd this band but NOT this mode
-    if  ( (rbNoMode4Dupe.Checked) and (dupe = 1) )
-     or ( (not rbNoMode4Dupe.Checked) and ((dupe = 1) or (dupe=2)) )then
-       Begin
-         edtCall.Font.Color:=clRed;
-         edtCall.Font.Style:= [fsBold];
-         frmNewQSO.edtRemQSO.Caption:='Dupe';
-         //CW send macro F3
-         if (frmNewQSO.cmbMode.Text='CW') and (not chkSP.Checked) and (length(edtCall.Text)>2) then
-                                                                SendCwFMacro(VK_F3);
-       end
-    else
-        Begin
-         edtCall.Font.Color:=clDefault;
-         edtCall.Font.Style:= [];
-         frmNewQSO.edtRemQSO.Caption:='';
-         //CW send macro F2
+  if CheckDupe(edtCall.Text) then
+    //CW send macro F3
+    if (frmNewQSO.cmbMode.Text='CW') and (not chkSP.Checked) and (length(edtCall.Text)>2) then
+                                                                SendCwFMacro(VK_F3)
+   else
+    //CW send macro F2
          if (frmNewQSO.cmbMode.Text='CW') and (not chkSP.Checked) and (length(edtCall.Text)>2) then
                                                                   SendCwFMacro(VK_F2);
-        end;
-   end;
-  //report in NEwQSO changes to 59 to late (after passing cmbMode)
-  //NOTE! if mode is not in list program dies! In that case skip next
-  if frmNewQSO.cmbMode.ItemIndex >=0 then
-   begin
-     case frmNewQSO.cmbMode.Items[frmNewQSO.cmbMode.ItemIndex] of
-       'SSB',
-       'AM',
-       'FM' :
-         begin
-           edtRSTs.Text := copy(edtRSTs.Text,0,2);
-           edtRSTr.Text := copy(edtRSTr.Text,0,2);
-         end;
-     end;
-   end;
+
 
   frmNewQSO.edtHisRST.Text := edtRSTs.Text;
   frmNewQSO.edtContestSerialSent.Text := edtSTX.Text;
@@ -300,7 +274,7 @@ begin
   frmContest.ShowOnTop;
   frmContest.SetFocus;
 
-  ShowStatusBarInfo();
+  ShowStatusBarInfo;
 end;
 
 procedure TfrmContest.btSaveClick(Sender: TObject);
@@ -325,6 +299,22 @@ begin
     end;
    end;
 
+  //NOTE! if mode is not in list program dies! In that case skip next
+  if frmNewQSO.cmbMode.ItemIndex >=0 then
+   begin
+     case frmNewQSO.cmbMode.Items[frmNewQSO.cmbMode.ItemIndex] of
+       'SSB','AM','FM' :   begin
+                             edtRSTs.Text := copy(edtRSTs.Text,0,2);
+                             edtRSTr.Text := copy(edtRSTr.Text,0,2);
+                           end;
+       else
+                           begin
+                             edtRSTs.Text := copy(edtRSTs.Text,0,3);
+                             edtRSTr.Text := copy(edtRSTr.Text,0,3);
+                           end;
+     end;
+   end;
+
   frmNewQSO.edtHisRST.Text := edtRSTs.Text;
   frmNewQSO.edtMyRST.Text := edtRSTr.Text;
   frmNewQSO.edtContestSerialReceived.Text := edtSRX.Text;
@@ -334,7 +324,7 @@ begin
   frmNewQSO.edtContestName.Text := ExtractWord(1,cmbContestName.Text,['|']);
 
   if (frmNewQSO.cmbMode.Text='CW') and (not chkSP.Checked) then
-                       SendCwFMacro(VK_F4);
+                                                                 SendCwFMacro(VK_F4);
   frmNewQSO.btnSave.Click;
   if dmData.DebugLevel >= 1 then
     Writeln('input finale');
@@ -413,13 +403,31 @@ begin
   SetTabOrders;
 end;
 
+procedure TfrmContest.cmbContestNameExit(Sender: TObject);
+var
+   h:integer;
+begin
+   h:=0;
+   gbStatus.Visible:=false;
+   if ((pos('MWC',uppercase(cmbContestName.Text))>0)         //this is just for testing.
+   or (pos('OK1WC',uppercase(cmbContestName.Text))>0)) then  //later should look a list of contest scoring
+     Begin
+      gbStatus.Visible:=true;
+      h:= gbStatus.Height;
+      MWCMultip;
+     end;
+   frmContest.Height:=formHeight+h;
+end;
+
 procedure TfrmContest.edtCallChange(Sender: TObject);
 begin
   if frmSCP.Showing and (Length(edtCall.Text)>2) then
     frmSCP.mSCP.Text := dmData.GetSCPCalls(edtCall.Text)
   else
-    frmSCP.mSCP.Clear
+    frmSCP.mSCP.Clear;
+  CheckDupe(edtCall.Text);
 end;
+
 
 procedure TfrmContest.edtCallKeyDown(Sender: TObject; var Key: word;
   Shift: TShiftState);
@@ -522,6 +530,7 @@ end;
 
 procedure TfrmContest.FormShow(Sender: TObject);
 begin
+  formHeight:=frmContest.Height;
   frmNewQSO.gbContest.Visible := true;
   dmUtils.LoadWindowPos(frmContest);
 
@@ -642,11 +651,18 @@ end;
 procedure TfrmContest.InitInput;
 
 begin
-  edtRSTs.Text := trim(copy(frmNewQSO.edtHisRST.Text, 0, 3));
-  //just pick  '599' or '59 '  if there happens to be more
-  edtRSTr.Text := trim(copy(frmNewQSO.edtMyRST.Text, 0, 3));
+  edtRSTs.Text := '599';
+  edtRSTr.Text := '599';
 
-  if not ((edtSTX.Text <> '') and (RSTstx = ''))  then
+  if  (frmNewQSO.cmbMode.ItemIndex >=0) then
+   case frmNewQSO.cmbMode.Items[frmNewQSO.cmbMode.ItemIndex] of
+    'SSB','AM','FM' :  begin
+                         edtRSTs.Text := '59';
+                         edtRSTr.Text := '59';
+                       end;
+   end;
+
+  if ((edtSTX.Text = '') and (RSTstx <> ''))  then
     edtSTX.Text := RSTstx;
 
   edtSTXStr.Text := RSTstxAdd;
@@ -662,6 +678,7 @@ begin
   frmContest.SetFocus;
   edtCall.SetFocus;
 
+  cmbContestNameExit(nil);
   ClearStatusBar;
 end;
 
@@ -784,9 +801,6 @@ begin
   for i:=0 to sbContest.Panels.Count-1 do
     sbContest.Panels.Items[i].Text := '';
 
-  if ((pos('MWC',uppercase(cmbContestName.Text))>0)
-   or (pos('OK1WC',uppercase(cmbContestName.Text))>0)) then
-      MWCMultip;
 end;
 
 procedure TfrmContest.ShowStatusBarInfo;
@@ -797,63 +811,108 @@ begin
       sbContest.Panels.Items[3].Text := 'AZ: ' + frmNewQSO.lblAzi.Caption;
       sbContest.Panels.Items[4].Text := frmNewQSO.lblCont.Caption;
 end;
+
+procedure TfrmContest.SendCwFmacro(key:word);
+Begin
+  if Assigned(frmNewQSO.CWint) then
+      frmNewQSO.CWint.SendText(dmUtils.GetCWMessage(
+        dmUtils.GetDescKeyFromCode(Key),edtCall.Text,
+      edtRSTs.Text, edtSTX.Text,edtSTXStr.Text,
+      frmNewQSO.edtName.Text,frmNewQSO.lblGreeting.Caption,''));
+end;
+
+function TfrmContest.CheckDupe(call:string):boolean;
+var
+   dupe:integer;
+Begin
+   Result:=false;
+   if not (rbIgnoreDupes.Checked) then
+   begin
+     //dupe check
+     dupe := frmWorkedGrids.WkdCall(edtCall.Text, dmUtils.GetBandFromFreq(frmNewQSO.cmbFreq.Text) ,frmNewQSO.cmbMode.Text);
+     // 1= wkd this band and mode
+     // 2= wkd this band but NOT this mode
+     if  ( (rbNoMode4Dupe.Checked) and (dupe = 1) )
+      or ( (not rbNoMode4Dupe.Checked) and ((dupe = 1) or (dupe=2)) )then
+        Begin
+          edtCall.Font.Color:=clRed;
+          edtCall.Font.Style:= [fsBold];
+          Result:=true;
+        end
+     else
+         Begin
+          edtCall.Font.Color:=clDefault;
+          edtCall.Font.Style:= [];
+         end;
+    end;
+end;
+
 procedure  TfrmContest.MWCmultip;
 var
-   Mlist,Mstr,
-   Band          : String;
-   QSOc,MULc,f,p : integer;
+   Mlist         : array [1..2] of string[40];
+   Band          : integer;
+   QSOc,MULc     : array [1..2] of integer;
+   f,p           : integer;
    M             : char;
+   bands         : array [1..2] of string=('80M','40M');
 Begin
-   try
-    MULc:=0;
-    Mlist:='....................................' ; //A-Z0-9
-    band:=dmUtils.GetBandFromFreq(FloatToStr(frmTRXControl.GetFreqMHz));
-    if not ((band='80M') or (band='40M')) then band:='none'; //not find anything then 2band contest
-    dmData.CQ.Close;
-    if dmData.trCQ.Active then dmData.trCQ.Rollback;
-    dmData.CQ.SQL.Text :=
-         'SELECT ASCII(MID(callsign,LENGTH(callsign),1)) AS SuffixEnd FROM cqrlog_main WHERE contestname='+
-         QuotedStr(cmbContestName.Text)+' AND band='+QuotedStr(band)+' AND mode='+QuotedStr('CW');
+    mStatus.Clear;
+    for band:=1 to 2 do
+      begin
+       try
+         MULc[band]:=0;
+          Mlist[band]:='....................................' ; //A-Z0-9
+          //band:=dmUtils.GetBandFromFreq(FloatToStr(frmTRXControl.GetFreqMHz));
+          //if not ((band='80M') or (band='40M')) then band:='none'; //not find anything then 2band contest
+          dmData.CQ.Close;
+          if dmData.trCQ.Active then dmData.trCQ.Rollback;
+          dmData.CQ.SQL.Text :=
+               'SELECT ASCII(MID(callsign,LENGTH(callsign),1)) AS SuffixEnd FROM cqrlog_main WHERE contestname='+
+               QuotedStr(cmbContestName.Text)+' AND band='+QuotedStr(bands[band])+' AND mode='+QuotedStr('CW');
 
-    if dmData.DebugLevel >=1 then
-                                 Writeln(dmData.CQ.SQL.Text);
-    dmData.CQ.Open();
-    QSOc:=0;
-    while not dmData.CQ.EOF do
-    Begin
-      f:= dmData.CQ.FieldByName('SuffixEnd').AsInteger;
-      if f>0 then
-       Begin
-         inc(QSOc);
-         case f of
-              65..90 : p:=0;
-              48..57 : p:=43;
-           else
-             p:=-1;
-         end;
-         if p>-1 then
-          begin
-           if Mlist[f+p-64]='.' then
-            Begin
-              inc(MULc);
-              Mlist[f+p-64]:=char(f);
+          if dmData.DebugLevel >=1 then
+                                       Writeln(dmData.CQ.SQL.Text);
+          dmData.CQ.Open();
+          QSOc[band]:=0;
+          while not dmData.CQ.EOF do
+          Begin
+            f:= dmData.CQ.FieldByName('SuffixEnd').AsInteger;
+            if f>0 then
+             Begin
+               inc(QSOc[band]);
+               case f of
+                    65..90 : p:=0;
+                    48..57 : p:=43;
+                 else
+                   p:=-1;
+               end;
+               if p>-1 then
+                begin
+                 if Mlist[band][f+p-64]='.' then
+                  Begin
+                    inc(MULc[band]);
+                    Mlist[band][f+p-64]:=char(f);
+                  end;
+                end;
+             end;
+             dmData.CQ.Next;
             end;
+          finally
+           dmData.CQ.Close();
+           dmData.trCQ.Rollback;
+           case band of
+            1 : MWC80:= (MULc[band]*QSOc[band]);
+            2 : MWC40:= (MULc[band]*QSOc[band]);
+           end;
+           mStatus.Lines.Add(bands[band]);
+           mStatus.Lines.Add('-----------------------------------------------------------');
+           mStatus.Lines.Add(' Multip: '+Mlist[band]+'   Count:'+IntToStr(MULc[band])+
+           'QSOs:' + IntToStr(QSOc[band])+ 'Score:' + IntToStr(MULc[band]*QSOc[band]));
           end;
-       end;
-       dmData.CQ.Next;
+       mStatus.Lines.Add('');
+       mStatus.Lines.Add('-----------------------------------------------------------');
+       mStatus.Lines.Add(' Total:' + IntToStr(MWC80+MWC40));
       end;
-    finally
-     dmData.CQ.Close();
-     dmData.trCQ.Rollback;
-     case band of
-      '80M' : MWC80:= (MULc*QSOc);
-      '40M' : MWC40:= (MULc*QSOc);
-     end;
-     sbContest.Panels.Items[0].Text := ' Multip: '+Mlist+'   C:'+IntToStr(MULc);
-     sbContest.Panels.Items[1].Text := 'Q:' + IntToStr(QSOc);
-     sbContest.Panels.Items[2].Text := 'S:' + IntToStr(MULc*QSOc);
-     sbContest.Panels.Items[3].Text := 'T:' + IntToStr(MWC80+MWC40);
-    end;
 end;
 
 
