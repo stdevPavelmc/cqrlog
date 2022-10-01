@@ -85,7 +85,6 @@ type
     procedure FormCreate(Sender: TObject);
     procedure FormHide(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: word; Shift: TShiftState);
-    procedure FormResize(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure btnHelpClick(Sender : TObject);
     procedure mnuGridClick(Sender: TObject);
@@ -125,7 +124,6 @@ var
   DupeFromDate :string = '1900-01-01';
   MsgIs        :integer = 0;
   MWC40,MWC80  :integer;
-  formHeight   : integer;
 
 implementation
 
@@ -230,13 +228,6 @@ begin
     if key in [VK_1..VK_9] then frmNewQSO.SetSplit(chr(key));
   if ((Shift = [ssCTRL]) and (key = VK_0)) then
     frmTRXControl.DisableSplit;
-end;
-
-procedure TfrmContest.FormResize(Sender: TObject);
-begin
-  formHeight:=frmContest.Height;
-  if gbStatus.Visible then
-   formHeight:=formHeight-gbStatus.Height;
 end;
 
 procedure TfrmContest.edtCallExit(Sender: TObject);
@@ -404,19 +395,23 @@ begin
 end;
 
 procedure TfrmContest.cmbContestNameExit(Sender: TObject);
-var
-   h:integer;
 begin
-   h:=0;
-   gbStatus.Visible:=false;
-   if ((pos('MWC',uppercase(cmbContestName.Text))>0)         //this is just for testing.
-   or (pos('OK1WC',uppercase(cmbContestName.Text))>0)) then  //later should look a list of contest scoring
+   if not gbStatus.Visible
+    and ((pos('MWC',uppercase(cmbContestName.Text))>0)         //this is just for testing.
+    or (pos('OK1WC',uppercase(cmbContestName.Text))>0)) then  //later should look a list of contest scoring
      Begin
       gbStatus.Visible:=true;
-      h:= gbStatus.Height;
+      frmContest.Height:=frmContest.Height+100;
       MWCMultip;
-     end;
-   frmContest.Height:=formHeight+h;
+     end
+   else
+     if gbStatus.Visible
+      and not ((pos('MWC',uppercase(cmbContestName.Text))>0)         //this is just for testing.
+        or (pos('OK1WC',uppercase(cmbContestName.Text))>0)) then  //later should look a list of contest scoring
+      Begin
+       gbStatus.Visible:=false;
+       frmContest.Height:=frmContest.Height-100;
+      end;
 end;
 
 procedure TfrmContest.edtCallChange(Sender: TObject);
@@ -518,11 +513,13 @@ begin
 end;
 procedure TfrmContest.FormClose(Sender: TObject; var CloseAction: TCloseAction);
 Begin
-  SaveSettings;
+   gbStatus.Visible:=false;
+   SaveSettings;
 end;
 
 procedure TfrmContest.FormHide(Sender: TObject);
 begin
+  gbStatus.Visible:=false;
   frmNewQSO.gbContest.Visible := false;
   dmUtils.SaveWindowPos(frmContest);
   frmContest.Hide;
@@ -530,7 +527,6 @@ end;
 
 procedure TfrmContest.FormShow(Sender: TObject);
 begin
-  formHeight:=frmContest.Height;
   frmNewQSO.gbContest.Visible := true;
   dmUtils.LoadWindowPos(frmContest);
 
@@ -567,6 +563,9 @@ begin
   btDupChkStart.Visible:=not(rbIgnoreDupes.Checked);
   MWC40:=0;
   MWC80:=0;
+
+  cmbContestNameExit(nil);
+
 end;
 
 procedure TfrmContest.MsgIsPopChk(nr:integer);
@@ -857,6 +856,7 @@ var
    bands         : array [1..2] of string=('80M','40M');
 Begin
     mStatus.Clear;
+    mStatus.Lines.Add('-----------------------------------------------------------');
     for band:=1 to 2 do
       begin
        try
@@ -904,15 +904,12 @@ Begin
             1 : MWC80:= (MULc[band]*QSOc[band]);
             2 : MWC40:= (MULc[band]*QSOc[band]);
            end;
-           mStatus.Lines.Add(bands[band]);
-           mStatus.Lines.Add('-----------------------------------------------------------');
-           mStatus.Lines.Add(' Multip: '+Mlist[band]+'   Count:'+IntToStr(MULc[band])+
-           'QSOs:' + IntToStr(QSOc[band])+ 'Score:' + IntToStr(MULc[band]*QSOc[band]));
+           mStatus.Lines.Add(bands[band]+'    Multip: '+Mlist[band]+'   Count:'+IntToStr(MULc[band])+
+           '   QSOs:' + IntToStr(QSOc[band])+ '   Score:' + IntToStr(MULc[band]*QSOc[band]));
           end;
-       mStatus.Lines.Add('');
-       mStatus.Lines.Add('-----------------------------------------------------------');
-       mStatus.Lines.Add(' Total:' + IntToStr(MWC80+MWC40));
       end;
+    mStatus.Lines.Add('-----------------------------------------------------------');
+    mStatus.Lines.Add(' Total:' + IntToStr(MWC80+MWC40));
 end;
 
 
