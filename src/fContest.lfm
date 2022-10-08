@@ -700,12 +700,12 @@ object frmContest: TfrmContest
     AnchorSideLeft.Control = btDupChkStart
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = rbDupeCheck
-    Left = 156
+    Left = 144
     Height = 23
     Hint = 'This selection allows same station to be worked in same band'#10' if QSO mode is different.'
     Top = 152
     Width = 122
-    BorderSpacing.Left = 18
+    BorderSpacing.Left = 6
     Caption = 'NoMode4Dupe'
     ParentShowHint = False
     ShowHint = True
@@ -715,12 +715,12 @@ object frmContest: TfrmContest
     AnchorSideLeft.Control = rbNoMode4Dupe
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = rbDupeCheck
-    Left = 296
+    Left = 272
     Height = 23
     Hint = 'NO duplicate cheking'
     Top = 152
     Width = 110
-    BorderSpacing.Left = 18
+    BorderSpacing.Left = 6
     Caption = 'Ignore dupes'
     OnChange = rbIgnoreDupesChange
     ParentShowHint = False
@@ -790,7 +790,7 @@ object frmContest: TfrmContest
     ClientHeight = 98
     ClientWidth = 740
     TabOrder = 24
-    Visible = False
+    OnClick = gbStatusClick
     object mStatus: TMemo
       AnchorSideLeft.Control = gbStatus
       AnchorSideTop.Control = gbStatus
@@ -799,20 +799,29 @@ object frmContest: TfrmContest
       AnchorSideBottom.Control = gbStatus
       AnchorSideBottom.Side = asrBottom
       Left = 3
-      Height = 92
-      Top = 3
+      Height = 86
+      Top = 9
       Width = 734
       Anchors = [akTop, akLeft, akRight, akBottom]
       BorderSpacing.Left = 3
-      BorderSpacing.Top = 3
+      BorderSpacing.Top = 9
       BorderSpacing.Right = 3
       BorderSpacing.Bottom = 3
-      Lines.Strings = (
-        'mStatus'
-      )
       ReadOnly = True
       TabOrder = 0
     end
+  end
+  object chkMarkDupe: TCheckBox
+    AnchorSideLeft.Control = rbIgnoreDupes
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = rbDupeCheck
+    Left = 400
+    Height = 23
+    Top = 152
+    Width = 95
+    BorderSpacing.Left = 18
+    Caption = 'Mark dupe'
+    TabOrder = 25
   end
   object tmrESC2: TTimer
     Enabled = False
@@ -863,6 +872,62 @@ object frmContest: TfrmContest
     object mnuComment: TMenuItem
       Caption = 'MSG is Comment'
       OnClick = mnuCommentClick
+    end
+  end
+  object popCommonStatus: TPopupMenu
+    Left = 408
+    Top = 264
+    object mnuQSOcount: TMenuItem
+      Caption = 'QSO count'
+      Checked = True
+      OnClick = mnuQSOcountClick
+    end
+    object mnuDXQSOCount: TMenuItem
+      Caption = 'DX QSO count'
+      Checked = True
+      OnClick = mnuDXQSOCountClick
+    end
+    object mnuCountyrCountAll: TMenuItem
+      Caption = 'Country count all'
+      Checked = True
+      OnClick = mnuCountyrCountAllClick
+    end
+    object mnuDXCountryCount: TMenuItem
+      Caption = 'DX country count'
+      Checked = True
+      OnClick = mnuDXCountryCountClick
+    end
+    object mnuDXCountryList: TMenuItem
+      Caption = 'DX country list'
+      Checked = True
+      OnClick = mnuDXCountryListClick
+    end
+    object mnuOwnCountryCount: TMenuItem
+      Caption = 'Own country count'
+      Checked = True
+      OnClick = mnuOwnCountryCountClick
+    end
+    object mnuOwnCountryList: TMenuItem
+      Caption = 'Own country list'
+      Checked = True
+      OnClick = mnuOwnCountryListClick
+    end
+    object mnuMsgMultipCount: TMenuItem
+      Caption = 'Msg multip count'
+      Checked = True
+      OnClick = mnuMsgMultipCountClick
+    end
+    object mnuMsgMultipList: TMenuItem
+      Caption = 'Msg multip list'
+      Checked = True
+      OnClick = mnuMsgMultipListClick
+    end
+    object mnuReSetAll: TMenuItem
+      Caption = 'Re/Set All'
+      OnClick = mnuReSetAllClick
+    end
+    object mnuExit: TMenuItem
+      Caption = 'Exit  (Esc key)'
     end
   end
 end
