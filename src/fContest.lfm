@@ -87,6 +87,7 @@ object frmContest: TfrmContest
     Width = 50
     BorderSpacing.Left = 16
     MaxLength = 20
+    OnEnter = edtRSTrEnter
     OnKeyDown = edtCallKeyDown
     TabOrder = 1
   end
@@ -100,6 +101,7 @@ object frmContest: TfrmContest
     Top = 87
     Width = 50
     MaxLength = 6
+    OnEnter = edtRSTrEnter
     OnExit = edtSRXExit
     OnKeyDown = edtCallKeyDown
     OnKeyPress = edtSTXKeyPress
@@ -133,6 +135,7 @@ object frmContest: TfrmContest
     Width = 100
     MaxLength = 50
     OnChange = edtSRXStrChange
+    OnEnter = edtRSTrEnter
     OnKeyDown = edtCallKeyDown
     ParentShowHint = False
     ShowHint = True

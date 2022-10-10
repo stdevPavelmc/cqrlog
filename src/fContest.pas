@@ -84,6 +84,7 @@ type
     procedure chkTrueRSTChange(Sender: TObject);
     procedure chkTabAllChange(Sender: TObject);
     procedure cmbContestNameExit(Sender: TObject);
+    procedure edtRSTrEnter(Sender: TObject);
     procedure mnuReSetAllClick(Sender: TObject);
     procedure mnuCountyrCountAllClick(Sender: TObject);
     procedure mnuDXCountryCountClick(Sender: TObject);
@@ -123,6 +124,7 @@ type
     procedure tmrESC2Timer(Sender: TObject);
   private
     { private declarations }
+    procedure SetActualReportForModeFromRadio;
     procedure InitInput;
     procedure ChkSerialNrUpd(IncNr: boolean);
     procedure SetTabOrders;
@@ -134,7 +136,7 @@ type
     procedure MWCStatus;
     procedure NACStatus;
     procedure CommonStatus;
-    procedure SendCwFmacro(key:word);
+    procedure SendFmemory(key:word);
     function CheckDupe(call:string):boolean;
   public
     { public declarations }
@@ -163,6 +165,7 @@ var
   Mylat    : String = '';
   Mylong   : String = '';
 
+  FmemorySent: Boolean;  //for semiAuto sending
 
 implementation
 
@@ -217,10 +220,7 @@ begin
   //memory keys
   if (Key >= VK_F1) and (Key <= VK_F10) and (Shift = []) then
   begin
-    if (frmNewQSO.cmbMode.Text = 'SSB') or (frmNewQSO.cmbMode.Text = 'FM') or (frmNewQSO.cmbMode.Text = 'AM') then
-      frmNewQSO.RunVK(dmUtils.GetDescKeyFromCode(Key))
-    else
-     SendCwFmacro(key);
+     SendFmemory(key);
      key := 0;
   end;
 
@@ -273,6 +273,9 @@ procedure TfrmContest.edtCallExit(Sender: TObject);
 var
   dupe : Integer;
 begin
+  //be sure report is ok for radio mode;
+  frmContest.SetActualReportForModeFromRadio;
+
   // if frmNewQSO is in viewmode or editmode it overwrites old data or will not save
   // because saving is disabled in view mode. this if statement starts a fresh newqso form
   if frmNewQSO.ViewQSO or frmNewQSO.EditQSO then
@@ -286,22 +289,6 @@ begin
 
   frmNewQSO.edtCall.Text := edtCall.Text;
 
-  if CheckDupe(edtCall.Text) then
-    Begin
-     //send macro F3
-     if ( (frmNewQSO.cmbMode.Text='CW') or (frmNewQSO.cmbMode.Text = 'SSB')
-      or  (frmNewQSO.cmbMode.Text = 'FM') or (frmNewQSO.cmbMode.Text = 'AM') )
-       and (not chkSP.Checked) and (length(edtCall.Text)>2) then
-                                                                  SendCwFMacro(VK_F3);
-    end
-   else
-    //send macro F2
-    if ( (frmNewQSO.cmbMode.Text='CW') or (frmNewQSO.cmbMode.Text = 'SSB')
-      or  (frmNewQSO.cmbMode.Text = 'FM') or (frmNewQSO.cmbMode.Text = 'AM') )
-     and (not chkSP.Checked) and (length(edtCall.Text)>2) then
-                                                                  SendCwFMacro(VK_F2);
-
-
   frmNewQSO.edtHisRST.Text := edtRSTs.Text;
   frmNewQSO.edtContestSerialSent.Text := edtSTX.Text;
   frmNewQSO.edtContestExchangeMessageSent.Text := edtSTXStr.Text;
@@ -309,6 +296,16 @@ begin
   frmNewQSO.edtCallExit(nil);
   frmContest.ShowOnTop;
   frmContest.SetFocus;
+
+   if CheckDupe(edtCall.Text) then
+    Begin
+     //send macro F3
+     if ((not chkSP.Checked) and (length(edtCall.Text)>2)) then
+              Begin
+                FmemorySent:=true;
+                SendFmemory(VK_F3);
+              end;
+    end;
 
   ShowStatusBarInfo;
 end;
@@ -361,10 +358,8 @@ begin
   frmNewQSO.edtContestExchangeMessageSent.Text := edtSTXStr.Text;
   frmNewQSO.edtContestName.Text := cmbContestName.Text;
 
-  if ( (frmNewQSO.cmbMode.Text='CW') or (frmNewQSO.cmbMode.Text = 'SSB')
-      or  (frmNewQSO.cmbMode.Text = 'FM') or (frmNewQSO.cmbMode.Text = 'AM') )
-       and (not chkSP.Checked) then
-                                    SendCwFMacro(VK_F4);
+  if (not chkSP.Checked) then
+                             SendFmemory(VK_F4);
   frmNewQSO.btnSave.Click;
   if dmData.DebugLevel >= 1 then
     Writeln('input finale');
@@ -487,6 +482,18 @@ begin
 
      UseStatus:=0;  //Common status display for contests where name does not fit to any above
      CommonStatus;
+end;
+
+procedure TfrmContest.edtRSTrEnter(Sender: TObject); //launch memory key F2 when RSTr,NRr or MSGr is entered
+begin
+   if FmemorySent then exit;
+
+    //send macro F2
+    if ((not chkSP.Checked) and (length(edtCall.Text)>2)) then
+             Begin
+                FmemorySent:=true;
+                SendFmemory(VK_F2);
+              end;
 end;
 
 procedure TfrmContest.edtCallChange(Sender: TObject);
@@ -655,7 +662,7 @@ begin
   mnuOwnCountryCount.Caption:=Mycont+' country count';
   mnuOwnCountryList.Caption:=Mycont+' country list';
   cmbContestNameExit(nil);  //updates status view
-
+  FmemorySent:=False;
 end;
 
 procedure TfrmContest.MsgIsPopChk(nr:integer);
@@ -808,19 +815,27 @@ begin
   tmrESC2.Enabled := False;
 end;
 
-procedure TfrmContest.InitInput;
+procedure TfrmContest.SetActualReportForModeFromRadio;
+ var
+   mode,
+   band:  string;
 
 begin
   edtRSTs.Text := '599';
   edtRSTr.Text := '599';
 
-  if  (frmNewQSO.cmbMode.ItemIndex >=0) then
-   case frmNewQSO.cmbMode.Items[frmNewQSO.cmbMode.ItemIndex] of
+  if frmTRXControl.GetModeBand(mode, band) then
+   case mode of
     'SSB','AM','FM' :  begin
                          edtRSTs.Text := '59';
                          edtRSTr.Text := '59';
                        end;
    end;
+end;
+procedure TfrmContest.InitInput;
+Begin
+  SetActualReportForModeFromRadio;
+  FmemorySent:=False;
 
   if not ((edtSTX.Text <> '') and (RSTstx = ''))  then
     edtSTX.Text := RSTstx;
@@ -972,13 +987,14 @@ begin
       sbContest.Panels.Items[4].Text := frmNewQSO.lblCont.Caption;
 end;
 
-procedure TfrmContest.SendCwFmacro(key:word);
+procedure TfrmContest.SendFmemory(key:word);
 Begin
-  if Assigned(frmNewQSO.CWint) then
-      frmNewQSO.CWint.SendText(dmUtils.GetCWMessage(
-        dmUtils.GetDescKeyFromCode(Key),edtCall.Text,
-      edtRSTs.Text, edtSTX.Text,edtSTXStr.Text,
-      frmNewQSO.edtName.Text,frmNewQSO.lblGreeting.Caption,''));
+    if (frmNewQSO.cmbMode.Text = 'CW') and Assigned(frmNewQSO.CWint)  then
+         frmNewQSO.CWint.SendText(dmUtils.GetCWMessage(dmUtils.GetDescKeyFromCode(Key),edtCall.Text,
+            edtRSTs.Text, edtSTX.Text,edtSTXStr.Text, frmNewQSO.edtName.Text,frmNewQSO.lblGreeting.Caption,''))
+     else
+      if ((frmNewQSO.cmbMode.Text = 'SSB') or (frmNewQSO.cmbMode.Text = 'FM') or (frmNewQSO.cmbMode.Text = 'AM')) then
+         frmNewQSO.RunVK(dmUtils.GetDescKeyFromCode(Key));
 end;
 
 function TfrmContest.CheckDupe(call:string):boolean;
