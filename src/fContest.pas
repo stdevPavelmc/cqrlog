@@ -448,6 +448,7 @@ begin
     if cmbContestName.Text='' then
        begin
          UseStatus:=-1; //no Contest name, noStatus
+         mStatus.Clear;
          Exit;
        end;
 
