@@ -214,10 +214,10 @@ begin
     key := 0;
   end;
 
-  //cw memories
+  //memory keys
   if (Key >= VK_F1) and (Key <= VK_F10) and (Shift = []) then
   begin
-    if (frmNewQSO.cmbMode.Text = 'SSB') then
+    if (frmNewQSO.cmbMode.Text = 'SSB') or (frmNewQSO.cmbMode.Text = 'FM') or (frmNewQSO.cmbMode.Text = 'AM') then
       frmNewQSO.RunVK(dmUtils.GetDescKeyFromCode(Key))
     else
      SendCwFmacro(key);
@@ -288,14 +288,16 @@ begin
 
   if CheckDupe(edtCall.Text) then
     Begin
-     //CW send macro F3
-     if ((frmNewQSO.cmbMode.Text='CW') or (frmNewQSO.cmbMode.Text='SSB'))
-      and (not chkSP.Checked) and (length(edtCall.Text)>2) then
+     //send macro F3
+     if ( (frmNewQSO.cmbMode.Text='CW') or (frmNewQSO.cmbMode.Text = 'SSB')
+      or  (frmNewQSO.cmbMode.Text = 'FM') or (frmNewQSO.cmbMode.Text = 'AM') )
+       and (not chkSP.Checked) and (length(edtCall.Text)>2) then
                                                                   SendCwFMacro(VK_F3);
     end
    else
-    //CW send macro F2
-    if ((frmNewQSO.cmbMode.Text='CW') or (frmNewQSO.cmbMode.Text='SSB'))
+    //send macro F2
+    if ( (frmNewQSO.cmbMode.Text='CW') or (frmNewQSO.cmbMode.Text = 'SSB')
+      or  (frmNewQSO.cmbMode.Text = 'FM') or (frmNewQSO.cmbMode.Text = 'AM') )
      and (not chkSP.Checked) and (length(edtCall.Text)>2) then
                                                                   SendCwFMacro(VK_F2);
 
@@ -359,9 +361,10 @@ begin
   frmNewQSO.edtContestExchangeMessageSent.Text := edtSTXStr.Text;
   frmNewQSO.edtContestName.Text := cmbContestName.Text;
 
-  if ((frmNewQSO.cmbMode.Text='CW') or (frmNewQSO.cmbMode.Text='SSB'))
-   and (not chkSP.Checked) then
-                                                                 SendCwFMacro(VK_F4);
+  if ( (frmNewQSO.cmbMode.Text='CW') or (frmNewQSO.cmbMode.Text = 'SSB')
+      or  (frmNewQSO.cmbMode.Text = 'FM') or (frmNewQSO.cmbMode.Text = 'AM') )
+       and (not chkSP.Checked) then
+                                    SendCwFMacro(VK_F4);
   frmNewQSO.btnSave.Click;
   if dmData.DebugLevel >= 1 then
     Writeln('input finale');
