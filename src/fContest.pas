@@ -180,7 +180,7 @@ begin
   // enter anywhere
   if key = VK_RETURN then
   begin
-    if (length(edtCall.Text) > 2) then   //must be some kind of call
+    if (length(edtCall.Text) > 2) and (not edtCall.Focused) then   //must be some kind of call and cursor away from edtCall
       btSave.Click;
     key := 0;
   end;
@@ -287,12 +287,16 @@ begin
   frmNewQSO.edtCall.Text := edtCall.Text;
 
   if CheckDupe(edtCall.Text) then
-    //CW send macro F3
-    if (frmNewQSO.cmbMode.Text='CW') and (not chkSP.Checked) and (length(edtCall.Text)>2) then
-                                                                SendCwFMacro(VK_F3)
+    Begin
+     //CW send macro F3
+     if ((frmNewQSO.cmbMode.Text='CW') or (frmNewQSO.cmbMode.Text='SSB'))
+      and (not chkSP.Checked) and (length(edtCall.Text)>2) then
+                                                                  SendCwFMacro(VK_F3);
+    end
    else
     //CW send macro F2
-         if (frmNewQSO.cmbMode.Text='CW') and (not chkSP.Checked) and (length(edtCall.Text)>2) then
+    if ((frmNewQSO.cmbMode.Text='CW') or (frmNewQSO.cmbMode.Text='SSB'))
+     and (not chkSP.Checked) and (length(edtCall.Text)>2) then
                                                                   SendCwFMacro(VK_F2);
 
 
@@ -355,7 +359,8 @@ begin
   frmNewQSO.edtContestExchangeMessageSent.Text := edtSTXStr.Text;
   frmNewQSO.edtContestName.Text := cmbContestName.Text;
 
-  if (frmNewQSO.cmbMode.Text='CW') and (not chkSP.Checked) then
+  if ((frmNewQSO.cmbMode.Text='CW') or (frmNewQSO.cmbMode.Text='SSB'))
+   and (not chkSP.Checked) then
                                                                  SendCwFMacro(VK_F4);
   frmNewQSO.btnSave.Click;
   if dmData.DebugLevel >= 1 then
