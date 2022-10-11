@@ -49,7 +49,7 @@ object frmContest: TfrmContest
     AnchorSideTop.Control = edtRSTs
     Left = 196
     Height = 34
-    Hint = 'contest serial number sent, max 6 characters'
+    Hint = 'Contest serial number sent, max 6 characters'
     Top = 87
     Width = 50
     MaxLength = 6
@@ -66,7 +66,7 @@ object frmContest: TfrmContest
     AnchorSideTop.Control = edtSTX
     Left = 246
     Height = 34
-    Hint = 'contest exchange message sent, max 50 characters'
+    Hint = 'Contest exchange message sent, max 50 characters'
     Top = 87
     Width = 100
     MaxLength = 50
@@ -97,7 +97,7 @@ object frmContest: TfrmContest
     AnchorSideTop.Control = edtRSTr
     Left = 412
     Height = 34
-    Hint = 'contest serial number received, max 6 characters'
+    Hint = 'Contest serial number received, max 6 characters'
     Top = 87
     Width = 50
     MaxLength = 6
@@ -130,7 +130,7 @@ object frmContest: TfrmContest
     AnchorSideTop.Control = edtRSTr
     Left = 462
     Height = 34
-    Hint = 'contest exchange message sent, max 50 characters'
+    Hint = 'Contest exchange message sent, max 50 characters'
     Top = 87
     Width = 100
     MaxLength = 50
@@ -203,7 +203,7 @@ object frmContest: TfrmContest
     AnchorSideTop.Control = chkTrueRST
     Left = 196
     Height = 23
-    Hint = 'When cheked STX number is created from 001.'#10'Number can be edited in case of wrong entry and counting'#10'increases from number shown when QSO is saved'
+    Hint = 'When cheked STX number is created from 001.'#10'Number can be edited in case of wrong entry and counting'#10'increases from number shown when QSO is saved.'
     Top = 121
     Width = 45
     Caption = 'Inc'
@@ -228,7 +228,7 @@ object frmContest: TfrmContest
     AnchorSideTop.Control = chkNoNr
     Left = 462
     Height = 23
-    Hint = 'Several options to choose with right mouse click.'#10'When one checked saving QSO will copy received message'#10'to that column of log.'#10#10'Received message is of course saved to SRXString column, too.'
+    Hint = 'Several options to choose with right mouse click.'#10'When one of them checked saving QSO will copy '#10'received message to that column of log'#10'.'#10'If you select option, remember also check the chkbox!'#10'.'#10'Received message is, of course, always saved to SRX_String'#10'column too.'
     Top = 121
     Width = 102
     Caption = 'MSG is Grid'
@@ -244,7 +244,7 @@ object frmContest: TfrmContest
     AnchorSideTop.Side = asrBottom
     Left = 6
     Height = 23
-    Hint = 'When checked spacebar works like Tab key.'#10'NOTE: MSG_r may not have space(s) in text then. '
+    Hint = 'When checked spacebar works like Tab key.'#10'NOTE: prevents space(s) in MSG received'
     Top = 121
     Width = 113
     Caption = 'SPACE is TAB'
@@ -273,7 +273,7 @@ object frmContest: TfrmContest
     AnchorSideTop.Control = chkSpace
     Left = 146
     Height = 23
-    Hint = 'When checked Tab stops to RST(s) allowing enter of true reports'
+    Hint = 'When checked Tab stops to RST(s) allowing entering of true reports'
     Top = 121
     Width = 46
     Caption = 'Tru'
@@ -363,7 +363,7 @@ object frmContest: TfrmContest
     AnchorSideRight.Side = asrBottom
     Left = 130
     Height = 34
-    Hint = 'Contestname, choose ADIF contest_id via combobox '#10'or type free text max 40 characters.'#10'Recommended to add contest year(week/month/day) if several'#10'contests are kept in same log. Helps Contest filter usage.'#10#10'If contest name include predefined string(s) leaving contest name'#10'column may open "Status" group  box to view some progress info'#10'of contest.'
+    Hint = 'Contestname, choose ADIF contest_id via combobox '#10'or type free text max 40 characters.'#10'Recommended to add contest year(week/month/day) if several'#10'contests are kept in same log. Helps Contest filter usage'#10'.'#10'If contest name combo box has name "Status" view is updated by '#10'CommonStatus rules. User can adjust that view.'#10'There are also predefined strings that cause contest specific '#10'Status displayed'
     Top = 6
     Width = 432
     Anchors = [akTop, akRight]
@@ -609,7 +609,7 @@ object frmContest: TfrmContest
     AnchorSideTop.Control = chkNRInc
     Left = 246
     Height = 23
-    Hint = 'When checked allows circulating STX_String.'#10'I.E. set MSG_s at start, after 1st QSO saved your MSG_s'#10'changes to MSG_r received from last logged QSO.'
+    Hint = 'When checked allows circulating STX_String.'#10'I.E. set MSG_s at start, after 1st QSO is saved your MSG_s'#10'changes to MSG_r received from last logged QSO.'
     Top = 121
     Width = 51
     Caption = 'Qsp'
@@ -687,7 +687,7 @@ object frmContest: TfrmContest
     AnchorSideTop.Side = asrBottom
     Left = 17
     Height = 23
-    Hint = 'When selected with date duplicate cheking starts from set date.'#10'Date is needed if you have several contests in same log.'#10'With own log for every contest date needs not to be set.'#10'Dupe = station allready worked in this band.'#10'Turns call column text to bold red. If QSO logged adds "Dupe"'#10'text to NewQSO/comment to QSO column.'#10' '
+    Hint = 'Dupe = station already worked in this band.'#10'When selected, with date, duplicate cheking starts from set date.'#10'Date is needed if you have several contests in same log'#10'.'#10'With own log for every contest date is not needed to be set'#10'.'#10'Turns call column text to bold red. If QSO is how ever logged '#10'adds "/D" to RSTsend if "Mark dupe" is cheked.'#10' '
     Top = 152
     Width = 102
     BorderSpacing.Left = 17
@@ -705,7 +705,7 @@ object frmContest: TfrmContest
     AnchorSideTop.Control = rbDupeCheck
     Left = 144
     Height = 23
-    Hint = 'This selection allows same station to be worked in same band'#10' if QSO mode is different.'
+    Hint = 'This selection allows same station to be worked in same band'#10' if QSO mode is different.'#10#10'Otherwise like "Dupe check" selction.'
     Top = 152
     Width = 122
     BorderSpacing.Left = 6
@@ -720,7 +720,7 @@ object frmContest: TfrmContest
     AnchorSideTop.Control = rbDupeCheck
     Left = 272
     Height = 23
-    Hint = 'NO duplicate cheking'
+    Hint = 'No duplicate cheking'
     Top = 152
     Width = 110
     BorderSpacing.Left = 6
@@ -750,7 +750,7 @@ object frmContest: TfrmContest
     AnchorSideTop.Side = asrCenter
     Left = 122
     Height = 33
-    Hint = 'When using common log, set date of dupe check begin (contest start date)'
+    Hint = 'When using common log for all contests set date of '#10'dupe check begin (I.E. contest start date)'
     Top = 147
     Width = 16
     AutoSize = True
@@ -758,6 +758,8 @@ object frmContest: TfrmContest
     Constraints.MaxHeight = 35
     Constraints.MaxWidth = 180
     OnClick = btDupChkStartClick
+    ParentShowHint = False
+    ShowHint = True
     TabOrder = 22
     TabStop = False
   end
@@ -768,7 +770,7 @@ object frmContest: TfrmContest
     AnchorSideTop.Side = asrCenter
     Left = 346
     Height = 23
-    Hint = 'When cheked form is in Search and Pounce mode where operator'#10'needs to launch all CW macros from Function keys (F1-F9).'#10#10'When not cheked CW macro F2 is launched when cursor leaves'#10'"call" column.'#10'In case of duplicate call is found CW macro F3 is launced instead'#10'of F2.'#10'When QSO is saved CW macro F4 is lauched.'#10'CW macros can be stopped with one 1xESC key as usual.'#10#10'Suggestions for CW message macros (NewQSO/File/CW messages):'#10'F1 = cq %mc test    (%mc station call)'#10'F2 = %c %xrs          (%c call  %xrs RST+(if set)STX+STXStr in short form.)'#10'F3 = %c QSO'#10'F4 = tu %mc test'
+    Hint = 'When cheked form is in Search and Pounce mode where operator'#10'needs to launch all Memory contents using function keys (F1-F9)'#10'.'#10'When not cheked CW macro F2 is launched when cursor enters to'#10'one of RSTr,NR,r or MSGr (F2 must be defined by operator)'#10'In case of duplicate call is found Memory F3 is launced instead'#10'of F2 when cursor leaves CALL column (F3 must be defined by operator)'#10'When QSO is saved CW macro F4 is lauched. (F4 must be defined by operator)'#10'.'#10'CW macros can be stopped with one 1xESC key as usual.'#10#10'Suggestions for CW message macros (NewQSO/File/CW messages):'#10'F1 = cq %mc test    (%mc is station call)'#10'F2 = %c %xrs          (%c call  %xrs sends CALL+ RST+STX+STXStr in short form.)'#10'F3 = %c QSO'#10'F4 = tu %mc test'
     Top = 121
     Width = 52
     Caption = 'S&&P'
@@ -784,15 +786,17 @@ object frmContest: TfrmContest
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = sbContest
-    Left = 0
+    Left = 6
     Height = 116
     Top = 181
-    Width = 742
+    Width = 730
     Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Left = 6
     BorderSpacing.Top = 6
+    BorderSpacing.Right = 6
     Caption = 'Status'
     ClientHeight = 98
-    ClientWidth = 740
+    ClientWidth = 728
     TabOrder = 24
     OnClick = gbStatusClick
     object mStatus: TMemo
@@ -804,14 +808,17 @@ object frmContest: TfrmContest
       AnchorSideBottom.Side = asrBottom
       Left = 3
       Height = 86
+      Hint = 'Shows status of contest.'#10'If contest has any name common status counting is used. That'#10'includes QSO counts for all, dx and own continent with lists of'#10'DX and own continent prefixes.'#10'Also received messages are counted and listed allowing msg'#10'multiplier count.'#10'Use can control these with left click of mouse pointing between'#10'text "Status" and status display area'#10'.'#10'Currently if there are contest names that include "mwc"or "ok1wc"'#10'and "nac" those statuses are counted by MWC or NAC rules'#10'.'#10'Update is done evey time QSO is saved or 2xESC is pressed.'
       Top = 9
-      Width = 734
+      Width = 722
       Anchors = [akTop, akLeft, akRight, akBottom]
       BorderSpacing.Left = 3
       BorderSpacing.Top = 9
       BorderSpacing.Right = 3
       BorderSpacing.Bottom = 3
+      ParentShowHint = False
       ReadOnly = True
+      ShowHint = True
       TabOrder = 0
     end
   end
@@ -821,12 +828,34 @@ object frmContest: TfrmContest
     AnchorSideTop.Control = rbDupeCheck
     Left = 400
     Height = 23
+    Hint = 'If duplicate QSO is logged  adds "/D" to RSTsend when cheked.'
     Top = 152
     Width = 95
     BorderSpacing.Left = 18
     Caption = 'Mark dupe'
+    ParentShowHint = False
+    ShowHint = True
     TabOrder = 25
     TabStop = False
+  end
+  object chkHint: TCheckBox
+    AnchorSideLeft.Control = chkTabAll
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = chkTabAll
+    AnchorSideTop.Side = asrCenter
+    Left = 124
+    Height = 23
+    Hint = 'Turn hint help texts showing ON/OFF '
+    Top = 46
+    Width = 90
+    BorderSpacing.Left = 12
+    Caption = 'Show hint'
+    Checked = True
+    OnChange = chkHintChange
+    ParentShowHint = False
+    ShowHint = True
+    State = cbChecked
+    TabOrder = 26
   end
   object tmrESC2: TTimer
     Enabled = False

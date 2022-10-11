@@ -18,6 +18,7 @@ type
     btClearQso : TButton;
     btDupChkStart: TButton;
     cdDupeDate: TCalendarDialog;
+    chkHint: TCheckBox;
     chkMarkDupe: TCheckBox;
     chkSP: TCheckBox;
     chkTabAll: TCheckBox;
@@ -77,6 +78,7 @@ type
     procedure btDupChkStartClick(Sender: TObject);
     procedure btSaveClick(Sender: TObject);
     procedure btClearQsoClick(Sender : TObject);
+    procedure chkHintChange(Sender: TObject);
     procedure chkNoNrChange(Sender: TObject);
     procedure chkNRIncChange(Sender: TObject);
     procedure chkNRIncClick(Sender : TObject);
@@ -372,6 +374,9 @@ procedure TfrmContest.btClearAllClick(Sender: TObject);
 var
    f:integer;
 begin
+  chkTabAll.Checked:=False;
+  chkHint.Checked:=True;
+
   rbDupeCheck.Checked := True;
   rbNoMode4Dupe.Checked := False;
   rbIgnoreDupes.Checked := False;
@@ -408,6 +413,34 @@ procedure TfrmContest.btClearQsoClick(Sender : TObject);
 begin
   frmNewQSO.ClearAll;
   initInput
+end;
+
+procedure TfrmContest.chkHintChange(Sender: TObject);
+var
+   i      :integer;
+   chk,rb :TCheckBox;
+   b      :boolean;
+
+begin
+   b:=cmbContestName.ShowHint;
+   try
+    for i := 0 to frmContest.ComponentCount - 1 do
+    begin
+
+      if frmContest.Components[i] is TCheckBox then
+      begin
+        chk := frmContest.Components[i] as TCheckBox;
+        chk.ShowHint:=not b ;
+      end;
+    end;
+    rbDupeCheck.ShowHint:=not b;
+    btDupChkStart.ShowHint:=not b;
+    rbNoMode4Dupe.ShowHint:=not b;
+    rbIgnoreDupes.ShowHint:=not b;;
+    cmbContestName.ShowHint:=not b;
+    mStatus.ShowHint:=not b;
+   finally
+   end;
 end;
 
 procedure TfrmContest.chkNoNrChange(Sender: TObject);
@@ -576,6 +609,9 @@ var
 begin
   dmUtils.SaveWindowPos(frmContest);
 
+  cqrini.WriteBool('frmContest', 'TabAll', chkTabAll.Checked);
+  cqrini.WriteBool('frmContest', 'ShowHint', chkHint.Checked);
+
   cqrini.WriteBool('frmContest', 'DupeCheck', rbDupeCheck.Checked);
   cqrini.WriteBool('frmContest', 'NoMode4Dupe', rbNoMode4Dupe.Checked);
   cqrini.WriteBool('frmContest', 'IgnoreDupes', rbIgnoreDupes.Checked);
@@ -619,6 +655,9 @@ var
 begin
   frmNewQSO.gbContest.Visible := true;
   dmUtils.LoadWindowPos(frmContest);
+
+  chkTabAll.Checked := cqrini.ReadBool('frmContest', 'TabAll', False);
+  chkHint.Checked := cqrini.ReadBool('frmContest', 'ShowHint', True);
 
   rbDupeCheck.Checked := cqrini.ReadBool('frmContest', 'DupeCheck', True);
   rbNoMode4Dupe.Checked := cqrini.ReadBool('frmContest', 'NoMode4Dupe', False);
