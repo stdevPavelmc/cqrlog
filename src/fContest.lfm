@@ -775,6 +775,7 @@ object frmContest: TfrmContest
     ParentShowHint = False
     ShowHint = True
     TabOrder = 23
+    TabStop = False
   end
   object gbStatus: TGroupBox
     AnchorSideLeft.Control = Owner
@@ -825,6 +826,7 @@ object frmContest: TfrmContest
     BorderSpacing.Left = 18
     Caption = 'Mark dupe'
     TabOrder = 25
+    TabStop = False
   end
   object tmrESC2: TTimer
     Enabled = False

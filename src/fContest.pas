@@ -1163,7 +1163,8 @@ Begin
     dmData.CQ.Close;
     if dmData.trCQ.Active then dmData.trCQ.Rollback;
     dmData.CQ.SQL.Text :=
-        'SELECT DISTINCT(SUBSTRING(UPPER(loc),1,4)) AS MainLoc FROM cqrlog_main WHERE contestname='+ QuotedStr(cmbContestName.Text);
+        'SELECT DISTINCT(SUBSTRING(UPPER(loc),1,4)) AS MainLoc FROM cqrlog_main WHERE contestname='+
+        QuotedStr(cmbContestName.Text)+' ORDER BY MainLoc ASC';
     if dmData.DebugLevel >=1 then
                                      Writeln(dmData.CQ.SQL.Text);
      dmData.CQ.Open();
@@ -1263,7 +1264,8 @@ Begin
       dmData.CQ.SQL.Text :=
          'SELECT DISTINCT(pref) FROM cqrlog_common.dxcc_ref RIGHT JOIN cqrlog_main ON '+
          'cqrlog_common.dxcc_ref.adif = cqrlog_main.adif WHERE contestname='+
-           QuotedStr(cmbContestName.Text)+' AND cqrlog_main.cont<>'+QuotedStr(mycont);
+           QuotedStr(cmbContestName.Text)+' AND cqrlog_main.cont<>'+QuotedStr(mycont)
+           +' ORDER BY cqrlog_common.dxcc_ref.pref ASC';
       if dmData.DebugLevel >=1 then
                                        Writeln(dmData.CQ.SQL.Text);
       dmData.CQ.Open();
@@ -1303,7 +1305,8 @@ Begin
       dmData.CQ.SQL.Text :=
       'SELECT DISTINCT(pref) FROM cqrlog_common.dxcc_ref RIGHT JOIN cqrlog_main ON '+
       'cqrlog_common.dxcc_ref.adif = cqrlog_main.adif WHERE contestname='+
-        QuotedStr(cmbContestName.Text)+' AND cqrlog_main.cont='+QuotedStr(Mycont);
+        QuotedStr(cmbContestName.Text)+' AND cqrlog_main.cont='+QuotedStr(Mycont)
+        +' ORDER BY cqrlog_common.dxcc_ref.pref ASC';
        if dmData.DebugLevel >=1 then
                                         Writeln(dmData.CQ.SQL.Text);
        dmData.CQ.Open();
@@ -1344,7 +1347,7 @@ Begin
       if dmData.trCQ.Active then dmData.trCQ.Rollback;
       dmData.CQ.SQL.Text :=
           'SELECT DISTINCT(UPPER(srx_string)) AS srx_msg FROM cqrlog_main WHERE contestname='+
-           QuotedStr(cmbContestName.Text);
+           QuotedStr(cmbContestName.Text)+' ORDER BY srx_msg ASC';
       if dmData.DebugLevel >=1 then
                                        Writeln(dmData.CQ.SQL.Text);
        dmData.CQ.Open();
