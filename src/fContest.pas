@@ -238,13 +238,20 @@ begin
     key := 0;
   end;
 
-  //S&P mode toggle
-  if (key = VK_Tab) and (Shift = [ssShift]) then
-    Begin
-        chkSP.Checked:= not chkSP.Checked;
-        key:=0;
-    end;
-
+  //S&P mode
+  if (key = VK_Tab) then
+   begin
+     if (Shift = [ssShift]) then  //off
+      Begin
+          chkSP.Checked:= False;
+          key:=0;
+      end;
+     if (Shift = [ssCTRL]) then  //on
+      Begin
+          chkSP.Checked:= True;
+          key:=0;
+      end;
+   end;
 
   if (key = 34) then//pgup
   begin
@@ -1072,7 +1079,7 @@ var
    bands         : array [1..2] of string=('80M','40M');
 Begin
     mStatus.Clear;
-    for band:=1 to 2 do
+    for band:=2 downto 1 do
       begin
        try
          MULc[band]:=0;
@@ -1113,16 +1120,14 @@ Begin
           finally
            dmData.CQ.Close();
            dmData.trCQ.Rollback;
-           case band of
-            1 : MWC80:= (MULc[band]*QSOc[band]);
-            2 : MWC40:= (MULc[band]*QSOc[band]);
-           end;
-           mStatus.Lines.Add(bands[band]+'    Multip: '+Mlist[band]+'   Count:'+IntToStr(MULc[band])+
-           '   QSOs:' + IntToStr(QSOc[band])+ '   Score:' + IntToStr(MULc[band]*QSOc[band]));
+
+           mStatus.Lines.Add(bands[band]+' CW:    '+Mlist[band]+'   '+IntToStr(MULc[band])+
+           '   QSOs:' + IntToStr(QSOc[band]));
           end;
       end;
-    mStatus.Lines.Add('-----------------------------------------------------------');
-    mStatus.Lines.Add(' Total score:' + IntToStr(MWC80+MWC40));
+    mStatus.Lines.Add('----------------------------------------------------------------------------------');
+    mStatus.Lines.Add(' Total    Pts: ' + IntToStr(QSOc[1]+QSOc[2])+'   Multipliers: '+IntToStr(MULc[1]+MULc[2])+
+                      '   Score: '+ IntToStr( (QSOc[1]+QSOc[2]) * (MULc[1]+MULc[2])) );
 end;
 
 procedure  TfrmContest.NACStatus;

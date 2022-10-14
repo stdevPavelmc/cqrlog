@@ -770,7 +770,7 @@ object frmContest: TfrmContest
     AnchorSideTop.Side = asrCenter
     Left = 346
     Height = 23
-    Hint = 'When cheked form is in Search and Pounce mode where operator'#10'needs to launch all memory contents using function keys (F1-F9)'#10'.'#10'When NOT checked message F2 is launched when cursor enters to'#10'one of RSTr, NRr or MSGr (F2 must be defined by operator)'#10'In case of duplicate call is found message F3 is launced instead'#10'of F2 when cursor leaves CALL column (F3 must be defined by operator)'#10'When QSO is saved  message F4 is lauched. (F4 must be defined by operator)'#10'.'#10'CW messages can be stopped with one 1xESC key as usual.'#10#10'Suggestions for CW message macros (NewQSO/File/CW messages):'#10'F1 = cq %mc test    (%mc is station call)'#10'F2 = %c %xrs          (%c call  %xrs sends CALL+ RST+STX+STXStr in short form.)'#10'F3 = %c QSO'#10'F4 = tu %mc test'#10'F4 ='#10'F6 - F9 for S&P operations' 
+    Hint = 'When cheked form is in Search and Pounce mode where operator'#10'needs to launch all memory contents using function keys (F1-F9)'#10'.'#10'When NOT checked message F2 is launched when cursor enters to'#10'one of RSTr, NRr or MSGr (F2 must be defined by operator)'#10'In case of duplicate call is found message F3 is launced instead'#10'of F2 when cursor leaves CALL column (F3 must be defined by operator)'#10'When QSO is saved  message F4 is lauched. (F4 must be defined by operator)'#10'.'#10'CW messages can be stopped with one 1xESC key as usual.'#10#10'Suggestions for CW message macros (NewQSO/File/CW messages):'#10'F1 = cq %mc test    (%mc is station call)'#10'F2 = %c %xrs          (%c call  %xrs sends CALL+ RST+STX+STXStr in short form.)'#10'F3 = %c QSO'#10'F4 = tu %mc test'#10'F4 ='#10'F6 - F9 for S&P operations'
     Top = 121
     Width = 52
     Caption = 'S&&P'
@@ -820,6 +820,7 @@ object frmContest: TfrmContest
       ReadOnly = True
       ShowHint = True
       TabOrder = 0
+      TabStop = False
     end
   end
   object chkMarkDupe: TCheckBox
@@ -856,6 +857,7 @@ object frmContest: TfrmContest
     ShowHint = True
     State = cbChecked
     TabOrder = 26
+    TabStop = False
   end
   object tmrESC2: TTimer
     Enabled = False
