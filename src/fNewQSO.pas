@@ -3094,7 +3094,11 @@ begin
                       5,6       : edtContestName.Text := ContestName[ContestNr]+'-QSO';
                  end;
                  case ContestNr of
-                      1,2,3,4   :  edtContestSerialReceived.Text := copy( edtContestSerialReceived.Text,1,6); //Max Db length=6
+                      1,2,3,4   : Begin
+                                       edtContestSerialReceived.Text := copy( edtContestSerialReceived.Text,1,6); //Max Db length=6
+                                       if (frmContest.Showing and (frmContest.cmbContestName.Text<>'')) then
+                                            edtContestName.Text :=frmContest.cmbContestName.Text;
+                                  end;
                  end;
            end;
            //----------this is not yet in wsjt-x 2.2.2 and JTDX 2.1.0rc151------------------
