@@ -55,12 +55,15 @@ type
   { TdmData }
 
   TdmData = class(TDataModule)
+    dsrFreqs: TDataSource;
     dsrSQLConsole: TDatasource;
     dsrLogList: TDatasource;
     dsrmQ: TDatasource;
     mQ: TSQLQuery;
     Q2: TSQLQuery;
     CQ: TSQLQuery;
+    qFreqs: TSQLQuery;
+    trFreqs: TSQLTransaction;
     trQ2: TSQLTransaction;
     qSQLConsole: TSQLQuery;
     scCommon: TSQLScript;
@@ -89,6 +92,7 @@ type
     qFreqMem: TSQLQuery;
     trCQ: TSQLTransaction;
     trW: TSQLTransaction;
+    trWorkedContests: TSQLTransaction;
     W1: TSQLQuery;
     trW1: TSQLTransaction;
     W: TSQLQuery;
