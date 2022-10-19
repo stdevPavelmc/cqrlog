@@ -245,7 +245,7 @@ begin
         mode := 'SSB'
       else
         Begin
-          if frmTRXControl.rbRadio1.Checked then n := '1' else  n := '2';
+          n:=IntToStr(frmTRXControl.cmbRig.ItemIndex);
           mode :=  cqrini.ReadString('Band'+n, 'Datamode', 'RTTY')
         end;
     end;

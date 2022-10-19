@@ -772,7 +772,7 @@ begin
 
   dmUtils.LoadBandsSettings;
 
-  frmTRXControl.InicializeRig;
+  frmTRXControl.InitializeRig;
   frmRotControl.InicializeRot;
 
   OpenFreqMemories('');
