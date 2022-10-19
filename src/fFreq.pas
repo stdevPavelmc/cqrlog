@@ -75,7 +75,7 @@ begin
     edtBegin.Text    := FloatToStr(dmData.qFreqs.Fields[2].AsFloat);
     edtEnd.Text      := FloatToStr(dmData.qFreqs.Fields[3].AsFloat);
     edtCW.Text       := FloatToStr(dmData.qFreqs.Fields[4].AsFloat);
-    edtRTTY.Text     := FloatToStr(dmData.qFreqs.Fields[5].AsFloat);
+    edtData.Text     := FloatToStr(dmData.qFreqs.Fields[5].AsFloat);
     edtSSB.Text      := FloatToStr(dmData.qFreqs.Fields[6].AsFloat);
     edtRXOffset.Text := FloatToStr(dmData.qFreqs.Fields[7].AsFloat);
     edtTXOffset.Text := FloatToStr(dmData.qFreqs.Fields[8].AsFloat);

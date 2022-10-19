@@ -1437,26 +1437,13 @@ begin
 
   usermode:=cqrini.ReadString('Band'+RigInUse, 'Datacmd', 'RTTY');
 
-  if mode = usermode then btnDATA.Font.Color := clRed
-     else
-       case mode of
-        'CW' : btnCW.Font.Color := clRed;
-        'SSB' : btnSSB.Font.Color := clRed;
-        'AM' : btnAM.Font.Color := clRed;
-        'FM' : btnFM.Font.Color := clRed;
-       end;
-
-begin
   btnCW.Font.Color    := COLOR_WINDOWTEXT;
   btnSSB.Font.Color   := COLOR_WINDOWTEXT;
-  btnRTTY.Font.Color  := COLOR_WINDOWTEXT;
+  btnDATA.Font.Color  := COLOR_WINDOWTEXT;
   btnAM.Font.Color    := COLOR_WINDOWTEXT;
   btnFM.Font.Color    := COLOR_WINDOWTEXT;
 
-  if frmTRXControl.rbRadio1.Checked then n := '1' else  n := '2';
-  usermode:=cqrini.ReadString('Band'+n, 'Datacmd', 'RTTY');
-
-  if mode = usermode then btnRTTY.Font.Color := clRed
+  if mode = usermode then btnDATA.Font.Color := clRed
      else
        case mode of
         'CW' : btnCW.Font.Color := clRed;
@@ -1489,7 +1476,6 @@ begin
 end;
 
 procedure TfrmTRXControl.Split(Up : Integer);
-
 begin
   //we do split with XIT, no need to play with 2 VFOs
   if Assigned(radio) then
@@ -1616,21 +1602,5 @@ begin
   if ((Upcase(mode)='RTTY') or (Upcase(mode)=Upcase(usermode))) then
      mode := usercmd;
 end;
-
-procedure TfrmTRXControl.CheckUserMode(var mode : String);
-var
-  usermode,
-  usercmd,
-  n       :String;
-
-begin
-  if frmTRXControl.rbRadio1.Checked then n := '1' else  n := '2';
-  usercmd:=cqrini.ReadString('Band'+n, 'Datacmd', 'RTTY');
-  usermode:=cqrini.ReadString('Band'+n, 'Datamode', 'RTTY');
-
-  if ((Upcase(mode)='RTTY') or (Upcase(mode)=Upcase(usermode))) then
-     mode := usercmd;
-
-  end;
 
 end.
