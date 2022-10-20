@@ -4015,7 +4015,6 @@ object frmPreferences: TfrmPreferences
           Top = 134
           Width = 69
           Anchors = [akTop, akLeft, akRight]
-          Increment = 50
           Width = 17
           Caption = 'Hz'
           ParentColor = False
