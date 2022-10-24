@@ -1,5 +1,5 @@
 
-##THIS COMPILED DIRECTORY HAS ONLY alpha binaries for x86-64 at the moment.
+ #### At the moment alpha test binaries are (103) while source of parent folder is (104) but it is not ready to release. There has been so many changes that I have to test it still, but need to make source backup pulls for every now and then to save work if local PC dies (the SSD is nearly 5 years old)
 
 
 Latest cqrlog alpha test binaries can be found from this folder.
