@@ -529,9 +529,7 @@ type
     edtUsr3RName: TEdit;
     edtUsrBtn: TEdit;
     edtClub: TEdit;
-    edtDataMode2: TEdit;
     edtDataMode1: TEdit;
-    edtCMD2: TEdit;
     edtCMD1: TEdit;
     edteQSLDnlAddr: TEdit;
     edteQSLStartAddr: TEdit;
@@ -842,9 +840,7 @@ type
     lblHamLibSpeed: TLabel;
     lblHamLibWPM: TLabel;
     Label202: TLabel;
-    lblRig2Cmd: TLabel;
     lblRig1DataMode: TLabel;
-    lblRig2DataMode: TLabel;
     lblRig1cmd: TLabel;
     lblADIFport: TLabel;
     lblADIFaddr: TLabel;

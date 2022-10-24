@@ -141,8 +141,6 @@ type
     MenuItem58: TMenuItem;
     MenuItem63: TMenuItem;
     MenuItem94 : TMenuItem;
-    MenuItem95: TMenuItem;
-    MenuItem96: TMenuItem;
     mnueQSLView: TMenuItem;
     mnuRemoteModeADIF: TMenuItem;
     mnuReminder: TMenuItem;
@@ -348,7 +346,6 @@ type
     pnlSbtn6: TPanel;
     pnlSbtn7: TPanel;
     popEditQSO: TPopupMenu;
-    popMode: TPopupMenu;
     sbNewQSO: TStatusBar;
     sbtnAttach: TSpeedButton;
     sbtneQSL: TSpeedButton;
@@ -573,7 +570,6 @@ type
     procedure mnuIOTAClick(Sender: TObject);
     procedure mnuQSOBeforeClick(Sender: TObject);
     procedure mnuQSOListClick(Sender: TObject);
-    procedure popModePopup(Sender: TObject);
     procedure popEditQSOPopup(Sender: TObject);
     procedure sbtnAttachClick(Sender: TObject);
     procedure sbtnLocatorMapClick(Sender: TObject);
@@ -5118,11 +5114,6 @@ end;
 procedure TfrmNewQSO.mnuHamQthClick(Sender : TObject);
 begin
   dmUtils.ShowHamQTHInBrowser(dmData.qQSOBefore.Fields[4].AsString)
-end;
-procedure TfrmNewQSO.popModePopup(Sender: TObject);
-begin
-    MenuItem96.RadioItem:= cqrini.ReadBool('Modes', 'Rig2Data', False);
-    MenuItem95.RadioItem:= not  MenuItem96.RadioItem;
 end;
 
 procedure TfrmNewQSO.MenuItem95Click(Sender: TObject);

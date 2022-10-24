@@ -1,7 +1,7 @@
 object frmPreferences: TfrmPreferences
-  Left = -194
+  Left = 0
   Height = 652
-  Top = 165
+  Top = 123
   Width = 1103
   HelpType = htKeyword
   HelpKeyword = 'help/h1.html'
@@ -23,9 +23,9 @@ object frmPreferences: TfrmPreferences
     Height = 703
     Top = 0
     Width = 846
-    ActivePage = tabProgram
+    ActivePage = tabModes
     Align = alClient
-    TabIndex = 0
+    TabIndex = 7
     TabOrder = 0
     OnChange = pgPreferencesChange
     object tabProgram: TTabSheet
@@ -2142,7 +2142,7 @@ object frmPreferences: TfrmPreferences
         BorderSpacing.Left = 6
         BorderSpacing.Top = 4
         Caption = ' rigctld '
-        ClientHeight = 86
+        ClientHeight = 70
         ClientWidth = 655
         TabOrder = 0
         object lblRigctdPath: TLabel
@@ -2400,7 +2400,7 @@ object frmPreferences: TfrmPreferences
           Width = 511
           BorderSpacing.Top = 3
           Caption = 'Radio one serial parameters'
-          ClientHeight = 146
+          ClientHeight = 130
           ClientWidth = 509
           TabOrder = 11
           object lblSerialRSpd: TLabel
@@ -3914,7 +3914,7 @@ object frmPreferences: TfrmPreferences
         BorderSpacing.Left = 12
         BorderSpacing.Top = 12
         Caption = ' Radio'
-        ClientHeight = 290
+        ClientHeight = 274
         ClientWidth = 522
         TabOrder = 1
         object lblMode: TLabel
@@ -4054,9 +4054,8 @@ object frmPreferences: TfrmPreferences
           Left = 177
           Height = 17
           Top = 134
-          Width = 69
-          Anchors = [akTop, akLeft, akRight]
           Width = 17
+          Anchors = [akTop, akLeft, akRight]
           Caption = 'Hz'
           ParentColor = False
         end
@@ -4150,7 +4149,7 @@ object frmPreferences: TfrmPreferences
           OnCloseUp = cmbRadioModesCloseUp
           ReadOnly = True
           Style = csDropDownList
-          TabOrder = 5
+          TabOrder = 7
         end
         object lblDataMode: TLabel
           AnchorSideLeft.Control = lblCWHz
@@ -4210,7 +4209,7 @@ object frmPreferences: TfrmPreferences
           OnChange = edtDataCmdChange
           ParentShowHint = False
           ShowHint = True
-          TabOrder = 6
+          TabOrder = 8
         end
         object lblNoRigForMode: TLabel
           AnchorSideLeft.Control = cmbRadioModes
@@ -4242,7 +4241,7 @@ object frmPreferences: TfrmPreferences
           Caption = 'Use also reverse (cat->log)'
           ParentShowHint = False
           ShowHint = True
-          TabOrder = 7
+          TabOrder = 5
         end
         object cmbDataMode: TComboBox
           AnchorSideLeft.Control = lblDataMode1
@@ -4255,48 +4254,6 @@ object frmPreferences: TfrmPreferences
           ItemHeight = 0
           ParentShowHint = False
           ShowHint = True
-          TabOrder = 8
-        end
-        object lblRig2Cmd: TLabel
-          AnchorSideLeft.Control = edtRTTY2
-          AnchorSideTop.Control = edtFM2
-          AnchorSideTop.Side = asrBottom
-          Left = 81
-          Height = 17
-          Top = 206
-          Width = 53
-          Caption = 'Rig cmd'
-          ParentColor = False
-        end
-        object lblRig2DataMode: TLabel
-          AnchorSideLeft.Control = edtCMD2
-          AnchorSideTop.Control = edtCMD2
-          AnchorSideTop.Side = asrBottom
-          Left = 81
-          Height = 17
-          Top = 257
-          Width = 72
-          Caption = 'Data mode'
-          ParentColor = False
-        end
-        object edtCMD2: TEdit
-          AnchorSideLeft.Control = lblRig2Cmd
-          AnchorSideTop.Control = lblRig2Cmd
-          AnchorSideTop.Side = asrBottom
-          Left = 81
-          Height = 34
-          Top = 223
-          Width = 90
-          TabOrder = 5
-        end
-        object edtDataMode2: TEdit
-          AnchorSideLeft.Control = lblRig2DataMode
-          AnchorSideTop.Control = lblRig2DataMode
-          AnchorSideTop.Side = asrBottom
-          Left = 81
-          Height = 34
-          Top = 274
-          Width = 90
           TabOrder = 6
         end
       end
@@ -4320,7 +4277,7 @@ object frmPreferences: TfrmPreferences
         Top = 48
         Width = 622
         Caption = 'Profiles'
-        ClientHeight = 263
+        ClientHeight = 247
         ClientWidth = 620
         TabOrder = 1
         object Bevel1: TBevel
@@ -9234,9 +9191,9 @@ object frmPreferences: TfrmPreferences
         AnchorSideLeft.Control = chkIgnoreLoTW
         AnchorSideTop.Control = chkIgnoreLoTW
         AnchorSideTop.Side = asrBottom
-        Left = 12
+        Left = 13
         Height = 23
-        Top = 584
+        Top = 599
         Width = 316
         Caption = 'Ignore changes caused by QSL sent/received'
         TabOrder = 5
@@ -9245,9 +9202,9 @@ object frmPreferences: TfrmPreferences
         AnchorSideLeft.Control = chkIgnoreQSL
         AnchorSideTop.Control = chkIgnoreQSL
         AnchorSideTop.Side = asrBottom
-        Left = 12
+        Left = 13
         Height = 23
-        Top = 607
+        Top = 622
         Width = 256
         Caption = 'Ignore changes caused by QSO edit'
         TabOrder = 6
