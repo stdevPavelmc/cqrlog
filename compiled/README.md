@@ -1,5 +1,10 @@
 
- #### At the moment alpha test binaries are (103) while source of parent folder is (104) but it is not ready to release. There has been so many changes that I have to test it still, but need to make source backup pulls for every now and then to save work if local PC dies (the SSD is nearly 5 years old)
+ #### For now on alpha test binaries 2.6.0.(104) are compiled using system that has GLIBC version 2.35
+ #### If yu cannot start Cqrlog after update check your GLIBC version with command console: ldd --version
+ #### Update GLIBC if it is below 2.3.5
+ 
+ #### At the moment there is no new official version source release. That is why alpha (104) is far ahead from official.
+ #### You see all changes from changelog @ first start of (104).
 
 
 Latest cqrlog alpha test binaries can be found from this folder.
