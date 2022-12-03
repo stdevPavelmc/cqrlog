@@ -58,7 +58,7 @@ object frmContest: TfrmContest
     OnKeyPress = edtSTXKeyPress
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 9
+    TabOrder = 15
   end
   object edtSTXStr: TEdit
     AnchorSideLeft.Control = edtSTX
@@ -101,6 +101,7 @@ object frmContest: TfrmContest
     Top = 124
     Width = 50
     MaxLength = 6
+    OnChange = edtSRXChange
     OnEnter = edtRSTrEnter
     OnExit = edtSRXExit
     OnKeyDown = edtCallKeyDown
@@ -216,7 +217,7 @@ object frmContest: TfrmContest
     OnClick = chkNRIncClick
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 10
+    TabOrder = 9
     TabStop = False
   end
   object lblNRs: TLabel
@@ -241,7 +242,7 @@ object frmContest: TfrmContest
     ParentShowHint = False
     PopupMenu = popSetMsg
     ShowHint = True
-    TabOrder = 15
+    TabOrder = 10
     TabStop = False
   end
   object chkSpace: TCheckBox
@@ -256,7 +257,7 @@ object frmContest: TfrmContest
     Caption = 'SPACE is TAB'
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 12
+    TabOrder = 18
     TabStop = False
   end
   object chkNoNr: TCheckBox
@@ -271,7 +272,7 @@ object frmContest: TfrmContest
     OnChange = chkNoNrChange
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 16
+    TabOrder = 12
     TabStop = False
   end
   object chkTrueRST: TCheckBox
@@ -622,7 +623,7 @@ object frmContest: TfrmContest
     OnChange = chkQspChange
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 17
+    TabOrder = 16
     TabStop = False
   end
   object chkTabAll: TCheckBox
@@ -640,7 +641,7 @@ object frmContest: TfrmContest
     OnChange = chkTabAllChange
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 18
+    TabOrder = 17
     TabStop = False
   end
   object sbContest: TStatusBar

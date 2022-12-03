@@ -105,6 +105,7 @@ type
     procedure edtCallExit(Sender: TObject);
     procedure edtCallKeyDown(Sender: TObject; var Key: word; Shift: TShiftState);
     procedure edtCallKeyPress(Sender: TObject; var Key: char);
+    procedure edtSRXChange(Sender: TObject);
     procedure edtSRXStrChange(Sender: TObject);
     procedure edtSRXExit(Sender: TObject);
     procedure edtSTXStrEnter(Sender: TObject);
@@ -239,6 +240,15 @@ begin
   begin
      SendFmemory(key);
      key := 0;
+    if (frmNewQSO.cmbMode.Text = 'SSB') then
+      frmNewQSO.RunVK(dmUtils.GetDescKeyFromCode(Key))
+    else
+    if Assigned(frmNewQSO.CWint) then
+      frmNewQSO.CWint.SendText(dmUtils.GetCWMessage(
+        dmUtils.GetDescKeyFromCode(Key),edtCall.Text,
+      edtRSTs.Text, edtSTX.Text,edtSTXStr.Text,edtSRX.Text,edtSRXStr.Text,
+      frmNewQSO.edtName.Text,frmNewQSO.lblGreeting.Caption,''));
+    key := 0;
   end;
 
   //CQ timer
@@ -642,6 +652,11 @@ begin
     key := #0;
 end;
 
+procedure TfrmContest.edtSRXChange(Sender: TObject);
+begin
+  frmNewQSO.edtContestSerialReceived.Text:=edtSRX.Text;
+end;
+
 procedure TfrmContest.edtSRXStrChange(Sender: TObject);
 begin
   if ((chkLoc.Checked) and (MsgIs=1 ))then
@@ -655,6 +670,7 @@ begin
    if ( Length(edtSRXStr.Text) > 6 )then
           edtSRXStr.Text:=copy(edtSRXStr.Text,1,6); //accept only 6chr locator input here
   end;
+  frmNewQSO.edtContestExchangeMessageReceived.Text:=edtSRXStr.Text;
 end;
 procedure TfrmContest.edtSRXExit(Sender: TObject);
 begin
@@ -1124,7 +1140,7 @@ procedure TfrmContest.SendFmemory(key:word);
 Begin
     if (frmNewQSO.cmbMode.Text = 'CW') and Assigned(frmNewQSO.CWint)  then
          frmNewQSO.CWint.SendText(dmUtils.GetCWMessage(dmUtils.GetDescKeyFromCode(Key),edtCall.Text,
-            edtRSTs.Text, edtSTX.Text,edtSTXStr.Text, frmNewQSO.edtName.Text,frmNewQSO.lblGreeting.Caption,''))
+            edtRSTs.Text, edtSTX.Text,edtSTXStr.Text, edtSRX.Text, edtSRXstr.Text, frmNewQSO.edtName.Text,frmNewQSO.lblGreeting.Caption,''))
      else
       if ((frmNewQSO.cmbMode.Text = 'SSB') or (frmNewQSO.cmbMode.Text = 'FM') or (frmNewQSO.cmbMode.Text = 'AM')) then
          frmNewQSO.RunVK(dmUtils.GetDescKeyFromCode(Key));
