@@ -1,3 +1,5 @@
+ ## At the moment a bug is reported in alpha 2.6.0(104). If TRXControl window is closed rig polling doeas not start when Cqrlog is started. So keep TRXconrol visible while I have fixed it
+
 
  #### For now on alpha test binaries 2.6.0.(104) are compiled using system that has GLIBC version 2.35
  #### If you cannot start Cqrlog after update check your GLIBC version with command console: ldd --version
