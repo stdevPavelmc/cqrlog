@@ -772,6 +772,8 @@ begin
 
   dmUtils.LoadBandsSettings;
 
+  frmTRXControl.cmbRig.ItemIndex:=cqrini.ReadInteger('TRX', 'RigInUse', 1);
+  frmTRXControl.cmbRigCloseUp(nil);
   frmTRXControl.InitializeRig;
   frmRotControl.InicializeRot;
 
