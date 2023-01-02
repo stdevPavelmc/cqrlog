@@ -9379,10 +9379,6 @@ object frmPreferences: TfrmPreferences
         Caption = 'Ignore changes caused by LoTW/eQSL upload or download'
         TabOrder = 4
       end
-    end
-        Caption = 'Ignore changes caused by LoTW/eQSL upload or download'
-        TabOrder = 4
-      end
       object chkIgnoreQSL: TCheckBox
         AnchorSideLeft.Control = chkIgnoreLoTW
         AnchorSideTop.Control = chkIgnoreLoTW
