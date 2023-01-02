@@ -512,6 +512,10 @@ type
     DateEditLoc: TDateEdit;
     dlgColor : TColorDialog;
     edtDataCmd: TEdit;
+    edtHrdUrl: TEdit;
+    edtClubLogUrl: TEdit;
+    edtClubLogUrlDel: TEdit;
+    edtHamQTHurl: TEdit;
     edtGCLineWidth: TEdit;
     edtGCStep: TEdit;
     edtGCPolarDivisor: TEdit;
@@ -1577,6 +1581,7 @@ begin
   cqrini.WriteString('OnlineLog','HaUserName',edtHaUserName.Text);
   cqrini.WriteString('OnlineLog','HaPasswd',edtHaPasswd.Text);
   cqrini.WriteInteger('OnlineLog','HaColor',cmbHaColor.Selected);
+  cqrini.WriteString('OnlineLog','HaUrl',edtHamQthUrl.Text);
 
   cqrini.WriteBool('OnlineLog','ClUP',chkClUpEnabled.Checked);
   cqrini.WriteBool('OnlineLog','ClUpOnline',chkClUpOnline.Checked);
@@ -1584,6 +1589,8 @@ begin
   cqrini.WriteString('OnlineLog','ClPasswd',edtClPasswd.Text);
   cqrini.WriteString('OnlineLog','ClEmail',edtClEmail.Text);
   cqrini.WriteInteger('OnlineLog','ClColor',cmbClColor.Selected);
+  cqrini.WriteString('OnlineLog','ClUrl',edtClubLogUrl.Text);
+  cqrini.WriteString('OnlineLog','ClUrlDel',edtClubLogUrlDel.Text);
 
   cqrini.WriteBool('OnlineLog','HrUP',chkHrUpEnabled.Checked);
   cqrini.WriteBool('OnlineLog','HrUpOnline',chkHrUpOnline.Checked);
@@ -1594,6 +1601,7 @@ begin
   cqrini.WriteBool('OnlineLog','IgnoreLoTWeQSL',chkIgnoreLoTW.Checked);
   cqrini.WriteBool('OnlineLog','IgnoreQSL',chkIgnoreQSL.Checked);
   cqrini.WriteBool('OnlineLog','IgnoreEdit',chkIgnoreEdit.Checked);
+  cqrini.WriteString('OnlineLog','HrUrl',edtHrdUrl.Text);
 
   cqrini.WriteString('prop','Url',edtCondxImageUrl.Text);
   cqrini.WriteBool('prop','AsImage',rbCondxAsImage.Checked);
@@ -3211,6 +3219,7 @@ begin
   chkIgnoreLoTW.Checked  := cqrini.ReadBool('OnlineLog','IgnoreLoTWeQSL',False);
   chkIgnoreQSL.Checked   := cqrini.ReadBool('OnlineLog','IgnoreQSL',False);
   chkIgnoreEdit.Checked  := cqrini.ReadBool('OnlineLog','IgnoreEdit',False);
+  edtHrdUrl.Text         := cqrini.ReadString('OnlineLog','HrUrl','http://robot.hrdlog.net/NewEntry.aspx');
   chkHrUpEnabledChange(nil);
 
   edtCondxImageUrl.Text      := cqrini.ReadString('prop','Url','http://www.hamqsl.com/solarbrief.php');
