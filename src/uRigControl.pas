@@ -47,6 +47,8 @@ type TRigControl = class
     fGetVfo      : boolean;
 
     AllowCommand      : integer; //things to do before start polling
+    ErrorRigctldConnect : Boolean;
+    ConnectionDone      : Boolean;
 
     function  RigConnected   : Boolean;
     function  StartRigctld   : Boolean;
@@ -55,6 +57,7 @@ type TRigControl = class
 
     procedure OnReceivedRigctldConnect(aSocket: TLSocket);
     procedure OnConnectRigctldConnect(aSocket: TLSocket);
+    procedure OnErrorRigctldConnect(const msg: string; aSocket: TLSocket);
     procedure OnRigPollTimer(Sender: TObject);
 
 public
@@ -153,9 +156,10 @@ begin
   tmrRigPoll.Enabled := False;
   VfoStr       := ''; //defaults to non-"--vfo" (legacy) mode
   if DebugMode then Writeln('All objects created');
-  tmrRigPoll.OnTimer     := @OnRigPollTimer;
+  tmrRigPoll.OnTimer       := @OnRigPollTimer;
   RigctldConnect.OnReceive := @OnReceivedRigctldConnect;
   RigctldConnect.OnConnect := @OnConnectRigctldConnect;
+  RigctldConnect.OnError   := @OnErrorRigctldConnect;
 end;
 
 function TRigControl.StartRigctld : Boolean;
@@ -204,6 +208,8 @@ end;
 function TRigControl.RigConnected  : Boolean;
 const
   ERR_MSG = 'Could not connect to rigctld';
+var
+  RetryCount : integer;
 
 begin
   if fDebugMode then
@@ -250,23 +256,42 @@ begin
 
   RigctldConnect.Host := fRigCtldHost;
   RigctldConnect.Port := fRigCtldPort;
+  RetryCount          := 1;
+  ErrorRigctldConnect := False;
+  ConnectionDone      := False;
 
-  if RigctldConnect.Connect(fRigCtldHost,fRigCtldPort) then //this does not work as connection indicator, is always true!!
-                                                            //even when it can not connect rigctld.
-  begin
-    if fDebugMode then Writeln('Waiting for rigctld @ ',fRigCtldHost,':',fRigCtldPort);
-    result := True;
-    AllowCommand:=-1;
-    ParmHasVfo:=0;   //default: "--vfo" is not used as start parameter
-    tmrRigPoll.Interval := fRigPoll;
-    tmrRigPoll.Enabled  := True;
-    RigCommand.Clear;
+  if RigctldConnect.Connect(fRigCtldHost,fRigCtldPort) then//this does not work as connection indicator, is always true!!
+   Begin
+     repeat
+     begin
+        //if fDebugMode then
+                      Writeln('Waiting for rigctld ',RetryCount,' @ ',fRigCtldHost,':',fRigCtldPort);
+        if  ErrorRigctldConnect then
+            Begin
+              ErrorRigctldConnect := False;
+              RigctldConnect.Connect(fRigCtldHost,fRigCtldPort);
+            end;
+        inc(RetryCount);
+        sleep(1000);
+        Application.ProcessMessages;
+      end;
+     until (ConnectionDone or (Retrycount > 10)) ;
+
+   if ConnectionDone then
+    result := True
+   else
+    begin
+     if fDebugMode then Writeln('RETRY ERROR: *NOT* connected to rigctld @ ',fRigCtldHost,':',fRigCtldPort);
+     fLastError := ERR_MSG;
+     Result     := False
+    end
   end
-  else begin
-    if fDebugMode then Writeln('ERROR: *NOT* connected to rigctld @ ',fRigCtldHost,':',fRigCtldPort);
+  else
+   begin
+    if fDebugMode then Writeln('SETTINGS ERROR: *NOT* connected to rigctld @ ',fRigCtldHost,':',fRigCtldPort);
     fLastError := ERR_MSG;
     Result     := False
-  end
+   end
 end;
 
 procedure TRigControl.SetCurrVFO(vfo : TVFO);
@@ -550,19 +575,19 @@ begin
       if pos('CAN SET POWER STAT:',a[i])>0 then
        Begin
          fPower:= b[4]='Y';
-         if DebugMode then Writeln('Switch power: ',fPower);
+         if DebugMode then Writeln('Cqrlog can switch power: ',fPower);
        end;
 
       if pos('CAN GET VFO:',a[i])>0 then
        Begin
          fGetVfo:= b[3]='Y';
-         if DebugMode then Writeln(LineEnding+'Get VFO: ',fGetVfo);
+         if DebugMode then Writeln(LineEnding+'Cqrlog can get VFO: ',fGetVfo);
        end;
 
       if pos('CAN SEND MORSE:',a[i])>0 then
        Begin
          fMorse:= b[3]='Y';
-         if DebugMode then Writeln('Send Morse: ',fMorse,LineEnding);
+         if DebugMode then Writeln('Cqrlog can send Morse: ',fMorse,LineEnding);
          if fPower then
             AllowCommand:=8 //issue power on
           else
@@ -574,7 +599,7 @@ begin
         if pos('1',a[i])>0 then //line may have 'STAT: 1' or 'STAT: CURRVFO 1'
           Begin
             if DebugMode then Writeln('Power on, start polling');
-            AllowCommand:=93; //check pending commands via delay
+            AllowCommand:=92; //check pending commands via delay
           end
          else
           Begin
@@ -661,8 +686,15 @@ begin
 end;
 procedure TRigControl.OnConnectRigctldConnect(aSocket: TLSocket);
 Begin
-  if DebugMode then
+    if DebugMode then
                    Writeln('Connected to rigctld');
+    ConnectionDone:=true;
+    AllowCommand:=-1;
+    ParmHasVfo:=0;   //default: "--vfo" is not used as start parameter
+    tmrRigPoll.Interval := fRigPoll;
+    tmrRigPoll.Enabled  := True;
+    RigCommand.Clear;
+
     if RigChkVfo then
       Begin
         AllowCommand:=10;  //start with chkvfo
@@ -673,7 +705,14 @@ Begin
         AllowCommand:=9;  //otherwise start with dump caps
         ParmVfoChkd:=false;
       end;
-    RigCommand.Clear;
+
+end;
+procedure TRigControl.OnErrorRigctldConnect(const msg: string; aSocket: TLSocket);
+
+begin
+  ErrorRigctldConnect:= True;
+  //if DebugMode then
+                   writeln(msg);
 end;
 
 procedure TRigControl.Restart;
