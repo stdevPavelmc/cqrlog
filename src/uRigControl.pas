@@ -44,6 +44,7 @@ type TRigControl = class
     fTXOffset    : Double;
     fMorse       : boolean;
     fPower       : boolean;
+    fPowerON	 : boolean;
     fGetVfo      : boolean;
 
     AllowCommand      : integer; //things to do before start polling
@@ -97,6 +98,8 @@ public
     //can rig send CW
     property Power      : Boolean read fPower;
     //can rig switch power
+    property PowerON      : Boolean write fPowerON;
+    //may rig switch power on at start
     property CanGetVfo  : Boolean read fGetVfo;
     //can rig show vfo (many Icoms can not)
     property LastError   : String  read fLastError;
@@ -588,7 +591,7 @@ begin
        Begin
          fMorse:= b[3]='Y';
          if DebugMode then Writeln('Cqrlog can send Morse: ',fMorse,LineEnding);
-         if fPower then
+         if fPower and fPowerON then
             AllowCommand:=8 //issue power on
           else
             AllowCommand:=1 //check pending commands
