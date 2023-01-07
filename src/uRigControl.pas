@@ -50,7 +50,6 @@ type TRigControl = class
     AllowCommand        : integer; //for command priority
     ErrorRigctldConnect : Boolean;
     ConnectionDone      : Boolean;
-    WaitForThis         : String;  //sent command that we wait to be responsed by rigctld
     PowerOffIssued      : Boolean;
 
     function  RigConnected   : Boolean;
@@ -505,6 +504,7 @@ var
   a,b : TExplodeArray;
   i   : Integer;
   f   : Double;
+  Hit : boolean;
 begin
   msg:='';
   while ( aSocket.GetMessage(msg) > 0 ) do
@@ -517,6 +517,7 @@ begin
     a := Explode(LineEnding,msg);
     for i:=0 to Length(a)-1 do     //this handles received message line by line
     begin
+      Hit:=false;
       //Writeln('a[i]:',a[i]);
       if a[i]='' then Continue;
 
@@ -532,6 +533,7 @@ begin
           else
            fFReq := 0;
           AllowCommand:=1; //check pending commands
+          Hit:=true;
        end;
 
       if (b[0]='MODE:') then
@@ -543,6 +545,7 @@ begin
          if fMode.mode = 'CWR' then
            fMode.mode := 'CW';
          AllowCommand:=1;
+         Hit:=true;
         end;
 
       //FT-920 returned VFO as MEM
@@ -565,6 +568,7 @@ begin
             fVFO := VFOA;
          end;
          AllowCommand:=1;
+         Hit:=true;
         end;
 
 
@@ -576,6 +580,7 @@ begin
          if DebugMode then Writeln('"--vfo" checked:',ParmHasVfo);
          if ParmHasVfo > 0 then VfoStr:=' currVFO';  //note set leading one space to string!
          AllowCommand:=9; //next dump caps
+         Hit:=true;
         end;
 
        if b[0]='CHKVFO' then //Hamlib 3.1
@@ -586,6 +591,7 @@ begin
          if DebugMode then Writeln('"--vfo" checked:',ParmHasVfo);
          if ParmHasVfo > 0 then VfoStr:=' currVFO';  //note set leading one space to string!
          AllowCommand:=9; //next dump caps
+         Hit:=true;
         end;
 
       if pos('CAN SET POWER STAT:',a[i])>0 then
@@ -600,17 +606,19 @@ begin
          if DebugMode then Writeln(LineEnding+'Cqrlog can get VFO: ',fGetVfo);
        end;
 
-      if pos('CAN SEND MORSE:',a[i])>0 then
+      if pos('CAN SEND MORSE:',a[i])>0 then //this is the last to check from dump_caps
        Begin
          fMorse:= b[3]='Y';
          if DebugMode then Writeln('Cqrlog can send Morse: ',fMorse,LineEnding);
           RigCommand.Clear;
-          AllowCommand:=1 //check pending commands (should not be any)
+          AllowCommand:=1; //check pending commands (should not be any)
+          Hit:=true;
        end;
 
        if pos('SET_POWERSTAT:',a[i])>0 then
        Begin
-        if pos('1',a[i])>0 then //line may have 'STAT: 1' or 'STAT: CURRVFO 1'
+         Hit:=true;
+         if pos('1',a[i])>0 then //line may have 'STAT: 1' or 'STAT: CURRVFO 1'
           Begin
             if DebugMode then Writeln('Power on, start polling');
             AllowCommand:=92; //check pending commands via delay Assume rig needs time to start
@@ -618,16 +626,17 @@ begin
           end
          else
           Begin
-            if DebugMode then Writeln('Power off, stop polling');
+            if DebugMode then Writeln('Power off, stop polling (0)');
             AllowCommand:=-1;
           end;
        end;
 
-       if pos(WaitForThis,a[i])>0 then           //can continue to next SET_ command
-                                 AllowCommand:=1;
 
-       if ((b[0]='RPRT') and DebugMode ) then
+       if (b[0]='RPRT') then
        Begin
+         //if none of above hits what to expect we accept just report received to be the one
+         if not Hit then AllowCommand:=1;
+         if DebugMode then
          case b[1] of
                         '-1': Writeln('Invalid parameter');
                         '-2': Writeln('Invalid configuration (serial,..)');
@@ -657,7 +666,7 @@ end;
 procedure TRigControl.OnRigPollTimer(Sender: TObject);
 var
   cmd     : String;
-  i,b,e   : Integer;
+  i       : Integer;
 //-----------------------------------------------------------
 procedure DoRigPoll;
 begin
@@ -738,11 +747,6 @@ begin
                   RigCommand.Delete(RigCommand.Count-1);
                   if DebugMode then
                      write('Queue out:'+LineEnding,RigCommand.Text);
-                  b:= pos('\',cmd)+1;
-                  e:= pos(' ',cmd);
-                  WaitForThis:=UpperCase(copy(cmd,b,e-b));
-                  if DebugMode then
-                          Writeln(LineEnding+'Waiting for:',WaitForThis);
                   RigctldConnect.SendMessage(cmd);
                   AllowCommand:=-1; //wait answer
                end
