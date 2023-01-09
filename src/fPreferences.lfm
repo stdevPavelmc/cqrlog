@@ -9204,7 +9204,7 @@ object frmPreferences: TfrmPreferences
           Top = 23
           Width = 600
           TabOrder = 6
-          Text = 'https://secure.clublog.org/realtime.php'
+          Text = 'https://clublog.org/realtime.php'
         end
         object edtClubLogUrlDel: TEdit
           AnchorSideLeft.Control = chkClUpEnabled
@@ -9215,7 +9215,7 @@ object frmPreferences: TfrmPreferences
           Top = 57
           Width = 600
           TabOrder = 7
-          Text = 'https://secure.clublog.org/delete.php'
+          Text = 'https://clublog.org/delete.php'
         end
       end
       object GroupBox46: TGroupBox

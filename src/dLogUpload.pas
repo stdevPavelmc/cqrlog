@@ -602,9 +602,9 @@ begin
     upHamQTH  : Result := cqrini.ReadString('OnlineLog','HaUrl','http://www.hamqth.com/qso_realtime.php');
     upClubLog : begin
                   if (cmd='DELETE') then
-                    Result := cqrini.ReadString('OnlineLog','ClUrlDel','https://secure.clublog.org/delete.php')
+                    Result := cqrini.ReadString('OnlineLog','ClUrlDel','https://clublog.org/delete.php')
                   else
-                    Result := cqrini.ReadString('OnlineLog','ClUrl','https://secure.clublog.org/realtime.php');
+                    Result := cqrini.ReadString('OnlineLog','ClUrl','https://clublog.org/realtime.php');
                 end;
     upHrdLog  : Result := cqrini.ReadString('OnlineLog','HrUrl','http://robot.hrdlog.net/NewEntry.aspx');
   end //case
