@@ -1,22 +1,23 @@
 
- #### For now on alpha test binaries 2.6.0.(105) are compiled using system that has GLIBC version 2.35
+ #### For now on alpha test binaries 2.6.0.(107) are compiled using system that has GLIBC version 2.35
  #### If you cannot start Cqrlog after update check your GLIBC version with command console: ldd --version
  #### Update GLIBC if it is below 2.3.5
  
- #### At the moment there is no new official version source release. That is why alpha (105) is far ahead from official.
- #### You see all changes from changelog @ first start of (104). It can be opened also later from "Help".
+ #### At the moment there is no new official version source release. That is why alpha (107) is VERY far ahead from official.
+ #### You see all changes from changelog @ first start of (107). It can be opened also later from "Help".
 
 
 Latest cqrlog alpha test binaries can be found from this folder.
 This folder holds ready compiled binary files of source "loc_testing" that is the version of cqrlog that I am using myself daily.
 They contain all accepted pull requests from official source (that may not be released offically yet) plus some test code that is not pull requested yet (and may not be pull requested ever)
 
-## ABOUT THIS ALPHA TEST VERSION:
- These alpha test binaries also include latest official source updates up to commit:
+## ABOUT THESE BINARIES:
+ These binaries (cqr0,cqr1,cqr4 zips) include latest official source having updates up to commit:
 
     Commits on Jul 24, 2022 Merge pull request #529 from OH1KH/direct_load_filter 
 
-
+ Binaries (cqr2,cqr3,cqr5 zips) include latest official source WITH alpha additions and Pull Requests that have not yet applied.
+ 
  To see what are the latest official updates look at <https://github.com/ok2cqr/cqrlog/commits/master>
  To see updates in this alpha version look at <https://github.com/OH1KH/cqrlog/commits/loc_testing>
 
@@ -28,10 +29,10 @@ BINARIES:
 ---------
   - **cqr0.zip  holds binary for  64bit systems compiled for GTK2 widgets (official release )**
   - **cqr1.zip  holds binary for  32bit systems compiled for GTK2 widgets (official release )**
-  - **cqr2.zip  holds binary for  64bit systems compiled for GTK2 widgets (official release of cqrlog with additions)**
-  - **cqr3.zip  holds binary for  32bit systems compiled for GTK2 widgets (official release of cqrlog with additions)**
+  - **cqr2.zip  holds binary for  64bit systems compiled for GTK2 widgets (official release of cqrlog with alpha additions)**
+  - **cqr3.zip  holds binary for  32bit systems compiled for GTK2 widgets (official release of cqrlog with alpha additions)**
   - **cqr4.zip  holds binary for  64bit Arm (Rpi4) compiled for GTK2 widgets (official release )**
-  - **cqr5.zip  holds binary for  64bit systems compiled for QT5 widgets (official release of cqrlog with additions,you may need to install libqt5pas to run this)**
+  - **cqr5.zip  holds binary for  64bit systems compiled for QT5 widgets (official release of cqrlog with alpha additions,you may need to install libqt5pas to run this)**
   - **help.tgz  holds latest help files**
   - **newupdate.zip holds the newupdate.sh script for easy update**
 
