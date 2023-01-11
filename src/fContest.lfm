@@ -826,6 +826,7 @@ object frmContest: TfrmContest
       BorderSpacing.Bottom = 3
       ParentShowHint = False
       ReadOnly = True
+      ScrollBars = ssAutoBoth
       ShowHint = True
       TabOrder = 0
       TabStop = False

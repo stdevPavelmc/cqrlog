@@ -1344,11 +1344,13 @@ procedure  TfrmContest.CommonStatus;
 var
   DXList,
   SRXSList,
-  MyCountList   : string;
+  MyCountList     : string;
+  ContestBandPtr  : array[0..10] of byte = (2,3,5,7,9,11,12,13,14,16,18);  // 160M to 23cm  Points to dUtils.cBands
+  b               : byte;
+  MsgMpSum        : integer;
 
-Begin
+ Begin
     DXList:='';
-    SRXSList:='';
     MyCountList:='';
 
     mStatus.Clear;
@@ -1475,41 +1477,56 @@ Begin
     //--------------------------------------------------------------
     if popCommonStatus.Items[7].Checked then
      begin
-      dmData.CQ.Close;
-        if dmData.trCQ.Active then dmData.trCQ.Rollback;
-        dmData.CQ.SQL.Text :=
-           'SELECT COUNT(DISTINCT(UPPER(srx_string))) AS Msgs FROM cqrlog_main WHERE contestname='+
-             QuotedStr(cmbContestName.Text)+ ' AND srx_string<>""';
+      SRXSList:='';
+      MsgMpSum:=0;
+      for b:=0 to 10 do
+        begin
+            dmData.CQ.Close;
+              if dmData.trCQ.Active then dmData.trCQ.Rollback;
+              dmData.CQ.SQL.Text :=
+                 'SELECT COUNT(DISTINCT(UPPER(srx_string))) AS Msgs FROM cqrlog_main WHERE contestname='+
+                   QuotedStr(cmbContestName.Text)+ ' AND band='+QuotedStr(dUtils.cBands[ContestBandPtr[b]])+
+                   ' AND srx_string<>""';
 
-        if dmData.DebugLevel >=1 then
-                                     Writeln(dmData.CQ.SQL.Text);
-      dmData.CQ.Open();
-      mStatus.Lines.Add('Msg multipliers: '+dmData.CQ.FieldByName('Msgs').AsString);
-     end;
-
+              if dmData.DebugLevel >=1 then
+                                           Writeln(dmData.CQ.SQL.Text);
+            dmData.CQ.Open();
+            MsgMpSum:= MsgMpSum+dmData.CQ.FieldByName('Msgs').AsInteger;
+            if dmData.CQ.FieldByName('Msgs').AsInteger > 0 then
+               SRXSList:=SRXSList+dUtils.cBands[ContestBandPtr[b]]+'='+dmData.CQ.FieldByName('Msgs').AsString+', ';
+           end;
+         mStatus.Lines.Add('Msg multipliers total='+IntToStr(MsgMpSum));
+         mStatus.Lines.Add('-'+copy(SRXSList,1,length(SRXSList)-2));
+        end;
 
     //list of different srx_strings (msg multipliers)
     //--------------------------------------------------------------
     if popCommonStatus.Items[8].Checked then
     begin
-      dmData.CQ.Close;
-      if dmData.trCQ.Active then dmData.trCQ.Rollback;
-      dmData.CQ.SQL.Text :=
-          'SELECT DISTINCT(UPPER(srx_string)) AS srx_msg FROM cqrlog_main WHERE contestname='+
-           QuotedStr(cmbContestName.Text)+' ORDER BY srx_msg ASC';
-      if dmData.DebugLevel >=1 then
-                                       Writeln(dmData.CQ.SQL.Text);
-       dmData.CQ.Open();
-       dmData.CQ.First;
-       while not dmData.CQ.EOF do
+      mStatus.Lines.Add('Msg multipliers list:');
+      for b:=0 to 10 do
         begin
-         if dmData.CQ.FieldByName('srx_msg').AsString<>'' then
-           SRXSList:= SRXSList+dmData.CQ.FieldByName('srx_msg').AsString+',';
-          dmData.CQ.Next;
+          dmData.CQ.Close;
+          if dmData.trCQ.Active then dmData.trCQ.Rollback;
+          dmData.CQ.SQL.Text :=
+              'SELECT DISTINCT(UPPER(srx_string)) AS srx_msg FROM cqrlog_main WHERE contestname='+
+               QuotedStr(cmbContestName.Text)+ ' AND band='+QuotedStr(dUtils.cBands[ContestBandPtr[b]])
+               +' ORDER BY srx_msg ASC';
+          if dmData.DebugLevel >=1 then
+                                           Writeln(dmData.CQ.SQL.Text);
+           dmData.CQ.Open();
+           dmData.CQ.First;
+           SRXSList:='';
+           while not dmData.CQ.EOF do
+            begin
+             if dmData.CQ.FieldByName('srx_msg').AsString<>'' then
+               SRXSList:= SRXSList+dmData.CQ.FieldByName('srx_msg').AsString+',';
+              dmData.CQ.Next;
+            end;
+            if SRXSList<>'' then
+              mStatus.Lines.Add('-'+dUtils.cBands[ContestBandPtr[b]]+'='+copy(SRXSList,1,length(SRXSList)-1));
         end;
-       mStatus.Lines.Add('Msg multipliers list: '+SRXSList);
      end;
-
     dmData.CQ.Close;
 
 end;
