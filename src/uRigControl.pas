@@ -184,8 +184,11 @@ begin
   paramList := TStringList.Create;
   paramList.Delimiter := ' ';
   if pos('AUTO_POWER',UpperCase(RigCtldArgs))=0 then
+   if (RigId>10) then  //only true rigs can do auto_power_on
+    begin
     if fPowerON then RigCtldArgs:= RigCtldArgs+' -C auto_power_on=1'
      else RigCtldArgs:= RigCtldArgs+' -C auto_power_on=0';
+    end;
   paramList.DelimitedText := RigCtldArgs;
   rigProcess.Parameters.Clear;
   while index < paramList.Count do
@@ -532,8 +535,8 @@ begin
            end
           else
            fFReq := 0;
-          AllowCommand:=1; //check pending commands
           Hit:=true;
+          AllowCommand:=1; //check pending commands
        end;
 
       if (b[0]='MODE:') then
@@ -544,8 +547,8 @@ begin
            fMode.mode := 'SSB';
          if fMode.mode = 'CWR' then
            fMode.mode := 'CW';
-         AllowCommand:=1;
          Hit:=true;
+         AllowCommand:=1;
         end;
 
       //FT-920 returned VFO as MEM
@@ -567,8 +570,8 @@ begin
           else
             fVFO := VFOA;
          end;
-         AllowCommand:=1;
          Hit:=true;
+         AllowCommand:=1;
         end;
 
 
@@ -579,8 +582,8 @@ begin
                         ParmHasVfo := 1;
          if DebugMode then Writeln('"--vfo" checked:',ParmHasVfo);
          if ParmHasVfo > 0 then VfoStr:=' currVFO';  //note set leading one space to string!
-         AllowCommand:=9; //next dump caps
          Hit:=true;
+         AllowCommand:=9; //next dump caps
         end;
 
        if b[0]='CHKVFO' then //Hamlib 3.1
@@ -590,10 +593,11 @@ begin
                         ParmHasVfo := 2;
          if DebugMode then Writeln('"--vfo" checked:',ParmHasVfo);
          if ParmHasVfo > 0 then VfoStr:=' currVFO';  //note set leading one space to string!
-         AllowCommand:=9; //next dump caps
          Hit:=true;
+         AllowCommand:=9; //next dump caps
         end;
 
+      //these come from\dump_caps
       if pos('CAN SET POWER STAT:',a[i])>0 then
        Begin
          fPower:= b[4]='Y';
@@ -611,9 +615,17 @@ begin
          fMorse:= b[3]='Y';
          if DebugMode then Writeln('Cqrlog can send Morse: ',fMorse,LineEnding);
           RigCommand.Clear;
-          AllowCommand:=1; //check pending commands (should not be any)
           Hit:=true;
+          if ((fRigId<10) and fPowerON) then
+             begin
+                            AllowCommand:=8; // if rigctld is remote it can not make auto_power_on
+                            writeln(msg);
+             end
+                          else
+                            AllowCommand:=1; //check pending commands (should not be any)
+         Break;  //break searching from \dump_caps reply
        end;
+      //\dump_caps end
 
        if pos('SET_POWERSTAT:',a[i])>0 then
        Begin
