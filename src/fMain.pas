@@ -1293,6 +1293,7 @@ var
    Begin
     dmLogUpload.DisableOnlineLogSupport;
     dmLogUpload.EnableOnlineLogSupport;
+    dmLogUpload.MarkAsUploadedToAllOnlineLogs;
     Application.MessageBox('Triggers removed','Info ...',mb_ok + mb_IconInformation);
    end;
 
