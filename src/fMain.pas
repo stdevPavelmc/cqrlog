@@ -1293,7 +1293,6 @@ var
    Begin
     dmLogUpload.DisableOnlineLogSupport;
     dmLogUpload.EnableOnlineLogSupport;
-    dmLogUpload.MarkAsUploadedToAllOnlineLogs;
     Application.MessageBox('Triggers removed','Info ...',mb_ok + mb_IconInformation);
    end;
 
@@ -1314,12 +1313,16 @@ begin
          Begin
            //Warn: none of online uploads
            s:= 'You do not have any immediately uploads active'+LineEnding+LineEnding+
-               'Are you sure you want to remove ALL upload triggers?';
+               'Removing ALL upload triggers MAY GIVE UNEXPECTED RESULTS'+LineEnding+
+               'if you use MORE THAN ONE ONLINE LOG'+LineEnding+LineEnding+
+               'Are you SURE you want to remove ALL upload triggers?';
            if Application.MessageBox(s,'Question ...', mb_YesNo + mb_IconQuestion) = idYes then
             RemoveTriggers;
            exit;
          end;
-        s:= 'Are you sure you want to remove ALL upload triggers?';
+        s:= 'Removing ALL upload triggers MAY GIVE UNEXPECTED RESULTS'+LineEnding+
+            'if you use MORE THAN ONE ONLINE LOG'+LineEnding+LineEnding+
+            'Are you sure you want to remove ALL upload triggers?';
         if Application.MessageBox(s,'Question ...', mb_YesNo + mb_IconQuestion) = idYes then
          RemoveTriggers;
         exit;

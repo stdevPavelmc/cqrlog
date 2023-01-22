@@ -1045,6 +1045,9 @@ type
     procedure chkClUpEnabledChange(Sender: TObject);
     procedure chkHaUpEnabledChange(Sender: TObject);
     procedure chkHrUpEnabledChange(Sender: TObject);
+    procedure chkIgnoreEditChange(Sender: TObject);
+    procedure chkIgnoreLoTWChange(Sender: TObject);
+    procedure chkIgnoreQSLChange(Sender: TObject);
     procedure chkPotSpeedChange(Sender: TObject);
     procedure chkProfileLocatorClick(Sender: TObject);
     procedure chkProfileQTHClick(Sender: TObject);
@@ -1138,6 +1141,7 @@ type
     procedure LoadMembersFromCombo(ClubComboText, ClubNumber : String);
     function SeekExecFile(MyFile,MyExeFor:String): String;
     function DataModeInput(s:string):string;
+    function WarnCheck(chk:boolean):boolean;
   public
     { public declarations }
     ActPageIdx : integer;
@@ -1164,6 +1168,22 @@ uses dUtils, dData, fMain, fFreq, fQTHProfiles, fSerialPort, fClubSettings, fLoa
   fGrayline, fNewQSO, fBandMap, fBandMapWatch, fDefaultFreq, fKeyTexts, fTRXControl,fRotControl,
   fSplitSettings, uMyIni, fNewQSODefValues, fDXCluster, fCallAlert, fConfigStorage, fPropagation,
   fRadioMemories, dMembership, dLogUpload;
+
+
+function TfrmPreferences.WarnCheck(chk:boolean):boolean;
+var
+   s:PChar;
+Begin
+  Result:= chk;
+  if chk then
+     begin
+           s:= 'Using this option MAY GIVE UNEXPECTED RESULTS'+LineEnding+
+               'if you use MORE THAN ONE ONLINE LOG'+LineEnding+LineEnding+
+               'Are you SURE you want to check this?';
+           if Application.MessageBox(s,'Question ...', mb_YesNo + mb_IconQuestion) = idNo then
+                                                                                           Result:=False;
+     end;
+end;
 
 procedure TfrmPreferences.btnOKClick(Sender: TObject);
 var
@@ -2293,6 +2313,28 @@ begin
   edtHrCode.Enabled     := chkHrUpEnabled.Checked;
   chkHrUpOnline.Enabled := chkHrUpEnabled.Checked;
   cmbHrColor.Enabled    := chkHrUpEnabled.Checked
+end;
+
+procedure TfrmPreferences.chkIgnoreEditChange(Sender: TObject);
+begin
+  //Warn:
+   if not chkIgnoreEdit.Focused then exit; //otherwise triggers on settings load
+   chkIgnoreEdit.Checked:=WarnCheck(chkIgnoreEdit.Checked)
+end;
+
+procedure TfrmPreferences.chkIgnoreLoTWChange(Sender: TObject);
+
+begin
+   //Warn:
+   if not chkIgnoreLoTW.Focused then exit; //otherwise triggers on settings load
+   chkIgnoreLoTW.Checked:=WarnCheck(chkIgnoreLoTW.Checked)
+end;
+
+procedure TfrmPreferences.chkIgnoreQSLChange(Sender: TObject);
+begin
+  //Warn:
+   if not chkIgnoreQSL.Focused then exit;//otherwise triggers on settings load
+   chkIgnoreQSL.Checked:=WarnCheck(chkIgnoreQSL.Checked)
 end;
 
 procedure TfrmPreferences.chkPotSpeedChange(Sender: TObject);
