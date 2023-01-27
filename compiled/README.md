@@ -1,6 +1,6 @@
 
  #### For now on alpha test binaries beginning from 2.6.0.(107) are compiled using system that has GLIBC version 2.35
- #### If you cannot start Cqrlog after update check your GLIBC version with command console: ldd --version
+ #### If you can not start Cqrlog after update check your GLIBC version with command console: ldd --version
  #### Update GLIBC if it is below 2.3.5
  
  #### At the moment there is no new official version source release. That is why alpha (109) is VERY far ahead from official.
@@ -33,6 +33,7 @@ BINARIES:
   - **cqr3.zip  holds binary for  32bit systems compiled for GTK2 widgets (official release of cqrlog with alpha additions)**
   - **cqr4.zip  holds binary for  64bit Arm (Rpi4) compiled for GTK2 widgets (official release )**
   - **cqr5.zip  holds binary for  64bit systems compiled for QT5 widgets (official release of cqrlog with alpha additions,you may need to install libqt5pas to run this)**
+  - **cqr6.zip  holds binary for  64bit Arm (Rpi4) compiled for GTK2 widgets (official release of cqrlog with alpha additions)**
   - **help.tgz  holds latest help files**
   - **newupdate.zip holds the newupdate.sh script for easy update**
 
