@@ -16,7 +16,7 @@ They contain all accepted pull requests from official source (that may not be re
 
     Commits on Jul 24, 2022 Merge pull request #529 from OH1KH/direct_load_filter 
 
- Binaries (cqr2,cqr3,cqr5 zips) include latest official source WITH alpha additions and Pull Requests that have not yet applied.
+ Binaries (cqr2,cqr3,cqr5,cqr6 zips) include latest official source WITH alpha additions and Pull Requests that have not yet applied.
  
  To see what are the latest official updates look at <https://github.com/ok2cqr/cqrlog/commits/master>
  To see updates in this alpha version look at <https://github.com/OH1KH/cqrlog/commits/loc_testing>
