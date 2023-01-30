@@ -619,7 +619,7 @@ begin
           if ((fRigId<10) and fPowerON) then
              begin
                             AllowCommand:=8; // if rigctld is remote it can not make auto_power_on
-                            writeln(msg);
+                            if DebugMode then writeln(msg);
              end
                           else
                             AllowCommand:=1; //check pending commands (should not be any)
