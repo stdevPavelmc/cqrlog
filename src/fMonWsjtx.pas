@@ -1539,10 +1539,9 @@ procedure TfrmMonWsjtx.PrintLoc(PLoc, tTa, mT: string;PCB:Boolean=false);
 var L1,L2:String;     //locator main
        p :integer = 0;    //locator sub
 Mycolor  :Tcolor = clBlack;     //color main. color sub sub is same, or else wkdnever
+MyMcolor :Tcolor = clBlack;     //color main. color sub sub is same, or else wkdnever
 
 Begin
-  L1:= UpperCase(copy(PLoc, 1, 2));
-  L2:= copy(PLoc, 3, 2);
   if (PLoc = '----') then
    begin
      p:=1;
@@ -1556,6 +1555,8 @@ Begin
      end
     else
      Begin
+        L1:= UpperCase(copy(PLoc, 1, 2));
+        L2:= copy(PLoc, 3, 2);
         case frmWorkedGrids.WkdGrid(PLoc, CurBand, CurMode) of
           //returns 0=not wkd
           //        1=full grid this band and mode
@@ -1619,7 +1620,37 @@ Begin
        end
    else
        begin
-        AddColorStr(L1, Mycolor,4,sgMonitor.rowCount-1);
+        case frmWorkedGrids.WkdMainGrid(PLoc, CurBand, CurMode) of
+          //returns 0=not wkd
+          //        1=main grid this band and mode
+          //        2=main grid this band but NOT this mode
+          //        3=main grid any other band/mode
+          0:Begin
+              //not wkd
+              MyMcolor := wkdnever;
+            end;
+          1:Begin
+              //grid wkd        PrintLoc
+              L1:= lowerCase(L1);
+              MyMcolor := wkdhere;
+            end;
+          2:Begin
+              //grid wkd band
+              MyMcolor := wkdband;
+            end;
+          3:Begin
+              //grid wkd any
+              MyMcolor := wkdany;
+            end;
+          else
+            Begin
+              L1:= lowerCase(L1);//should not happen
+              p:=1;
+              MyMcolor := clBlack;
+            end;
+        end; //case
+        AddColorStr(L1, MyMcolor,4,sgMonitor.rowCount-1);
+
         if p=1 then AddColorStr(L2, Mycolor,5,sgMonitor.rowCount-1)
          else AddColorStr(L2, wkdnever,5,sgMonitor.rowCount-1);
        end;
