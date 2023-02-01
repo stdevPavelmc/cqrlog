@@ -643,7 +643,7 @@ begin
     SelectNext(Sender as TWinControl, True, True);
   end;
    if not (key in [VK_A..VK_Z, VK_0..VK_9, VK_NUMPAD0..VK_NUMPAD9,
-    VK_TAB, VK_LCL_SLASH, VK_DELETE,VK_BACK,VK_RIGHT,VK_LEFT,VK_HOME]) then
+    VK_TAB, VK_LCL_SLASH, VK_DELETE,VK_BACK,VK_RIGHT,VK_LEFT,VK_HOME,VK_DIVIDE]) then
      key := 0;
 end;
 
