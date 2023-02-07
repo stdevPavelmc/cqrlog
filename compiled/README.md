@@ -4,7 +4,7 @@
  #### Update GLIBC if it is below 2.3.5
  
  #### At the moment there is no new official version source release. That is why alpha (109) is VERY far ahead from official.
- #### You see all changes from changelog @ first start of (109). It can be opened also later from "Help".
+ #### You see all changes from changelog @ first start of (111). It can be opened also later from "Help".
 
 
 Latest cqrlog alpha test binaries can be found from this folder.
