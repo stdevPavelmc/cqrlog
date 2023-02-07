@@ -3244,6 +3244,7 @@ begin
   edtHaUserName.Text     := cqrini.ReadString('OnlineLog','HaUserName','');
   edtHaPasswd.Text       := cqrini.ReadString('OnlineLog','HaPasswd','');
   cmbHaColor.Selected    := cqrini.ReadInteger('OnlineLog','HaColor',clBlue);
+  edtHamQTHurl.Text      := cqrini.ReadString('OnlineLog','HaUrl','http://www.hamqth.com/qso_realtime.php');
   chkHaUpEnabledChange(nil);
 
   chkClUpEnabled.Checked := cqrini.ReadBool('OnlineLog','ClUP',False);
@@ -3252,6 +3253,8 @@ begin
   edtClPasswd.Text       := cqrini.ReadString('OnlineLog','ClPasswd','');
   edtClEmail.Text        := cqrini.ReadString('OnlineLog','ClEmail','');
   cmbClColor.Selected    := cqrini.ReadInteger('OnlineLog','ClColor',clRed);
+  edtClubLogUrl.Text     := cqrini.ReadString('OnlineLog','ClUrl','https://clublog.org/realtime.php');
+  edtClubLogUrlDel.Text  := cqrini.ReadString('OnlineLog','ClUrlDel','https://clublog.org/delete.php');
   chkClUpEnabledChange(nil);
 
   chkHrUpEnabled.Checked := cqrini.ReadBool('OnlineLog','HrUP',False);
