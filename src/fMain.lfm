@@ -1146,7 +1146,7 @@ object frmMain: TfrmMain
         Action = acButtons
         OnClick = acButtonsExecute
       end
-      object MenuItem78: TMenuItem
+      object mnuShowDetails: TMenuItem
         Action = acPnlDetails
         OnClick = acPnlDetailsExecute
       end

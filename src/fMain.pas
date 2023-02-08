@@ -221,7 +221,7 @@ type
     MenuItem72: TMenuItem;
     MenuItem76: TMenuItem;
     MenuItem77: TMenuItem;
-    MenuItem78: TMenuItem;
+    mnuShowDetails: TMenuItem;
     MenuItem79: TMenuItem;
     mnuSQLConsole: TMenuItem;
     MenuItem81: TMenuItem;
@@ -1445,12 +1445,12 @@ begin
   if pnlDetails.Visible then
   begin
     pnlDetails.Visible   := False;
-    acPnlDetails.Checked := False;
+    mnuShowDetails.Checked := False;
   end
   else
   begin
     pnlDetails.Visible   := True;
-    acPnlDetails.Checked := True;
+    mnuShowDetails.Checked := True;
   end;
 end;
 
@@ -2258,6 +2258,7 @@ begin
   CheckAttachment;
   mnuShowButtons.Checked := pnlButtons.Visible;
   mnuShowToolBar.Checked := toolMain.Visible;
+  mnuShowDetails.Checked := pnlDetails.Visible;
   //Sets AutoSizeColumns to saved value
   acAutoSizeColumnsExecute(nil);
 end;
