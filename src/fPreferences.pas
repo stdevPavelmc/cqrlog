@@ -1712,6 +1712,8 @@ begin
     frmNewQSO.CurrentMyLoc:=edtLoc.Text;
    end;
 
+  if frmMain.Visible then frmMain.ShowFields;
+
   cqrini.SaveToDisk;
   dmData.SaveConfigFile;
   frmDXCluster.ReloadSettings;
