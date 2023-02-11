@@ -1217,6 +1217,10 @@ object frmMain: TfrmMain
           Caption = 'Confirmed by email (CE)'
           OnClick = mnuCEClick
         end
+        object mnuOR: TMenuItem
+          Caption = 'Online request (OR)'
+          OnClick = mnuORClick
+        end
         object mnuOQRS: TMenuItem
           Caption = 'Online QSL request system (OQRS)'
           OnClick = mnuOQRSClick

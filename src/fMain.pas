@@ -136,6 +136,7 @@ type
     lblSumDist: TLabel;
     lblSumDistances: TLabel;
     MenuItem1:  TMenuItem;
+    mnuOR: TMenuItem;
     MenuItemStats: TMenuItem;
     MenuItem100: TMenuItem;
     MenuItem101: TMenuItem;
@@ -405,6 +406,7 @@ type
     procedure FormActivate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: word; Shift: TShiftState);
     procedure mnuOQRSClick(Sender : TObject);
+    procedure mnuORClick(Sender: TObject);
     procedure popWebSearchPopup(Sender: TObject);
     procedure Timer1Timer(Sender: TObject);
     procedure acAboutExecute(Sender: TObject);
@@ -831,6 +833,11 @@ end;
 procedure TfrmMain.mnuOQRSClick(Sender : TObject);
 begin
   MarkQSLSend('OQRS')
+end;
+
+procedure TfrmMain.mnuORClick(Sender: TObject);
+begin
+  MarkQSLSend('OR');
 end;
 
 procedure TfrmMain.popWebSearchPopup(Sender: TObject);
