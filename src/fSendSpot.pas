@@ -129,9 +129,9 @@ end;
 
 procedure TfrmSendSpot.FormShow(Sender: TObject);
 begin
-  if not ((frmDXCluster.ConWeb) or (frmDXCluster.ConTelnet)) then
+  if not (frmDXCluster.ConTelnet) then
    Begin
-     ShowMessage('You must connect to DXCluster first!');
+     ShowMessage('You must connect to telnet DXCluster first!');
      btnCancel.Click;
    end;
   UsrString := cqrini.ReadString('DXCluster', 'UsrMsg', '');
