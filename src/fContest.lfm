@@ -952,7 +952,7 @@ object frmContest: TfrmContest
       AnchorSideRight.Side = asrBottom
       Left = 205
       Height = 30
-      Hint = 'Start CQ (F1) timer.'#10'Shorcut key: Shift+F1'
+      Hint = 'Start CQ (F1) timer.'#10'Shorcut key: Shift+F1'#10'Stop with same key, 1xESC or'#10'write to call column.'
       Top = 21
       Width = 80
       BorderSpacing.Left = 12

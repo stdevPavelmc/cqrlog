@@ -163,7 +163,7 @@ var
   RSTstx: string = ''; //contest mode serial numbers store
   RSTstxAdd: string = ''; //contest mode additional string store
   //RSTsrx         :string = '';
-  EscFirstTime: boolean = False;
+  EscTimes         :integer = 0;
   DupeFromDate :string = '1900-01-01';
   MsgIs        :integer = 0;
   MWC40,MWC80  :integer;
@@ -208,9 +208,15 @@ begin
   //esc and double esc
   if key = VK_ESCAPE then
   begin
-    if EscFirstTime then
-    begin
-      //if edtCall.Text = '' then
+    case EscTimes of
+
+      0:Begin  //1st press stops CW;
+         if Assigned(frmNewQSO.CWint) then
+               frmNewQSO.CWint.StopSending;
+         inc(EscTimes);
+         tmrESC2.Enabled := True;
+        end;
+      1:Begin //2nd returns to callsign column
          frmNewQSO.old_call:='';             //this is stupid hack but only way to reproduce
          frmNewQSO.edtName.Text :='';        //new seek from log (important to see if wkd before,
          frmNewQSO.edtQth.Text  :='';        //and qrz, if one wants)
@@ -218,20 +224,19 @@ begin
          edtCall.SetFocus;
          edtCall.SelStart:=length(edtCall.Text);
          edtCall.SelLength:=0;
+         FmemorySent:=false;
          CQstart(false);
-      //else
-      if Assigned(frmNewQSO.CWint) then
-        frmNewQSO.CWint.StopSending;
-      EscFirstTime := False;
-      tmrESC2.Enabled := True;
-    end
-    else begin   // esc second time
-      frmNewQSO.ClearAll;
-      if dmData.DebugLevel >= 1 then
-         writeln('Clear all done next focus');
-      initInput;
-      tmrESC2Timer(nil);
-    end;
+         inc(EscTimes);
+        end;
+      2:Begin   // 3rd removes callsign
+         frmNewQSO.ClearAll;
+         if dmData.DebugLevel >= 1 then
+             writeln('Clear all done next focus');
+         initInput;
+         tmrESC2Timer(nil);
+         end;
+    end; //case
+
     key := 0;
   end;
 
@@ -632,6 +637,9 @@ begin
   else
     frmSCP.mSCP.Clear;
   CheckDupe(edtCall.Text);
+  if not (edtCall.Text='') then //This prevents focus move to NewQSO when edtCall deleted to empty
+      frmNewQSO.edtCall.text:=edtCall.Text;
+
 end;
 
 procedure TfrmContest.edtCallKeyDown(Sender: TObject; var Key: word;
@@ -963,7 +971,7 @@ end;
 
 procedure TfrmContest.tmrESC2Timer(Sender: TObject);
 begin
-  EscFirstTime := True; //time for double esc passed
+  EscTimes := 0; //time for counts passed
   tmrESC2.Enabled := False;
 end;
 
@@ -998,7 +1006,7 @@ Begin
   edtCall.Font.Color:=clDefault;
   edtCall.Font.Style:= [];
   edtCall.Clear;
-  EscFirstTime := True;
+  EscTimes := 0;
 
   SetTabOrders;
   frmContest.ShowOnTop;
