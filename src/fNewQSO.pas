@@ -890,6 +890,7 @@ begin
   if  edtCall.Text <> callTOinfo then  //call (and web info) maybe there already ok from pevious status packet
   begin
     edtCall.Text := '';//clean grid like double ESC does
+    Sleep(200); //to be sure edtCallChange has time to run;
     old_ccall := '';
     old_cfreq := '';
     old_cmode := '';
@@ -2165,7 +2166,7 @@ begin
                                                                   edtCall.Text := uppercase(data);
                                                                   c_lock :=false;
                                                                   edtCallExit(nil);   //does info fetch
-                                                                  WaitWeb(5);  //wait for web response 5sec timeout
+                                                                  WaitWeb(2);  //wait for web response 5sec timeout
                                                                  end;
                                                   'GRIDSQUARE' :Begin
                                                                      data := uppercase(data);
@@ -2722,19 +2723,31 @@ begin
                                                 else frmMonWsjtx.DblClickCall :='';
                                               if dmData.DebugLevel>=1 then Writeln('Change 2click call to:',frmMonWsjtx.DblClickCall);
                                             end;
-
-            GetCallInfo(call,WsjtxMode,rstS); //call web info
-
-            //these can be altered always
-            if dmUtils.GetBandFromFreq(mhz) <> '' then   //then add new values from status msg
+          end;
+          //these can be altered always
+          if dmUtils.GetBandFromFreq(mhz) <> '' then   //then add new values from status msg
+           begin
             cmbFreq.Text := mhz;
             cmbMode.Text := TXmode;
+           end;
 
-          end;
-          //----------------------------------------------------
-          if new then
-          begin
+          //callsign can be changed during RX or TX if band does not change
+          if not new then
+            begin
+             if (call <> edtCall.Text) then
+              Begin
+               if (frmMonWsjtx.Dclicked < 1) then
+                    GetCallInfo(call,WsjtxMode,rstS); //call web info on 2nd time difference appears
+               if (frmMonWsjtx.Dclicked > 0) then  dec(frmMonWsjtx.Dclicked);
+              end;
+            end
+          else //band changes
+           begin
+            new := False;
+            if frmNewQSO.RepHead <> '' then  //clean wsjtx's DXCall and DXGrid and do GenStdMsg(to clean it too)
+                 frmMonWsjtx.SendConfigure('','',' ',' ',$7FFFFFFF,$7FFFFFFF,$7FFFFFFF,False,True);
             edtCall.Text := '';//clean grid like double ESC does
+            Sleep(200); //to be sure edtCallChange has time to run;
             old_ccall := '';
             old_cfreq := '';
             old_cmode := '';
@@ -2749,7 +2762,7 @@ begin
                   btnClearSatelliteClick(nil); //if band changes sat and prop cleared
                  end;
               end;
-          end
+           end  //band changes
         end; //Status
 
 
@@ -2903,6 +2916,8 @@ begin
           if dmData.DebugLevel>=1 then Writeln('Call decoded #5:', call,'  edtCall:',edtCall.Text );
           if  edtCall.Text <> call then  //call (and web info) maybe there already ok from status packet
                            Begin
+                             edtCall.Text := '';
+                             Sleep(200); //to be sure edtCallChange has time to run;
                              edtCall.Text := call;
                              c_lock:=False;
                              edtCallExit(nil);    //<--------this will fetch web info
@@ -3421,6 +3436,7 @@ begin
 
   was_call := edtCall.Text;
   edtCall.Text := ''; //calls ClearAll  (except when EDITQSO to be sure that callsign changes do not clear all)
+  Sleep(200); //to be sure edtCallChange has time to run;
   if EditQso then ClearAll;
   old_ccall := '';
   old_cfreq := '';

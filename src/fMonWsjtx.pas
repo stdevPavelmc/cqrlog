@@ -130,7 +130,8 @@ type
     { private declarations }
   public
     CanCloseFCCProcess :boolean;
-    DblClickCall  :string;   //callsign that is called by doubleclick
+    DblClickCall  :string;      //callsign that is called by doubleclick
+    Dclicked : byte;  //used in NewQSO/Wsjtx decode/Status to deley QRZ info fetch
     procedure clearSgMonitor;
     procedure AddCqCallMessage(Time,mode,WsjtxBand,Message,Reply:string; Df,Sr:integer);
     procedure AddMyCallMessage(Time,mode,WsjtxBand,Message,Reply:string; Df,Sr:integer);
@@ -138,6 +139,7 @@ type
     procedure AddOtherMessage(Time,Message, Reply: string;Df,Sr:integer);
     procedure NewBandMode(Band, Mode: string);
     procedure SendFreeText(MyText: string);
+    procedure SendConfigure(Mode,Submode,DXCall,DXGrid:string;FreqTol,TRPeriod,RxDF:Dword;Fmode,GMsg:boolean);
     procedure ColorBack(Myitem:string;Mycolor:Tcolor;bkg:Boolean=false);
     procedure BufDebug(MyHeader,MyBuf:string);
     function HexStrToStr(const HexStr: string): string;
@@ -383,6 +385,7 @@ begin
     reply[12] := #$04;    //quick hack: change message type from 2 to 4
     if LocalDbg then
       Writeln('Changed message type from 2 to 4. Sending...');
+    Dclicked:=3; //passes to ingnore UDP status call after doubleclicked
     frmNewQSO.Wsjtxsock.SendString(reply);
     //if LocalDbg then BufDebug('Send data buffer contains:',reply);
   end;
@@ -554,6 +557,68 @@ begin
     //if LocalDbg then BufDebug('Free text buffer contains:',RepBuf
     frmNewQSO.Wsjtxsock.SendString(RepBuf);
   end;
+end;
+
+procedure TfrmMonWsjtx.SendConfigure(Mode,Submode,DXCall,DXGrid:string;FreqTol,TRPeriod,RxDF:Dword;Fmode,GMsg:boolean);
+var
+  i: byte;
+
+procedure AddCint(c:Dword);
+begin
+     RepBuf := RepBuf + chr(hi(hi(c))) + chr(lo(hi(c))) + chr(hi(lo(c))) + chr(lo(lo(c)));
+end;
+procedure AddString(s:string);  //strings here can not be over 256 length here
+var  l: integer;
+Begin
+    l:=  length(s);
+    if l=0 then
+       RepBuf := RepBuf +#$FF+#$FF+#$FF+#$FF
+     else
+       RepBuf := RepBuf +#0 + #0 +#0 + chr(l) + Uppercase(s);
+end;
+procedure AddBool(b:boolean);
+Begin
+  if b then
+             RepBuf := RepBuf +#1
+           else
+             RepBuf := RepBuf +#0;
+end;
+
+
+begin
+  if frmNewQSO.RepHead <> '' then
+  begin
+    RepBuf := frmNewQSO.RepHead;
+    RepBuf[12] := #15; //Send config 15
+
+    AddString(Mode);
+    AddCint(Freqtol);
+    AddString(Submode);
+    AddBool(Fmode);
+    AddCint(TRPeriod);
+    AddCint(RxDF);
+    AddString(DXCall);
+    AddString(DXGrid);
+    AddBool(GMsg);
+
+    frmNewQSO.Wsjtxsock.SendString(RepBuf);
+    //BufDebug('UDP#15',RepBuf);
+  end;
+  {
+ *                         Mode                   utf8
+ *                         Frequency Tolerance    quint32
+ *                         Submode                utf8
+ *                         Fast Mode              bool
+ *                         T/R Period             quint32
+ *                         Rx DF                  quint32
+ *                         DX Call                utf8
+ *                         DX Grid                utf8
+ *                         Generate Messages      bool
+ *      For  utf8  string
+ *      fields an empty value implies no change, for the quint32 Rx DF
+ *      and  Frequency  Tolerance  fields the  maximum  quint32  value
+ *      implies  no change.
+  }
 end;
 
 procedure TfrmMonWsjtx.edtFollowDblClick(Sender: TObject);
