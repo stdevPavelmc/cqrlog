@@ -154,8 +154,6 @@ type
     procedure ChangeCallAlertCaption;
 
     function  ShowSpot(spot : String; var sColor : Integer; var Country : String; FromTelnet : Boolean = True) : Boolean;
-    function  GetFreq(spot : String) : String;
-    function  GetCall(spot : String; web : Boolean = False) : String;
     function  GetSplit(spot : String) :String;
     procedure StoreLastCmd(LastCmd:string);
     function  GetHistCmd:string;
@@ -326,7 +324,7 @@ begin
   end;
 end;
 
-procedure TfrmDXCluster.Button2Click(Sender: TObject);
+procedure TfrmDXCluster.Button2Click(Sender: TObject);  //this is debugger
 var
   TelThread : TTelThread = nil;
 begin
@@ -474,16 +472,14 @@ var
   freq : String = '';
   mode : String = '';
   call : String = '';
+  info : String = '';
   etmp : Extended = 0;
   stmp : String = '';
   i    : Integer = 0;
 begin
   WebSpots.ReadLine(spot,tmp,tmp,tmp,where);
-  spot := copy(spot,i+6,Length(spot)-i-5);
-  spot := Trim(spot);
-  freq := GetFreq(spot);
-  call := GetCall(spot,True);
-  {
+  dmDXCluster.GetSplitSpot(Spot,call,freq,info);
+ {
   Writeln('WebDbClick*****');
   Writeln('Spot:',spot);
   Writeln('Freq:',freq);
@@ -505,24 +501,15 @@ var
   freq : String = '';
   mode : String = '';
   call : String = '';
+  info : String = '';
   etmp : Extended = 0;
   stmp : String = '';
   i    : Integer = 0;
   f    : Currency;
 begin
   TelSpots.ReadLine(spot,tmp,tmp,tmp,where);
-  if TryStrToCurr(copy(spot,1,Pos(' ',spot)-1),f)  then
-  begin
-    freq := copy(spot,1,Pos(' ',spot)-1);
-    call := trim(copy(spot,Pos('.',spot)+2,14))
-  end
-  else begin
-    spot := copy(spot,i+6,Length(spot)-i-5);
-    spot := Trim(spot);
-    freq := GetFreq(Spot);
-    call := GetCall(Spot, ConWeb)
-  end;
-  {
+  dmDXCluster.GetSplitSpot(spot,call,freq,info);
+ {
   Writeln('TelDbClick*****');
   Writeln('Spot:',spot);
   Writeln('Freq:',freq);
@@ -910,14 +897,6 @@ begin
       if dmData.DebugLevel >=1 then Writeln('Chat sizing Click');
 end;
 
-function TfrmDXCluster.GetFreq(spot : String) : String;
-var
-  tmp : String;
-begin
-  tmp    := copy(spot,Pos(' ',spot),Pos('.',spot)+2 - Pos(' ',spot));
-  Result := trim(tmp)
-end;
-
 function TfrmDXCluster.GetSplit(spot : String) : String;
 var
   tmp : String;
@@ -925,9 +904,11 @@ var
   spn : String;
   l : Integer;
 begin
-  tmp := copy(spot,34,Length(spot)-34);
-  //Writeln('tmp: ',tmp);
-  if Pos('UP',tmp)>0 then begin
+  dmDXCluster.GetSplitSpot(spot,spn,spl,tmp);   //spn,spl used as temporary variables here
+  spn:='';
+  spl:='';
+  if Pos('UP',tmp)>0 then
+   begin
     spl:= copy(tmp,Pos('UP',tmp),13);
     spn:='UP';
     for l:=3 to Length(spl) do
@@ -935,7 +916,8 @@ begin
            spn:=spn+spl[l]
         else break;
     end;
-  if Pos('DOWN',tmp)>0 then begin
+  if Pos('DOWN',tmp)>0 then
+   begin
     spl:= copy(tmp,Pos('DOWN',tmp),13);
     spn:='DOWN';
     for l:=5 to Length(spl) do
@@ -943,7 +925,8 @@ begin
            spn:=spn+spl[l]
         else break;
     end;
-  if Pos('QSX',tmp)>0 then begin
+  if Pos('QSX',tmp)>0 then
+   begin
     spl:= copy(tmp,Pos('QSX',tmp),13);
     spn:='QSX';
     for l:=4 to Length(spl) do
@@ -952,29 +935,6 @@ begin
         else break;
     end;
   Result := trim(spn)
-end;
-
-function TfrmDXCluster.GetCall(spot : String; web : Boolean = False) : String;
-var
-  tmp : String='';
-begin
-  if web then
-  begin
-    //Writeln('spot:',spot);
-    tmp    := trim(copy(spot,Pos(' ',spot)+1, Length(spot) -(Pos(' ',spot))));
-    //Writeln('tmp: ',tmp);
-    tmp    := copy(tmp,Pos(' ',tmp)+1, Length(tmp) -(Pos(' ',tmp)));
-    //Writeln('tmp: ',tmp);
-    if Pos(' ',tmp) > 0 then
-      tmp    := trim(copy(tmp,1,Pos(' ',tmp)));
-    //Writeln('tmp: ',tmp);
-  end
-  else begin
-    tmp    := copy(spot,Pos('.',spot)+3,Length(spot)-Pos('.',spot)-1);
-    tmp    := trim(tmp);
-    tmp    := trim(copy(tmp,1,Pos(' ',tmp)))
-  end;
-  Result := tmp
 end;
 
 procedure TfrmDXCluster.StopAllConnections;
@@ -995,10 +955,10 @@ var
   kmitocet : Extended = 0.0;
   call     : String  = '';
   freq     : String  = '';
+  info     : String  = '';
   tmp      : Integer = 0;
   band     : String  = '';
   mode     : String  = '';
-  freeText : String  = '';
   seznam   : TStringList;
   i        : Integer = 0;
   prefix   : String  = '';
@@ -1089,26 +1049,9 @@ begin
   finally
     LeaveCriticalSection(csDXCPref)
   end;
-
-  spot := UpperCase(spot);
-  i := Pos('DX DE ',spot);
-  if i > 0 then
-    spot := copy(spot,i+6,Length(spot)-i-5);
-
-  if TryStrToCurr(copy(spot,1,Pos(' ',spot)-1),f)  then
-  begin
-    freq := copy(spot,1,Pos(' ',spot)-1);
-    call := trim(copy(spot,Pos('.',spot)+2,14))
-  end
-  else begin
-    freq     := GetFreq(Spot);
-    call     := GetCall(Spot, ConWeb)
-  end;
-
+  dmDXCluster.GetSplitSpot(Spot,call,freq,info);
   splitstr := GetSplit(Spot);
-
   kHz := Freq;
-
   tmp := Pos('.',freq);
   if tmp > 0 then
     freq[tmp] := FormatSettings.DecimalSeparator;
@@ -1345,10 +1288,9 @@ begin
                                                    // and connected to telnet cluster
     if (dmDXCluster.IsAlertCall(call,band,mode,cqrini.ReadBool('DxCluster', 'AlertRegExp', False))) then
       Begin
-        freeText:= dmDXCluster.GetfreeTextFromSpot('DX de '+spot);
         if dmData.DebugLevel >=1 then
-            Writeln('Spot is:',spot,#$0A,'----Call alerting is: ',call,',',band,',',mode,',',freq,',',freeText,'-----------');
-        dmDXCluster.RunCallAlertCmd(call,band,mode,freq,freeText);
+            Writeln('Spot is:',spot,#$0A,'----Call alerting is: ',call,',',band,',',mode,',',freq,',',info,'-----------');
+        dmDXCluster.RunCallAlertCmd(call,band,mode,freq,info);
         call :='';
       end;
   if dmData.DebugLevel >=1 then
