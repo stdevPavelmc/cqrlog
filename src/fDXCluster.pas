@@ -143,6 +143,7 @@ type
 
     procedure WebDbClick(where:longint;mb:TmouseButton;ms:TShiftState);
     procedure TelDbClick(where:longint;mb:TmouseButton;ms:TShiftState);
+    procedure SpotDbClick(Spot:String);
     procedure ConnectToWeb;
     procedure ConnectToTelnet;
     procedure SynWeb;
@@ -154,7 +155,7 @@ type
     procedure ChangeCallAlertCaption;
 
     function  ShowSpot(spot : String; var sColor : Integer; var Country : String; FromTelnet : Boolean = True) : Boolean;
-    function  GetSplit(spot : String) :String;
+    function  GetSplit(info : String) :String;
     procedure StoreLastCmd(LastCmd:string);
     function  GetHistCmd:string;
   public
@@ -469,48 +470,30 @@ procedure TfrmDXCluster.WebDbClick(where:longint;mb:TmouseButton;ms:TShiftState)
 var
   spot : String = '';
   tmp  : Integer = 0;
-  freq : String = '';
-  mode : String = '';
-  call : String = '';
-  info : String = '';
-  etmp : Extended = 0;
-  stmp : String = '';
-  i    : Integer = 0;
 begin
   WebSpots.ReadLine(spot,tmp,tmp,tmp,where);
-  dmDXCluster.GetSplitSpot(Spot,call,freq,info);
- {
-  Writeln('WebDbClick*****');
-  Writeln('Spot:',spot);
-  Writeln('Freq:',freq);
-  Writeln('Call:',call);
-  Writeln('***************');
-  }
-  if NOT TryStrToFloat(freq,etmp) then
-    exit;
-  if (not dmData.BandModFromFreq(freq,mode,stmp)) or (mode='') then
-    exit;
-
-  frmNewQSO.NewQSOFromSpot(call,freq,mode)
+  SpotDbClick(spot);
 end;
 
 procedure TfrmDXCluster.TelDbClick(where:longint;mb:TmouseButton;ms:TShiftState);
 var
   spot : String = '';
   tmp  : Integer = 0;
+  begin
+  TelSpots.ReadLine(spot,tmp,tmp,tmp,where);
+  SpotDbClick(spot);
+end;
+procedure TfrmDXCluster.SpotDbClick(Spot:String);
+var
   freq : String = '';
   mode : String = '';
   call : String = '';
   info : String = '';
   etmp : Extended = 0;
   stmp : String = '';
-  i    : Integer = 0;
-  f    : Currency;
-begin
-  TelSpots.ReadLine(spot,tmp,tmp,tmp,where);
+Begin
   dmDXCluster.GetSplitSpot(spot,call,freq,info);
  {
-  Writeln('TelDbClick*****');
   Writeln('Spot:',spot);
   Writeln('Freq:',freq);
   Writeln('Call:',call);
@@ -523,7 +506,6 @@ begin
     exit;
   frmNewQSO.NewQSOFromSpot(call,freq,mode)
 end;
-
 
 procedure TfrmDXCluster.FormShow(Sender: TObject);
 var
@@ -897,37 +879,33 @@ begin
       if dmData.DebugLevel >=1 then Writeln('Chat sizing Click');
 end;
 
-function TfrmDXCluster.GetSplit(spot : String) : String;
+function TfrmDXCluster.GetSplit(info : String) : String;
 var
-  tmp : String;
   spl : String;
   spn : String;
   l : Integer;
 begin
-  dmDXCluster.GetSplitSpot(spot,spn,spl,tmp);   //spn,spl used as temporary variables here
-  spn:='';
-  spl:='';
-  if Pos('UP',tmp)>0 then
+  if Pos('UP',info)>0 then
    begin
-    spl:= copy(tmp,Pos('UP',tmp),13);
+    spl:= copy(info,Pos('UP',info),13);
     spn:='UP';
     for l:=3 to Length(spl) do
        if Pos(spl[l],' 0123456789.,-+')>0 then
            spn:=spn+spl[l]
         else break;
     end;
-  if Pos('DOWN',tmp)>0 then
+  if Pos('DOWN',info)>0 then
    begin
-    spl:= copy(tmp,Pos('DOWN',tmp),13);
+    spl:= copy(info,Pos('DOWN',info),13);
     spn:='DOWN';
     for l:=5 to Length(spl) do
        if Pos(spl[l],' 0123456789.,-+')>0 then
            spn:=spn+spl[l]
         else break;
     end;
-  if Pos('QSX',tmp)>0 then
+  if Pos('QSX',info)>0 then
    begin
-    spl:= copy(tmp,Pos('QSX',tmp),13);
+    spl:= copy(info,Pos('QSX',info),13);
     spn:='QSX';
     for l:=4 to Length(spl) do
        if Pos(spl[l],' 0123456789.,-+')>0 then
@@ -1050,7 +1028,7 @@ begin
     LeaveCriticalSection(csDXCPref)
   end;
   dmDXCluster.GetSplitSpot(Spot,call,freq,info);
-  splitstr := GetSplit(Spot);
+  splitstr := GetSplit(info);
   kHz := Freq;
   tmp := Pos('.',freq);
   if tmp > 0 then

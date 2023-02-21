@@ -108,7 +108,7 @@ type
     procedure PrintCall(Pcall: string;PCB:Boolean=false);  // prints colored call
     procedure PrintLoc(PLoc, tTa, mT: string;PCB:Boolean=false);  // prints colored loc
     function isItACall(Call: string): boolean;
-    procedure SendReply(reply: string);
+    procedure SendQsoInit(reply: string);
     procedure TryCallAlert(S: string);
     procedure TryAlerts;
     procedure SaveFormPos(FormMode: string);
@@ -131,7 +131,6 @@ type
   public
     CanCloseFCCProcess :boolean;
     DblClickCall  :string;      //callsign that is called by doubleclick
-    Dclicked : byte;  //used in NewQSO/Wsjtx decode/Status to deley QRZ info fetch
     procedure clearSgMonitor;
     procedure AddCqCallMessage(Time,mode,WsjtxBand,Message,Reply:string; Df,Sr:integer);
     procedure AddMyCallMessage(Time,mode,WsjtxBand,Message,Reply:string; Df,Sr:integer);
@@ -376,7 +375,7 @@ Begin
    end;
 end;
 
-procedure TfrmMonWsjtx.SendReply(reply: string);
+procedure TfrmMonWsjtx.SendQsoInit(reply: string);
 var
   i: byte;
 begin
@@ -385,7 +384,6 @@ begin
     reply[12] := #$04;    //quick hack: change message type from 2 to 4
     if LocalDbg then
       Writeln('Changed message type from 2 to 4. Sending...');
-    Dclicked:=3; //passes to ingnore UDP status call after doubleclicked
     frmNewQSO.Wsjtxsock.SendString(reply);
     //if LocalDbg then BufDebug('Send data buffer contains:',reply);
   end;
@@ -404,7 +402,7 @@ begin
     BufDebug('Array gives '+INtToStr(length(sgMonitor.Cells[8,sgMonitor.row]))+' :',
              HexStrToStr(sgMonitor.Cells[8,sgMonitor.row]));
   end;
-  SendReply(HexStrToStr(sgMonitor.Cells[8,sgMonitor.row]));
+  SendQsoInit(HexStrToStr(sgMonitor.Cells[8,sgMonitor.row]));
   frmNewQSO.GetCallInfo(DblClickCall,CurMode,sgMonitor.Cells[1,sgMonitor.row]);
   frmNewQSO.SendToBack;
 end;
@@ -625,7 +623,7 @@ procedure TfrmMonWsjtx.edtFollowDblClick(Sender: TObject);
 begin
   if LocalDbg then
     Writeln('Clicked follow line gives: ', RepFlw);
-  SendReply(RepFlw);
+  SendQsoInit(RepFlw);
 end;
 
 

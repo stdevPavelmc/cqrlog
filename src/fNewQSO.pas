@@ -626,10 +626,9 @@ type
     WhatUpNext : TWhereToUpload;
     UploadAll  : Boolean;
     WsjtxDecodeRunning : boolean;
-
+    DiffCalls          : byte;
     RememberAutoMode : Boolean;
     IsJS8Callrmt     : Boolean; //way to isolate adif from JS8's JSON
-
     Op         : String;
     QSLcfm,
     eQSLcfm,
@@ -696,19 +695,20 @@ type
     ShowWin     : Boolean;
     LastFkey    : Word;
     old_t_band  : String;
-    RemoteName  : String;
+    RemoteName  : String; //with wsjt has name from UDP datagram
+    RemoteActive: String; //Actve remote name, empty if no remote running.
+    CallFromSpot: Boolean; //Used with wsjtx UDP#15
 
     WsjtxSock             : TUDPBlockSocket; //receive socket
     WsjtxSockS            : TUDPBlockSocket; //multicast send socket
     ADIFSock              : TUDPBlockSocket;
 
-    WsjtxMode             : String;          //Moved from private
+    WsjtxMode             : String;    //Moved from private
     WsjtxBand             : String;
-    wHiSpeed              : integer;      // when packets received :udp polling speeds (tmrWsjtx)
-    wLoSpeed              : integer;     // when running idle
-    old_call              : String;               //Moved from private
-    was_call              : String;            //holds recent edtCallsign.text before it was cleared
-
+    wHiSpeed              : integer;   // when packets received :udp polling speeds (tmrWsjtx)
+    wLoSpeed              : integer;   // when running idle
+    old_call              : String;    //Moved from private
+    was_call              : String;    //holds recent edtCallsign.text before it was cleared
     FldigiXmlRpc          : Boolean;
     AnyRemoteOn           : Boolean;     //true if any of remotes fldigi,wsjt,or ADIF is active);
 
@@ -727,7 +727,7 @@ type
 
     procedure DisableRemoteMode;   //Moved from private
     procedure SaveRemote;
-    procedure GetCallInfo(callTOinfo,mode,rsts:string);
+    procedure GetCallInfo(callTOinfo,mode,rsts:string);    //used with wsjtx remote
 
     procedure OnBandMapClick(Sender:TObject;Call,Mode : String;Freq:Currency);
     procedure AppIdle(Sender: TObject; var Handled: Boolean);
@@ -916,6 +916,7 @@ begin
     rsts:= '+'+rsts
   end;
   edtHisRST.Text := rsts;
+  SendToBack;
 end;
 
 procedure TfrmNewQSO.WaitWeb(secs:integer);
@@ -1847,6 +1848,8 @@ begin
   EscFirstPressDone := False;
   ChangeDXCC   := False;
 
+  RemoteActive:='';
+
   CurrentMyLoc := cqrini.ReadString('Station','LOC','');
   ClearAll;
   AddBandsToStatGrid;
@@ -2710,8 +2713,6 @@ begin
           ContestNr := ui8Buf(index);
           if dmData.DebugLevel>=1 then Writeln('Contest nr: ', ContestNr);
 
-
-
           //----------------------------------------------------
           if TXEna and TXOn then
           begin
@@ -2736,21 +2737,36 @@ begin
             begin
              if (call <> edtCall.Text) then
               Begin
-               if (frmMonWsjtx.Dclicked < 1) then
-                    GetCallInfo(call,WsjtxMode,rstS); //call web info on 2nd time difference appears
-               if (frmMonWsjtx.Dclicked > 0) then  dec(frmMonWsjtx.Dclicked);
-              end;
+               if (DiffCalls < 3) then
+                  inc( DiffCalls )
+                else
+                 Begin
+                  GetCallInfo(call,WsjtxMode,rstS);
+                  DiffCalls := 0;
+                 end;
+              end
+             else //same calls
+                 DiffCalls := 0;
             end
           else //band changes
            begin
             new := False;
-            if frmNewQSO.RepHead <> '' then  //clean wsjtx's DXCall and DXGrid and do GenStdMsg(to clean it too)
+            if (frmNewQSO.RepHead <> '') and not CallFromSpot then
+             //clean wsjtx's DXCall and DXGrid and do GenStdMsg(to clean it too)
+               Begin
                  frmMonWsjtx.SendConfigure('','',' ',' ',$7FFFFFFF,$7FFFFFFF,$7FFFFFFF,False,True);
-            edtCall.Text := '';//clean grid like double ESC does
-            Sleep(200); //to be sure edtCallChange has time to run;
-            old_ccall := '';
-            old_cfreq := '';
-            old_cmode := '';
+               end;
+            if not CallFromSpot then
+               Begin
+                  edtCall.Text := '';//clean grid like double ESC does
+                  Sleep(200); //to be sure edtCallChange has time to run;
+                  old_ccall := '';
+                  old_cfreq := '';
+                  old_cmode := '';
+               end
+            else
+              CallFromSpot:=False;
+
             if (frmMonWsjtx <> nil) and frmMonWsjtx.Showing then
               Begin
                frmMonWsjtx.NewBandMode(WsjtxBand,WsjtxMode);
@@ -6853,7 +6869,14 @@ begin
     frmTRXControl.SetModeFreq(mode,freq);
     edtCallExit(nil);
     if AnyRemoteOn then
-                   SendToBack
+                   begin
+                    if RemoteActive='wsjtx' then
+                     Begin
+                      CallFromSpot:=True;
+                      frmMonWsjtx.SendConfigure('','',call,' ',$7FFFFFFF,$7FFFFFFF,$7FFFFFFF,False,True);
+                     end;
+                    SendToBack;
+                   end
                  else
                    BringToFront;
     if frmContest.Showing then
@@ -7518,6 +7541,7 @@ begin
                   tmrFldigi.Enabled     := true;
                   if FldigiXmlRpc then
                      frmxfldigi.Visible := true;
+                  RemoteActive := 'fldigi';
                 end;
     rmtWsjt   : begin
                   RememberAutoMode := chkAutoMode.Checked;
@@ -7598,7 +7622,8 @@ begin
                      exit
                   end;
                   mnuWsjtxmonitor.Visible := True; //we show "monitor" in view-submenu when active
-                  if cqrini.ReadBool('Window','MonWsjtx',true) then acMonitorWsjtxExecute(nil)
+                  if cqrini.ReadBool('Window','MonWsjtx',true) then acMonitorWsjtxExecute(nil);
+                  RemoteActive := 'wsjtx';
                 end;
 
     rmtADIF   : begin
@@ -7640,6 +7665,7 @@ begin
                      DisableRemoteMode;
                      exit
                   end;
+                  RemoteActive := 'adif';
                 end;
            end; //case remote type
 
@@ -7680,7 +7706,6 @@ begin
       if Assigned(WsjtxSock) then FreeAndNil(WsjtxSock);  // to release UDP socket
       if multicast then if Assigned(WsjtxSockS) then FreeAndNil(WsjtxSockS);  // to release UDP multicast TX socket
       mnuRemoteModeWsjt.Checked:= False;
-      AnyRemoteOn := False;
   end;
 
   if mnuRemoteMode.Checked then
@@ -7688,7 +7713,6 @@ begin
      tmrFldigi.Enabled         := False;
      if FldigiXmlRpc then frmxfldigi.Visible := false;
      mnuRemoteMode.Checked     := False;
-     AnyRemoteOn := False;
   end ;
 
   if  mnuRemoteModeADIF.Checked then
@@ -7696,9 +7720,10 @@ begin
       tmrADIF.Enabled:=false;
       if Assigned(ADIFSock) then FreeAndNil(ADIFSock);  // to release UDP socket
       mnuRemoteModeADIF.Checked:= False;
-      AnyRemoteOn := False;
   end;
 
+  AnyRemoteOn := False;
+  RemoteActive := '';
   chkAutoMode.Checked:= RememberAutoMode;
   lblCall.Caption           := 'Call:';
   lblCall.Font.Color        := clDefault;
