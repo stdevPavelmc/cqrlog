@@ -130,6 +130,7 @@ type
     cb30cm: TCheckBox;
     cgLimit: TCheckGroup;
     cbNoKeyerReset: TCheckBox;
+    chkwsjtLoeQ: TCheckBox;
     chkModeReverse: TCheckBox;
     chkRPwrOn: TCheckBox;
     chkOperator: TCheckBox;
@@ -1548,6 +1549,7 @@ begin
   cqrini.WriteString('wsjt', 'wb4locdate', DateEditLoc.Text);
   cqrini.WriteBool('wsjt','wb4CCall', cgLimit.Checked[0]);
   cqrini.WriteBool('wsjt','wb4CLoc', cgLimit.Checked[1]);
+  cqrini.WriteBool('wsjt', 'chkLoTWeQSL', chkwsjtLoeQ.Checked);
 
   cqrini.WriteString('n1mm','port',edtADIFPort.Text);
   cqrini.WriteString('n1mm','ip',edtADIFIp.Text);
@@ -3195,7 +3197,8 @@ begin
   rgWsjtFreqFrom.ItemIndex := cqrini.ReadInteger('wsjt', 'freq', 1);
   edtWsjtDefaultFreq.Text  := cqrini.ReadString('wsjt', 'deffreq', '3.600');
   rgWsjtModeFrom.ItemIndex := cqrini.ReadInteger('wsjt', 'mode', 1);
-  cmbWsjtDefaultMode.Text  := cqrini.ReadString('wsjt', 'defmode', 'JT65');
+  cmbWsjtDefaultMode.Text  := cqrini.ReadString('wsjt', 'defmode', 'FT8');
+  chkwsjtLoeQ.Checked      := cqrini.ReadBool('wsjt', 'chkLoTWeQSL', False);
   DateEditCall.Text := cqrini.ReadString('wsjt', 'wb4calldate', '1900-01-01'); //sure all qsos by default :-)
   DateEditLoc.Text := cqrini.ReadString('wsjt', 'wb4locdate','1900-01-01');
   cgLimit.Checked[0] := cqrini.ReadBool('wsjt','wb4CCall', False);

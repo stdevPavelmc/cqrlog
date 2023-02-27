@@ -2064,9 +2064,9 @@ begin
 end;
 procedure TfrmMonWsjtx.PrintDecodedMessage;
 Var
-   i : integer;
-  freq :string;
-StatClr: Tcolor;
+   i      : integer;
+  freq,le : string;
+StatClr   : Tcolor;
 
 begin
   cont := '';
@@ -2110,6 +2110,14 @@ begin
      end
    else
        PrintCall(msgCall,chkCbCQ.Checked);
+   
+   le:='';
+   if cqrini.ReadBool('wsjt', 'chkLoTWeQSL', False) then
+    Begin
+      le:='   ';
+      if dmData.UsesLotw(msgCall) then le[1]:='L';
+      if dmData.UseseQSL(msgCall) then le[2]:='E';
+    end;
 
    PrintLoc(msgLocator, timeToAlert, msgTime,chkCbCQ.Checked);
 
@@ -2167,21 +2175,21 @@ begin
    if (not chkMap.Checked) then
     begin
      freq := dmUtils.FreqFromBand(CurBand, CurMode);
-     msgRes := dmDXCC.DXCCInfo(dxcc_number_adif, freq, CurMode, i);    //wkd info
+     msgRes := StringReplace(dmDXCC.DXCCInfo(dxcc_number_adif, freq, CurMode, i),'!','',[rfReplaceAll]);    //wkd info
 
      if LocalDbg then
        Writeln('Looking this>', msgRes[1], '< from:', msgRes);
      case msgRes[1] of
-       'U': AddColorStr(cont + ':' + msgRes, wkdhere,7 ,sgMonitor.rowCount-1);       //Unknown
-       'C': AddColorStr(cont + ':' + msgRes, wkdAny,7 ,sgMonitor.rowCount-1);        //Confirmed
-       'Q': AddColorStr(cont + ':' + msgRes, clTeal,7 ,sgMonitor.rowCount-1);        //Qsl needed
-       'N': AddColorStr(cont + ':' + msgRes, wkdnever,7 ,sgMonitor.rowCount-1);      //New something
+       'U': AddColorStr(le+cont + ':' + msgRes, wkdhere,7 ,sgMonitor.rowCount-1);       //Unknown
+       'C': AddColorStr(le+cont + ':' + msgRes, wkdAny,7 ,sgMonitor.rowCount-1);        //Confirmed
+       'Q': AddColorStr(le+cont + ':' + msgRes, clTeal,7 ,sgMonitor.rowCount-1);        //Qsl needed
+       'N': AddColorStr(le+cont + ':' + msgRes, wkdnever,7 ,sgMonitor.rowCount-1);      //New something
 
        else
          AddColorStr(msgRes, clBlack,7 ,sgMonitor.rowCount-1);     //something else...can't be
      end;
 
-   end; //Map mode
+   end; //not Map mode
 
    if not (chkCbCQ.Checked or chknoTxt.Checked) then
      Begin
