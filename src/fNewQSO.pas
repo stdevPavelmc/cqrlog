@@ -2438,6 +2438,7 @@ var
   Dtim     : TDateTime;
   Dfreq    : Integer;
   new      : Boolean;
+  newstart : Boolean;
   TXEna    : Boolean;
   TXOn     : Boolean;
   i        : word;
@@ -2633,6 +2634,7 @@ begin
 
     1 : begin //Status
           new := false;
+          newstart := false;
           ParStr := StrBuf(index);
           if dmData.DebugLevel>=1 then Writeln('Status Id:', ParStr);
           //----------------------------------------------------
@@ -2655,17 +2657,19 @@ begin
           end;
 
           ParStr := dmUtils.GetBandFromFreq(mhz);
-          if ParStr<>WsjtxBand then
+          if (ParStr<>WsjtxBand) then
           begin
             new := true;
+            newstart:= WsjtxBand=''; //clean start do not use for wsjtx cleaning
             WsjtxBand := ParStr
           end;
           if dmData.DebugLevel>=1 then Writeln('Band :', WsjtxBand);
           //----------------------------------------------------
           ParStr := StrBuf(index);
-          if ParStr<>WsjtxMode then
+          if (ParStr<>WsjtxMode) then
           begin
             new :=true;
+            newstart:= Wsjtxmode=''; //clean start do not use for wsjtx cleaning
             WsjtxMode := ParStr;
           end;
           if dmData.DebugLevel>=1 then Writeln('Mode:', WsjtxMode);
@@ -2751,7 +2755,7 @@ begin
           else //band changes
            begin
             new := False;
-            if (frmNewQSO.RepHead <> '') and not CallFromSpot then
+            if (frmNewQSO.RepHead <> '') and (not CallFromSpot) and (not newstart) then
              //clean wsjtx's DXCall and DXGrid and do GenStdMsg(to clean it too)
                Begin
                  frmMonWsjtx.SendConfigure('','',' ',' ',$7FFFFFFF,$7FFFFFFF,$7FFFFFFF,False,True);
