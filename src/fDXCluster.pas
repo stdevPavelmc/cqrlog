@@ -88,7 +88,7 @@ type
     procedure mnuCallalertClick(Sender : TObject);
     procedure mnuSkimAllowFreqClick(Sender: TObject);
     procedure mnuSkimQSLCheckClick(Sender: TObject);
-   procedure tmrAutoConnectTimer(Sender: TObject);
+    procedure tmrAutoConnectTimer(Sender: TObject);
     procedure tmrSpotsTimer(Sender: TObject);
     procedure trChatSizeChange(Sender: TObject);
     procedure trChatSizeClick(Sender: TObject);
@@ -158,6 +158,8 @@ type
     function  GetSplit(info : String) :String;
     procedure StoreLastCmd(LastCmd:string);
     function  GetHistCmd:string;
+    function  FontStylesToString(Styles: TFontStyles): string;
+    function  StringToFontStyles(const Styles: string): TFontStyles;
   public
     ConWeb    : Boolean;
     ConTelnet : Boolean;
@@ -371,15 +373,42 @@ end;
 procedure TfrmDXCluster.acFontExecute(Sender : TObject);
 begin
   dlgDXfnt.Font.Name := cqrini.ReadString('DXCluster','Font','DejaVu Sans Mono');
+  dlgDXfnt.Font.Style := StringToFontStyles(cqrini.ReadString('DXCluster','FontStyle',''));
   dlgDXfnt.Font.Size := cqrini.ReadInteger('DXCluster','FontSize',12);
   if dlgDXfnt.Execute then
   begin
     cqrini.WriteString('DXCluster','Font',dlgDXfnt.Font.Name);
     cqrini.WriteInteger('DXCluster','FontSize',dlgDXfnt.Font.Size);
+    cqrini.WriteString('DXCluster','FontStyle',FontStylesToString(dlgDXfnt.Font.Style));
     WebSpots.SetFont(dlgDXfnt.Font);
     TelSpots.SetFont(dlgDXfnt.Font);
     ChatSpots.SetFont(dlgDXfnt.Font)
   end
+end;
+function TfrmDXCluster.FontStylesToString(Styles: TFontStyles): string;
+begin
+  Result := '';
+  if fsBold in Styles then
+    Result := Result + 'B';
+  if fsItalic in Styles then
+    Result := Result + 'I';
+  if fsUnderline in Styles then
+    Result := Result + 'U';
+  if fsStrikeOut in Styles then
+    Result := Result + 'S';
+end;
+
+function TfrmDXCluster.StringToFontStyles(const Styles: string): TFontStyles;
+begin
+  Result := [];
+  if Pos('B', UpperCase(Styles)) > 0 then
+    Include(Result, fsBold);
+  if Pos('I', UpperCase(Styles)) > 0 then
+    Include(Result, fsItalic);
+  if Pos('U', UpperCase(Styles)) > 0 then
+    Include(Result, fsUnderline);
+  if Pos('S', UpperCase(Styles)) > 0 then
+    Include(Result, fsStrikeOut);
 end;
 
 procedure TfrmDXCluster.acCallAlertExecute(Sender : TObject);
@@ -515,6 +544,7 @@ begin
   try
     f.Name    := cqrini.ReadString('DXCluster','Font','DejaVu Sans Mono');
     f.Size    := cqrini.ReadInteger('DXCluster','FontSize',12);
+    f.Style   := StringToFontStyles(cqrini.ReadString('DXCluster','FontStyle',''));
     WebSpots.SetFont(f);
     TelSpots.SetFont(f) ;
     ChatSpots.SetFont(f)
