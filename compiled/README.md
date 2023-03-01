@@ -3,8 +3,8 @@
  #### If you can not start Cqrlog after update check your GLIBC version with command console: ldd --version
  #### Update GLIBC if it is below 2.3.5
  
- #### At the moment there is no new official version source release. That is why alpha (112) is VERY far ahead from official.
- #### You see all changes from changelog @ first start of (112). It can be opened also later from "Help".
+ #### At the moment there is no new official version source release. That is why alpha (113) is VERY far ahead from official.
+ #### You see all changes from changelog @ first start of (113). It can be opened also later from "Help".
 
 
 Latest cqrlog alpha test binaries can be found from this folder.
