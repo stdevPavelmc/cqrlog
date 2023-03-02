@@ -276,12 +276,14 @@ begin
       if lotw then
         Q.SQL.Text := 'SELECT id_cqrlog_main FROM '+dmData.DBName+'.cqrlog_main WHERE adif='+
                       sAdif+' AND band='+QuotedStr(band)+' AND ((qsl_r='+
-                      QuotedStr('Q')+') OR (lotw_qslr='+QuotedStr('L')+')) AND mode='+
+                      QuotedStr('Q')+') OR (lotw_qslr='+ QuotedStr('L')+
+                      ') OR (eqsl_qsl_rcvd='+ QuotedStr('E')+')) AND mode='+
                       QuotedStr(mode)+' LIMIT 1'
       else
         Q.SQL.Text := 'SELECT id_cqrlog_main FROM '+dmData.DBName+'.cqrlog_main WHERE adif='+
                        sAdif+' AND band='+QuotedStr(band)+' AND qsl_r='+
                        QuotedStr('Q')+ ' AND mode='+QuotedStr(mode)+' LIMIT 1';
+
       trQ.StartTransaction;
       Q.Open;
       if Q.Fields[0].AsInteger > 0 then
