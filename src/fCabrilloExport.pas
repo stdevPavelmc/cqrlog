@@ -821,7 +821,11 @@ end;
 procedure TfrmCabrilloExport.btCabLoadClick(Sender: TObject);
 begin
   dlgCabOpen.InitialDir := dmData.HomeDir;
-  if dlgCabOpen.Execute then loadCabLay(dlgCabOpen.FileName);
+  if dlgCabOpen.Execute then
+     if FileExists(dlgCabOpen.FileName) then  //with QT5 opendialog user can enter filename that may not exist
+         loadCabLay(dlgCabOpen.FileName)
+     else
+        ShowMessage('File not found!');
 end;
 procedure TfrmCabrilloExport.saveCabLay(filename:String);
 var

@@ -178,58 +178,63 @@ var
   b : Integer;
 begin
   if dlgOpen.Execute then
-  begin
-    try
-      SetLength(d,0);
-      AssignFile(f,dlgOpen.FileName);
-      Reset(f);
-      while not Eof(f) do
-      begin
-        ReadLn(f,l);
-        inc(i);
-        a := dmUtils.Explode(';',l);
-
-        if (Length(a)<>4) then
+   begin
+    if FileExists(dlgOpen.FileName) then  //with QT5 opendialog user can enter filename that may not exist
         begin
-          Application.MessageBox(PChar(Format(C_ERR,[i])),'Error...',mb_OK+mb_IconError);
-          exit
-        end;
+          try
+            SetLength(d,0);
+            AssignFile(f,dlgOpen.FileName);
+            Reset(f);
+            while not Eof(f) do
+            begin
+              ReadLn(f,l);
+              inc(i);
+              a := dmUtils.Explode(';',l);
 
-        if not TryStrToFloat(a[0],n) then
-        begin
-          Application.MessageBox(PChar(Format(C_ERR,[i])),'Error...',mb_OK+mb_IconError);
-          exit
-        end;
+              if (Length(a)<>4) then
+              begin
+                Application.MessageBox(PChar(Format(C_ERR,[i])),'Error...',mb_OK+mb_IconError);
+                exit
+              end;
 
-        if a[1]='' then
-        begin
-          Application.MessageBox(PChar(Format(C_ERR,[i])),'Error...',mb_OK+mb_IconError);
-          exit
-        end;
+              if not TryStrToFloat(a[0],n) then
+              begin
+                Application.MessageBox(PChar(Format(C_ERR,[i])),'Error...',mb_OK+mb_IconError);
+                exit
+              end;
 
-        if not TryStrToInt(a[2],b) then
-        begin
-          Application.MessageBox(PChar(Format(C_ERR,[i])),'Error...',mb_OK+mb_IconError);
-          exit
-        end;
+              if a[1]='' then
+              begin
+                Application.MessageBox(PChar(Format(C_ERR,[i])),'Error...',mb_OK+mb_IconError);
+                exit
+              end;
 
-        SetLength(d,i);
-        d[i-1].freq  := a[0];
-        d[i-1].mode  := a[1];
-        d[i-1].width := a[2];
-        d[i-1].info  := a[3];
-      end;
+              if not TryStrToInt(a[2],b) then
+              begin
+                Application.MessageBox(PChar(Format(C_ERR,[i])),'Error...',mb_OK+mb_IconError);
+                exit
+              end;
 
-      for i:= 0 to Length(d)-1 do
-      begin
-        AddToGrid(d[i].freq, d[i].mode, d[i].width,d[i].info)
-      end;
+              SetLength(d,i);
+              d[i-1].freq  := a[0];
+              d[i-1].mode  := a[1];
+              d[i-1].width := a[2];
+              d[i-1].info  := a[3];
+            end;
 
-      ShowMessage('File has been imported')
-    finally
-      CloseFile(f)
-    end
-  end
+            for i:= 0 to Length(d)-1 do
+            begin
+              AddToGrid(d[i].freq, d[i].mode, d[i].width,d[i].info)
+            end;
+
+            ShowMessage('File has been imported')
+          finally
+            CloseFile(f)
+          end
+        end
+       else
+        ShowMessage('File not found!');
+   end;
 end;
 
 procedure TfrmRadioMemories.acSortByFreqExecute(Sender: TObject);

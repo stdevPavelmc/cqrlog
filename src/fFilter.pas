@@ -744,10 +744,15 @@ procedure TfrmFilter.btnLoadClick(Sender: TObject);
 begin
   dlgOpen.InitialDir := dmData.HomeDir;
   if dlgOpen.Execute then
+   begin
+    if FileExists(dlgOpen.FileName) then  //with QT5 opendialog user can enter filename that may not exist
      Begin
        loadFilter(dlgOpen.FileName);
        if DirectLoad then btnOkClick(nil);
-     end;
+     end
+    else
+      ShowMessage('File not found!');
+   end;
 end;
 
 procedure TfrmFilter.btnSaveClick(Sender: TObject);

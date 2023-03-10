@@ -2083,7 +2083,10 @@ procedure TfrmPreferences.btnFldigiPathClick(Sender: TObject);
 begin
   dlgOpen.Title := 'Locate fldigi binary ...';
   if dlgOpen.Execute then
-    edtFldigiPath.Text := dlgOpen.FileName;
+      if FileExists(dlgOpen.FileName) then  //with QT5 opendialog user can enter filename that may not exist
+         edtFldigiPath.Text := dlgOpen.FileName
+      else
+       ShowMessage('File not found!');
 end;
 
 procedure TfrmPreferences.btnSelectQSOColorClick(Sender : TObject);
@@ -2164,7 +2167,10 @@ procedure TfrmPreferences.btnWsjtPathClick(Sender: TObject);
 begin
   dlgOpen.Title := 'Locate wsjtx binary ...';
   if dlgOpen.Execute then
-    edtWsjtPath.Text := dlgOpen.FileName;
+    if FileExists(dlgOpen.FileName) then  //with QT5 opendialog user can enter filename that may not exist
+      edtWsjtPath.Text := dlgOpen.FileName
+    else
+        ShowMessage('File not found!');
 end;
 
 procedure TfrmPreferences.btnAlertCallsignsClick(Sender: TObject);

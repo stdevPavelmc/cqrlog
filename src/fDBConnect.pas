@@ -487,28 +487,33 @@ var
   l  : TStringList;
 begin
   if dlgOpen.Execute then
-  begin
-    db := dmData.GetProperDBName(dmData.qLogList.Fields[0].AsInteger);
-    dmData.Q.Close;
-    if dmData.trQ.Active then dmData.trQ.Rollback;
-    dmData.Q.SQL.Text := 'update '+db+'.cqrlog_config set config_file =:config_file';
-    dmData.trQ.StartTransaction;
-    l := TStringList.Create;
-    try try
-      l.LoadFromFile(dlgOpen.FileName);
-      dmData.Q.Params[0].AsString := l.Text;
-      if dmData.DebugLevel >=1 then Writeln(dmData.Q.SQL.Text);
-      dmData.Q.ExecSQL
-    except
-      dmData.trQ.Rollback
-    end;
-    dmData.trQ.Commit;
-    ShowMessage('Config file imported successfully')
-    finally
-      dmData.Q.Close;
-      l.Free
-    end
-  end
+   begin
+     if FileExists(dlgOpen.FileName) then  //with QT5 opendialog user can enter filename that may not exist
+      begin
+        db := dmData.GetProperDBName(dmData.qLogList.Fields[0].AsInteger);
+        dmData.Q.Close;
+        if dmData.trQ.Active then dmData.trQ.Rollback;
+        dmData.Q.SQL.Text := 'update '+db+'.cqrlog_config set config_file =:config_file';
+        dmData.trQ.StartTransaction;
+        l := TStringList.Create;
+        try try
+          l.LoadFromFile(dlgOpen.FileName);
+          dmData.Q.Params[0].AsString := l.Text;
+          if dmData.DebugLevel >=1 then Writeln(dmData.Q.SQL.Text);
+          dmData.Q.ExecSQL
+        except
+          dmData.trQ.Rollback
+        end;
+        dmData.trQ.Commit;
+        ShowMessage('Config file imported successfully')
+        finally
+          dmData.Q.Close;
+          l.Free
+        end
+      end
+        else
+              ShowMessage('File not found!');
+   end
 end;
 
 procedure TfrmDBConnect.mnuRepairClick(Sender : TObject);

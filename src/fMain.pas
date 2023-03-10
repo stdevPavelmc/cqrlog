@@ -569,17 +569,23 @@ begin
   dlgOpen.DefaultExt := '.tbl';
   if dlgOpen.Execute then
   begin
-    with TfrmImportProgress.Create(self) do
-    try
-      lblComment.Caption := 'Importing DXCC data ...';
-      Directory  := ExtractFilePath(dlgOpen.FileName);
-      ImportType := imptImportDXCCTables;
-      ShowModal
-    finally
-      Free
-    end;
-    dmDXCC.ReloadDXCCTables;
-    dmDXCluster.ReloadDXCCTables
+    if FileExists(dlgOpen.FileName) then  //with QT5 opendialog user can enter filename that may not exist
+     begin
+
+      with TfrmImportProgress.Create(self) do
+      try
+        lblComment.Caption := 'Importing DXCC data ...';
+        Directory  := ExtractFilePath(dlgOpen.FileName);
+        ImportType := imptImportDXCCTables;
+        ShowModal
+      finally
+        Free
+      end;
+      dmDXCC.ReloadDXCCTables;
+      dmDXCluster.ReloadDXCCTables
+     end
+    else
+     ShowMessage('File not found!');
   end
   else
     BringToFront
@@ -1105,16 +1111,21 @@ begin
   dlgOpen.DefaultExt := '.csv';
   if dlgOpen.Execute then
   begin
-    with TfrmImportProgress.Create(self) do
-    try
-      lblComment.Caption := 'Importing QSL mangers ...';
-      Directory  := ExtractFilePath(dlgOpen.FileName);
-      FileName   := dlgOpen.FileName;
-      ImportType := imptImportQSLMgrs;
-      ShowModal
-    finally
-      Free
-    end
+    if FileExists(dlgOpen.FileName) then  //with QT5 opendialog user can enter filename that may not exist
+      begin
+       with TfrmImportProgress.Create(self) do
+        try
+          lblComment.Caption := 'Importing QSL mangers ...';
+          Directory  := ExtractFilePath(dlgOpen.FileName);
+          FileName   := dlgOpen.FileName;
+          ImportType := imptImportQSLMgrs;
+          ShowModal
+        finally
+          Free
+        end
+       end
+     else
+       ShowMessage('File not found!');
   end
   else
     BringToFront
@@ -1124,15 +1135,20 @@ procedure TfrmMain.acImportLoTWADIFExecute(Sender: TObject);
 begin
   if dlgOpen.Execute then
   begin
-    with TfrmImportProgress.Create(self) do
-    try
-      FileName   := dlgOpen.FileName;
-      ImportType := imptImportLoTWAdif;
-      ShowModal
-    finally
-      Free;
-      acRefreshExecute(nil)
-    end
+    if FileExists(dlgOpen.FileName) then  //with QT5 opendialog user can enter filename that may not exist
+     begin
+      with TfrmImportProgress.Create(self) do
+        try
+          FileName   := dlgOpen.FileName;
+          ImportType := imptImportLoTWAdif;
+          ShowModal
+        finally
+          Free;
+          acRefreshExecute(nil)
+        end
+     end
+    else
+        ShowMessage('File not found!');
   end
 end;
 
@@ -2083,21 +2099,26 @@ begin
   dlgOpen.DefaultExt := '.adi';
   if dlgOpen.Execute then
   begin
-    with TfrmAdifImport.Create(self) do
-    try
-      Caption := 'Importing ADIF file ...';
-      lblFileName.Caption := dlgOpen.FileName;
-      lblErrors.Caption := '0';
-      lblCount.Caption := '0';
-      lblFilteredOutCount.Caption := '0';
-      ShowModal
-    finally
-      Free
-    end;
-    acRefreshExecute(nil)
-  end
-  else
-    BringToFront
+    if FileExists(dlgOpen.FileName) then  //with QT5 opendialog user can enter filename that may not exist
+      begin
+        with TfrmAdifImport.Create(self) do
+        try
+          Caption := 'Importing ADIF file ...';
+          lblFileName.Caption := dlgOpen.FileName;
+          lblErrors.Caption := '0';
+          lblCount.Caption := '0';
+          lblFilteredOutCount.Caption := '0';
+          ShowModal
+        finally
+          Free
+        end;
+        acRefreshExecute(nil);
+      end
+    else
+       ShowMessage('File not found!');
+    end
+    else
+      BringToFront
 end;
 
 procedure TfrmMain.acQSL_RExecute(Sender: TObject);
