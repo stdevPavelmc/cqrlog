@@ -51,6 +51,7 @@ const
     ':', '|', '-', '=', '+', '@', '#', '*', '%', '_', '(', ')', '$', '<', '>'];
   empty_freq = '0.00000';
   empty_azimuth = '0.0';
+
   cMaxModes = 48; //last added FST4
   cModes: array [0..cMaxModes] of string =
     ('CW', 'SSB', 'AM', 'FM', 'RTTY', 'SSTV', 'PACTOR', 'PSK', 'ATV', 'CLOVER', 'GTOR', 'MTOR',
@@ -60,16 +61,17 @@ const
     'OLIVIA', 'MFSK16', 'JS8', 'JT4','JT6M', 'JT65', 'JT65A', 'JT65B', 'JT65C',
     'JT9', 'QRA64', 'ISCAT', 'MSK144', 'FT8', 'FT4', 'FST4', 'FSK441', 'PSK125',
     'PSK63', 'WSPR', 'PSK250', 'ROS', 'DIGITALVOICE');
-  cMaxBandsCount = 30; //29 bands
 
+  cMaxBandsCount = 36; //35 bands
   cDefaultFreq =
-    '0.136|0.472|1.800|3.500|3.700|5.351|7.000|10.100|14.000|14.200|18.100|21.000|21.200|24.890|28.000|28.500|50.000|70.0875|'
-    +
-    '70.0500|144.000|145.275|430.000|902.0|1250.0|2400.0|3450.0|5670.0|10250.0|24100.0|47100.0|78000.0|122252.0|134930.0|248000.0';
-  cBands: array[0..28] of string[10] =
-    ('2190M', '630M', '160M', '80M'   , '60M', '40M'  , '30M', '20M'  , '17M' , '15M' ,
-     '12M'  , '10M' , '6M'  , '4M'    , '2M' , '1.25M', '70CM', '33CM', '23CM', '13CM',
-     '9CM'  , '6CM' , '3CM' , '1.25CM', '6MM', '4MM', '2.5MM', '2MM', '1MM');
+    '0.136|0.472|1.800|3.500|3.700|5.351|7.000|10.100|14.000|14.200|'+
+    '18.100|21.000|21.200|24.890|28.000|28.500|40.000|50.000|60.0000|70.0500|'+
+    '144.000|145.275|430.000|902.0|1250.0|2400.0|3450.0|5670.0|10250.0|24100.0|'+
+    '47100.0|78000.0|122252.0|134930.0|248000.0';
+  cBands: array[0..30] of string[10] =
+    ('2190M', '630M', '160M', '80M'  , '60M', '40M'  , '30M', '20M'  , '17M' , '15M' ,
+     '12M'  , '10M' , '5M'  , '6M'   , '8M' , '4M'   , '2M' , '1.25M', '70CM', '33CM',
+     '23CM' , '13CM', '9CM' , '6CM'  , '3CM','1.25CM', '6MM', '4MM'  ,'2.5MM', '2MM', '1MM');
 
   cMaxIgnoreFreq = 6;
   cIngnoreFreq: array [0..cMaxIgnoreFreq] of string =
@@ -141,7 +143,9 @@ type
     s15: string;
     s12: string;
     s10: string;
+    s8: string;
     s6: string;
+    s5: string;
     s4: string;
     s220: string;
     s2: string;
@@ -703,7 +707,6 @@ begin
   QSL_R.Items.Add('!');
 end;
 
-
 procedure TdmUtils.InsertFreq(cmbFreq: TcomboBox);
 var
   a: TExplodeArray;
@@ -714,36 +717,6 @@ begin
   for i := 0 to Length(a) - 1 do
     if a[i] <> '' then
       cmbFreq.Items.Add(a[i]);
-  {
-  cmbFreq.Items.Add('1.800');
-  cmbFreq.Items.Add('3.500');
-  cmbFreq.Items.Add('3.700');
-  cmbFreq.Items.Add('7.000');
-  cmbFreq.Items.Add('10.100');
-  cmbFreq.Items.Add('14.000');
-  cmbFreq.Items.Add('14.200');
-  cmbFreq.Items.Add('18.100');
-  cmbFreq.Items.Add('21.000');
-  cmbFreq.Items.Add('21.200');
-  cmbFreq.Items.Add('24.890');
-  cmbFreq.Items.Add('28.000');
-  cmbFreq.Items.Add('28.500');
-  cmbFreq.Items.Add('50.000');
-  cmbFreq.Items.Add('70.0875');
-  cmbFreq.Items.Add('70.0500');
-  cmbFreq.Items.Add('144.000');
-  cmbFreq.Items.Add('145.275');
-  cmbFreq.Items.Add('430.000');
-  cmbFreq.Items.Add('902.0');
-  cmbFreq.Items.Add('1250.0');
-  cmbFreq.Items.Add('2400.0');
-  cmbFreq.Items.Add('3450.0');
-  cmbFreq.Items.Add('5670.0');
-  cmbFreq.Items.Add('10250.0');
-  cmbFreq.Items.Add('24100.0');
-  cmbFreq.Items.Add('47100.0');
-  cmbFreq.Items.Add('78000.0');
-  }
 end;
 
 procedure TdmUtils.InsertBands(cmbBand: TComboBox);

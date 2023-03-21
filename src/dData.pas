@@ -25,7 +25,7 @@ uses
 const
   cDB_LIMIT = 500;
   cDB_MAIN_VER = 18;
-  cDB_COMN_VER = 5;
+  cDB_COMN_VER = 6;
   cDB_PING_INT = 300;  //ping interval for database connection in seconds
                        //program crashed after long time of inactivity
                        //so now after cDB_PING_INT will be run simple sql query
@@ -2760,6 +2760,18 @@ begin
         Q1.ExecSQL;
         Q1.SQL.Text := 'INSERT INTO cqrlog_common.bands (band,b_begin,b_end,cw,rtty,ssb) VALUES (' +
                         QuotedStr('1MM')+',241000.0,250000.0,248000.0,248000.0,248000.0)';
+        if fDebugLevel>=1 then Writeln(Q1.SQL.Text);
+        Q1.ExecSQL;
+      end;
+
+      if old_version < 6 then
+      begin
+        Q1.SQL.Text := 'INSERT INTO cqrlog_common.bands (band,b_begin,b_end,cw,rtty,ssb) VALUES (' +
+                       QuotedStr('8M')+',40.0000,45.0000,40.3000,40.3000,40.6800)';
+        if fDebugLevel>=1 then Writeln(Q1.SQL.Text);
+        Q1.ExecSQL;
+        Q1.SQL.Text := 'INSERT INTO cqrlog_common.bands (band,b_begin,b_end,cw,rtty,ssb) VALUES (' +
+                       QuotedStr('5M')+',54.0000,69.9000,59.5000,59.6000,59.6000)';
         if fDebugLevel>=1 then Writeln(Q1.SQL.Text);
         Q1.ExecSQL;
       end;

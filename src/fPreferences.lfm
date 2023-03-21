@@ -20,7 +20,7 @@ object frmPreferences: TfrmPreferences
   LCLVersion = '2.2.4.0'
   object pgPreferences: TPageControl
     Left = 160
-    Height = 703
+    Height = 753
     Top = 0
     Width = 846
     ActivePage = tabProgram
@@ -30,7 +30,7 @@ object frmPreferences: TfrmPreferences
     OnChange = pgPreferencesChange
     object tabProgram: TTabSheet
       Caption = 'Program'
-      ClientHeight = 672
+      ClientHeight = 722
       ClientWidth = 836
       object lblWebBrowser: TLabel
         AnchorSideLeft.Control = gbInternet
@@ -625,7 +625,7 @@ object frmPreferences: TfrmPreferences
     end
     object tabStation: TTabSheet
       Caption = 'Station'
-      ClientHeight = 672
+      ClientHeight = 722
       ClientWidth = 836
       object GroupBox5: TGroupBox
         Left = 16
@@ -787,7 +787,7 @@ object frmPreferences: TfrmPreferences
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Side = asrBottom
       Caption = 'New QSO'
-      ClientHeight = 672
+      ClientHeight = 722
       ClientWidth = 836
       object Label82: TLabel
         AnchorSideLeft.Control = edtRecetQSOs
@@ -1264,7 +1264,7 @@ object frmPreferences: TfrmPreferences
     end
     object tabVisibleColumns: TTabSheet
       Caption = 'Visible columns'
-      ClientHeight = 672
+      ClientHeight = 722
       ClientWidth = 836
       object chkDate: TCheckBox
         AnchorSideLeft.Control = tabVisibleColumns
@@ -1853,254 +1853,371 @@ object frmPreferences: TfrmPreferences
     end
     object tabBands: TTabSheet
       Caption = 'Bands'
-      ClientHeight = 672
+      ClientHeight = 722
       ClientWidth = 836
       object cb136kHz: TCheckBox
-        Left = 14
+        AnchorSideLeft.Control = tabBands
+        AnchorSideTop.Control = tabBands
+        Left = 16
         Height = 23
-        Top = 19
+        Top = 16
         Width = 79
+        BorderSpacing.Left = 16
+        BorderSpacing.Top = 16
         Caption = '136 kHz'
         TabOrder = 0
       end
       object cb160m: TCheckBox
-        Left = 14
+        AnchorSideLeft.Control = cb136kHz
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = cb136kHz
+        Left = 111
         Height = 23
-        Top = 67
+        Top = 16
         Width = 79
+        BorderSpacing.Left = 16
         Caption = '1.8 MHz'
         TabOrder = 1
       end
       object cb80m: TCheckBox
-        Left = 14
+        AnchorSideLeft.Control = cb160m
+        AnchorSideTop.Control = cb160m
+        AnchorSideTop.Side = asrBottom
+        Left = 111
         Height = 23
-        Top = 99
+        Top = 39
         Width = 79
         Caption = '3.5 MHz'
         TabOrder = 2
       end
       object cb40m: TCheckBox
-        Left = 14
+        AnchorSideLeft.Control = cb160m
+        AnchorSideTop.Control = cb60m
+        AnchorSideTop.Side = asrBottom
+        Left = 111
         Height = 23
-        Top = 163
+        Top = 85
         Width = 67
         Caption = '7 MHz'
         TabOrder = 3
       end
       object cb30m: TCheckBox
-        Left = 14
+        AnchorSideLeft.Control = cb160m
+        AnchorSideTop.Control = cb40m
+        AnchorSideTop.Side = asrBottom
+        Left = 111
         Height = 23
-        Top = 195
+        Top = 108
         Width = 87
         Caption = '10.1 MHz'
         TabOrder = 4
       end
       object cb20m: TCheckBox
-        Left = 14
+        AnchorSideLeft.Control = cb160m
+        AnchorSideTop.Control = cb30m
+        AnchorSideTop.Side = asrBottom
+        Left = 111
         Height = 23
-        Top = 227
+        Top = 131
         Width = 75
         Caption = '14 MHz'
         TabOrder = 5
       end
       object cb17m: TCheckBox
-        Left = 14
+        AnchorSideLeft.Control = cb160m
+        AnchorSideTop.Control = cb20m
+        AnchorSideTop.Side = asrBottom
+        Left = 111
         Height = 23
-        Top = 259
+        Top = 154
         Width = 75
         Caption = '18 MHz'
         TabOrder = 6
       end
       object cb15m: TCheckBox
-        Left = 14
+        AnchorSideLeft.Control = cb160m
+        AnchorSideTop.Control = cb17m
+        AnchorSideTop.Side = asrBottom
+        Left = 111
         Height = 23
-        Top = 291
+        Top = 177
         Width = 75
         Caption = '21 MHz'
         TabOrder = 7
       end
       object cb12m: TCheckBox
-        Left = 14
+        AnchorSideLeft.Control = cb160m
+        AnchorSideTop.Control = cb15m
+        AnchorSideTop.Side = asrBottom
+        Left = 111
         Height = 23
-        Top = 323
+        Top = 200
         Width = 75
         Caption = '24 MHz'
         TabOrder = 8
       end
       object cb10m: TCheckBox
-        Left = 14
+        AnchorSideLeft.Control = cb160m
+        AnchorSideTop.Control = cb12m
+        AnchorSideTop.Side = asrBottom
+        Left = 111
         Height = 23
-        Top = 355
+        Top = 223
         Width = 75
         Caption = '28 MHz'
         TabOrder = 9
       end
       object cb6m: TCheckBox
-        Left = 166
+        AnchorSideLeft.Control = cb8m
+        AnchorSideTop.Control = cb8m
+        AnchorSideTop.Side = asrBottom
+        Left = 206
         Height = 23
-        Top = 67
+        Top = 39
         Width = 75
         Caption = '50 MHz'
         TabOrder = 10
       end
       object cb2m: TCheckBox
-        Left = 166
+        AnchorSideLeft.Control = cb8m
+        AnchorSideTop.Control = cb4m
+        AnchorSideTop.Side = asrBottom
+        Left = 206
         Height = 23
-        Top = 131
+        Top = 108
         Width = 83
         Caption = '144 MHz'
         TabOrder = 11
       end
       object cb70cm: TCheckBox
-        Left = 166
+        AnchorSideLeft.Control = cb8m
+        AnchorSideTop.Control = cb125m
+        AnchorSideTop.Side = asrBottom
+        Left = 206
         Height = 23
-        Top = 195
+        Top = 154
         Width = 83
         Caption = '430 MHz'
         TabOrder = 12
       end
       object cb23cm: TCheckBox
-        Left = 166
+        AnchorSideLeft.Control = cb8m
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = cb8m
+        Left = 293
         Height = 23
-        Top = 259
+        Top = 16
         Width = 91
+        BorderSpacing.Left = 16
         Caption = '1260 MHz'
         TabOrder = 13
       end
       object cb13cm: TCheckBox
-        Left = 166
+        AnchorSideLeft.Control = cb23cm
+        AnchorSideTop.Control = cb23cm
+        AnchorSideTop.Side = asrBottom
+        Left = 293
         Height = 23
-        Top = 291
+        Top = 39
         Width = 91
         Caption = '2300 MHz'
         TabOrder = 14
       end
       object cb8cm: TCheckBox
-        Left = 166
+        AnchorSideLeft.Control = cb23cm
+        AnchorSideTop.Control = cb13cm
+        AnchorSideTop.Side = asrBottom
+        Left = 293
         Height = 23
-        Top = 323
+        Top = 62
         Width = 91
         Caption = '3400 MHz'
         TabOrder = 15
       end
       object cb5cm: TCheckBox
-        Left = 166
+        AnchorSideLeft.Control = cb23cm
+        AnchorSideTop.Control = cb8cm
+        AnchorSideTop.Side = asrBottom
+        Left = 293
         Height = 23
-        Top = 355
+        Top = 85
         Width = 91
         Caption = '5650 MHz'
         TabOrder = 16
       end
       object cb3cm: TCheckBox
-        Left = 310
+        AnchorSideLeft.Control = cb23cm
+        AnchorSideTop.Control = cb5cm
+        AnchorSideTop.Side = asrBottom
+        Left = 293
         Height = 23
-        Top = 67
+        Top = 108
         Width = 73
         Caption = '10 GHz'
         TabOrder = 17
       end
       object cb1cm: TCheckBox
-        Left = 310
+        AnchorSideLeft.Control = cb23cm
+        AnchorSideTop.Control = cb3cm
+        AnchorSideTop.Side = asrBottom
+        Left = 293
         Height = 23
-        Top = 99
+        Top = 131
         Width = 73
         Caption = '24 GHz'
         TabOrder = 18
       end
       object cb47GHz: TCheckBox
-        Left = 310
+        AnchorSideLeft.Control = cb23cm
+        AnchorSideTop.Control = cb1cm
+        AnchorSideTop.Side = asrBottom
+        Left = 293
         Height = 23
-        Top = 131
+        Top = 154
         Width = 73
         Caption = '47 GHz'
         TabOrder = 19
       end
       object cb76GHz: TCheckBox
-        Left = 310
+        AnchorSideLeft.Control = cb23cm
+        AnchorSideTop.Control = cb47GHz
+        AnchorSideTop.Side = asrBottom
+        Left = 293
         Height = 23
-        Top = 163
+        Top = 177
         Width = 73
         Caption = '76 GHz'
         TabOrder = 20
       end
       object cb122GHz: TCheckBox
-        Left = 310
+        AnchorSideLeft.Control = cb23cm
+        AnchorSideTop.Control = cb76GHz
+        AnchorSideTop.Side = asrBottom
+        Left = 293
         Height = 23
-        Top = 195
+        Top = 200
         Width = 81
         Caption = '122 GHz'
         TabOrder = 21
       end
       object cb134GHz: TCheckBox
-        Left = 310
+        AnchorSideLeft.Control = cb23cm
+        AnchorSideTop.Control = cb122GHz
+        AnchorSideTop.Side = asrBottom
+        Left = 293
         Height = 23
-        Top = 227
+        Top = 223
         Width = 81
         Caption = '134 GHz'
         TabOrder = 22
       end
       object cb241GHz: TCheckBox
-        Left = 310
+        AnchorSideLeft.Control = cb23cm
+        AnchorSideTop.Control = cb134GHz
+        AnchorSideTop.Side = asrBottom
+        Left = 293
         Height = 23
-        Top = 259
+        Top = 246
         Width = 81
         Caption = '241 GHz'
         TabOrder = 23
       end
       object btnFrequencies: TButton
-        Left = 312
+        AnchorSideLeft.Control = cb23cm
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = cb23cm
+        Left = 400
         Height = 25
-        Top = 362
+        Top = 16
         Width = 94
+        BorderSpacing.Left = 16
         BorderSpacing.InnerBorder = 4
         Caption = 'Frequencies'
         OnClick = btnFrequenciesClick
         TabOrder = 24
       end
       object cb4m: TCheckBox
-        Left = 166
+        AnchorSideLeft.Control = cb8m
+        AnchorSideTop.Control = cb5m
+        AnchorSideTop.Side = asrBottom
+        Left = 206
         Height = 23
-        Top = 98
+        Top = 85
         Width = 71
         Caption = '70MHz'
         TabOrder = 25
       end
       object cb60m: TCheckBox
-        Left = 14
+        AnchorSideLeft.Control = cb160m
+        AnchorSideTop.Control = cb80m
+        AnchorSideTop.Side = asrBottom
+        Left = 111
         Height = 23
-        Top = 131
+        Top = 62
         Width = 67
         Caption = '5 MHz'
         TabOrder = 26
       end
       object cb125m: TCheckBox
-        Left = 166
+        AnchorSideLeft.Control = cb8m
+        AnchorSideTop.Control = cb2m
+        AnchorSideTop.Side = asrBottom
+        Left = 206
         Height = 23
-        Top = 162
+        Top = 131
         Width = 83
         Caption = '220 MHz'
         TabOrder = 27
       end
       object cb30cm: TCheckBox
-        Left = 166
+        AnchorSideLeft.Control = cb8m
+        AnchorSideTop.Control = cb70cm
+        AnchorSideTop.Side = asrBottom
+        Left = 206
         Height = 23
-        Top = 227
+        Top = 177
         Width = 83
         Caption = '900 MHz'
         TabOrder = 28
       end
       object cb472kHz: TCheckBox
-        Left = 166
+        AnchorSideLeft.Control = cb136kHz
+        AnchorSideTop.Control = cb136kHz
+        AnchorSideTop.Side = asrBottom
+        Left = 16
         Height = 23
-        Top = 19
+        Top = 39
         Width = 79
         Caption = '472 kHz'
         TabOrder = 29
       end
+      object cb5m: TCheckBox
+        AnchorSideLeft.Control = cb8m
+        AnchorSideTop.Control = cb6m
+        AnchorSideTop.Side = asrBottom
+        Left = 206
+        Height = 23
+        Top = 62
+        Width = 71
+        Caption = '60MHz'
+        TabOrder = 30
+      end
+      object cb8m: TCheckBox
+        AnchorSideLeft.Control = cb160m
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = cb160m
+        Left = 206
+        Height = 23
+        Top = 16
+        Width = 71
+        BorderSpacing.Left = 16
+        Caption = '40MHz'
+        TabOrder = 31
+      end
     end
     object tabTRXcontrol: TTabSheet
       Caption = 'TRX control'
-      ClientHeight = 672
+      ClientHeight = 722
       ClientWidth = 836
       OnExit = cmbRadioNrCloseUp
       OnShow = tabTRXcontrolEnter
@@ -2142,7 +2259,7 @@ object frmPreferences: TfrmPreferences
         BorderSpacing.Left = 6
         BorderSpacing.Top = 4
         Caption = ' rigctld '
-        ClientHeight = 70
+        ClientHeight = 86
         ClientWidth = 655
         TabOrder = 0
         object lblRigctdPath: TLabel
@@ -2406,7 +2523,7 @@ object frmPreferences: TfrmPreferences
           Width = 511
           BorderSpacing.Top = 3
           Caption = 'Radio one serial parameters'
-          ClientHeight = 130
+          ClientHeight = 146
           ClientWidth = 509
           TabOrder = 11
           object lblSerialRSpd: TLabel
@@ -2904,7 +3021,7 @@ object frmPreferences: TfrmPreferences
     end
     object TabROTcontrol: TTabSheet
       Caption = 'ROT control'
-      ClientHeight = 672
+      ClientHeight = 722
       ClientWidth = 836
       object GroupBox41: TGroupBox
         AnchorSideLeft.Control = TabROTcontrol
@@ -3888,7 +4005,7 @@ object frmPreferences: TfrmPreferences
     end
     object tabModes: TTabSheet
       Caption = 'Modes'
-      ClientHeight = 672
+      ClientHeight = 722
       ClientWidth = 836
       OnExit = tabModesExit
       object grpUsrDigitalModes: TGroupBox
@@ -4278,7 +4395,7 @@ object frmPreferences: TfrmPreferences
     end
     object tabQTHProfiles: TTabSheet
       Caption = 'QTH Profiles'
-      ClientHeight = 672
+      ClientHeight = 722
       ClientWidth = 836
       object chkUseProfiles: TCheckBox
         Left = 9
@@ -4383,7 +4500,7 @@ object frmPreferences: TfrmPreferences
     end
     object tabExport: TTabSheet
       Caption = 'Export'
-      ClientHeight = 672
+      ClientHeight = 722
       ClientWidth = 836
       inline fraExportPref1: TfraExportPref
         Top = 8
@@ -4401,7 +4518,7 @@ object frmPreferences: TfrmPreferences
     end
     object tabDXCluster: TTabSheet
       Caption = 'DXCluster'
-      ClientHeight = 672
+      ClientHeight = 722
       ClientWidth = 836
       object gbDXCColor: TGroupBox
         AnchorSideLeft.Control = tabDXCluster
@@ -4557,32 +4674,38 @@ object frmPreferences: TfrmPreferences
           TabOrder = 0
         end
         object chkShow160M: TCheckBox
-          AnchorSideLeft.Control = chkShow9CM
-          AnchorSideTop.Control = chkShow630M
+          AnchorSideLeft.Control = chkShow630M
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = chkShow2190M
           Left = 188
           Height = 23
           Top = 6
           Width = 79
+          BorderSpacing.Left = 16
           Caption = '1.8 MHz'
           TabOrder = 1
         end
         object chkShow80M: TCheckBox
-          AnchorSideLeft.Control = chkShow6CM
-          AnchorSideTop.Control = chkShow160M
-          Left = 279
+          AnchorSideLeft.Control = chkShow160M
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = chkShow2190M
+          Left = 283
           Height = 23
           Top = 6
           Width = 79
+          BorderSpacing.Left = 16
           Caption = '3.5 MHz'
           TabOrder = 2
         end
         object chkShow40M: TCheckBox
-          AnchorSideLeft.Control = chkShow33CM
-          AnchorSideTop.Control = chkShow60M
-          Left = 453
+          AnchorSideLeft.Control = chkShow60M
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = chkShow2190M
+          Left = 461
           Height = 23
           Top = 6
           Width = 67
+          BorderSpacing.Left = 16
           Caption = '7 MHz'
           TabOrder = 3
         end
@@ -4598,9 +4721,8 @@ object frmPreferences: TfrmPreferences
           TabOrder = 4
         end
         object chkShow20M: TCheckBox
-          AnchorSideLeft.Control = chkShow13CM
-          AnchorSideTop.Control = chkShow160M
-          AnchorSideTop.Side = asrBottom
+          AnchorSideLeft.Control = chkShow630M
+          AnchorSideTop.Control = chkShow30M
           Left = 97
           Height = 23
           Top = 29
@@ -4609,8 +4731,8 @@ object frmPreferences: TfrmPreferences
           TabOrder = 5
         end
         object chkShow17M: TCheckBox
-          AnchorSideLeft.Control = chkShow9CM
-          AnchorSideTop.Control = chkShow20M
+          AnchorSideLeft.Control = chkShow160M
+          AnchorSideTop.Control = chkShow30M
           Left = 188
           Height = 23
           Top = 29
@@ -4619,9 +4741,9 @@ object frmPreferences: TfrmPreferences
           TabOrder = 6
         end
         object chkShow15M: TCheckBox
-          AnchorSideLeft.Control = chkShow6CM
-          AnchorSideTop.Control = chkShow20M
-          Left = 279
+          AnchorSideLeft.Control = chkShow80M
+          AnchorSideTop.Control = chkShow30M
+          Left = 283
           Height = 23
           Top = 29
           Width = 75
@@ -4629,9 +4751,9 @@ object frmPreferences: TfrmPreferences
           TabOrder = 7
         end
         object chkShow12M: TCheckBox
-          AnchorSideLeft.Control = chkShow3CM
-          AnchorSideTop.Control = chkShow20M
-          Left = 370
+          AnchorSideLeft.Control = chkShow60M
+          AnchorSideTop.Control = chkShow30M
+          Left = 378
           Height = 23
           Top = 29
           Width = 75
@@ -4639,9 +4761,9 @@ object frmPreferences: TfrmPreferences
           TabOrder = 8
         end
         object chkShow10M: TCheckBox
-          AnchorSideLeft.Control = chkShow33CM
-          AnchorSideTop.Control = chkShow20M
-          Left = 453
+          AnchorSideLeft.Control = chkShow40M
+          AnchorSideTop.Control = chkShow30M
+          Left = 461
           Height = 23
           Top = 29
           Width = 75
@@ -4649,9 +4771,9 @@ object frmPreferences: TfrmPreferences
           TabOrder = 9
         end
         object chkShow2M: TCheckBox
-          AnchorSideLeft.Control = chkShow9CM
-          AnchorSideTop.Control = chkShow4M
-          Left = 188
+          AnchorSideLeft.Control = chkShow60M
+          AnchorSideTop.Control = chkShow8M
+          Left = 378
           Height = 23
           Top = 52
           Width = 83
@@ -4659,10 +4781,9 @@ object frmPreferences: TfrmPreferences
           TabOrder = 10
         end
         object chkShow6M: TCheckBox
-          AnchorSideLeft.Control = chkShow30M
-          AnchorSideTop.Control = chkShow30M
-          AnchorSideTop.Side = asrBottom
-          Left = 6
+          AnchorSideLeft.Control = chkShow630M
+          AnchorSideTop.Control = chkShow8M
+          Left = 97
           Height = 23
           Top = 52
           Width = 75
@@ -4670,20 +4791,21 @@ object frmPreferences: TfrmPreferences
           TabOrder = 11
         end
         object chkShow70CM: TCheckBox
-          AnchorSideLeft.Control = chkShow3CM
-          AnchorSideTop.Control = chkShow125M
-          Left = 370
+          AnchorSideLeft.Control = chkShow2190M
+          AnchorSideTop.Control = chkShow8M
+          AnchorSideTop.Side = asrBottom
+          Left = 6
           Height = 23
-          Top = 52
+          Top = 75
           Width = 83
           Caption = '430 MHz'
           TabOrder = 12
         end
         object chkShow23CM: TCheckBox
-          AnchorSideLeft.Control = chkShow2190M
-          AnchorSideTop.Control = chkShow6M
+          AnchorSideLeft.Control = chkShow160M
+          AnchorSideTop.Control = chkShow8M
           AnchorSideTop.Side = asrBottom
-          Left = 6
+          Left = 188
           Height = 23
           Top = 75
           Width = 91
@@ -4691,10 +4813,9 @@ object frmPreferences: TfrmPreferences
           TabOrder = 13
         end
         object chkShow13CM: TCheckBox
-          AnchorSideLeft.Control = chkShow23CM
-          AnchorSideLeft.Side = asrBottom
+          AnchorSideLeft.Control = chkShow80M
           AnchorSideTop.Control = chkShow23CM
-          Left = 97
+          Left = 283
           Height = 23
           Top = 75
           Width = 91
@@ -4702,10 +4823,9 @@ object frmPreferences: TfrmPreferences
           TabOrder = 14
         end
         object chkShow9CM: TCheckBox
-          AnchorSideLeft.Control = chkShow13CM
-          AnchorSideLeft.Side = asrBottom
-          AnchorSideTop.Control = chkShow13CM
-          Left = 188
+          AnchorSideLeft.Control = chkShow60M
+          AnchorSideTop.Control = chkShow23CM
+          Left = 378
           Height = 23
           Top = 75
           Width = 91
@@ -4713,10 +4833,9 @@ object frmPreferences: TfrmPreferences
           TabOrder = 15
         end
         object chkShow6CM: TCheckBox
-          AnchorSideLeft.Control = chkShow9CM
-          AnchorSideLeft.Side = asrBottom
-          AnchorSideTop.Control = chkShow9CM
-          Left = 279
+          AnchorSideLeft.Control = chkShow40M
+          AnchorSideTop.Control = chkShow23CM
+          Left = 461
           Height = 23
           Top = 75
           Width = 91
@@ -4724,51 +4843,52 @@ object frmPreferences: TfrmPreferences
           TabOrder = 16
         end
         object chkShow3CM: TCheckBox
-          AnchorSideLeft.Control = chkShow6CM
-          AnchorSideLeft.Side = asrBottom
-          AnchorSideTop.Control = chkShow6CM
-          Left = 370
-          Height = 23
-          Top = 75
-          Width = 73
-          Caption = '10 GHz'
-          TabOrder = 17
-        end
-        object chkShow125CM: TCheckBox
-          AnchorSideLeft.Control = chkShow33CM
-          AnchorSideTop.Control = chkShow3CM
-          Left = 453
-          Height = 23
-          Top = 75
-          Width = 73
-          Caption = '24 GHz'
-          TabOrder = 18
-        end
-        object chkShow6MM: TCheckBox
-          AnchorSideLeft.Control = chkShow23CM
-          AnchorSideTop.Control = chkShow125CM
+          AnchorSideLeft.Control = chkShow2190M
+          AnchorSideTop.Control = chkShow70CM
           AnchorSideTop.Side = asrBottom
           Left = 6
           Height = 23
           Top = 98
           Width = 73
-          Caption = '47 GHz'
-          TabOrder = 19
+          Caption = '10 GHz'
+          TabOrder = 17
         end
-        object chkShow4MM: TCheckBox
-          AnchorSideLeft.Control = chkShow13CM
-          AnchorSideTop.Control = chkShow6MM
+        object chkShow125CM: TCheckBox
+          AnchorSideLeft.Control = chkShow630M
+          AnchorSideTop.Control = chkShow3CM
           Left = 97
           Height = 23
           Top = 98
           Width = 73
+          Caption = '24 GHz'
+          TabOrder = 18
+        end
+        object chkShow6MM: TCheckBox
+          AnchorSideLeft.Control = chkShow160M
+          AnchorSideTop.Control = chkShow3CM
+          Left = 188
+          Height = 23
+          Top = 105
+          Width = 73
+          Anchors = [akLeft]
+          Caption = '47 GHz'
+          TabOrder = 19
+        end
+        object chkShow4MM: TCheckBox
+          AnchorSideLeft.Control = chkShow80M
+          AnchorSideTop.Control = chkShow3CM
+          Left = 283
+          Height = 23
+          Top = 105
+          Width = 73
+          Anchors = [akLeft]
           Caption = '76 GHz'
           TabOrder = 20
         end
         object chkShow25MM: TCheckBox
-          AnchorSideLeft.Control = chkShow9CM
-          AnchorSideTop.Control = chkShow4MM
-          Left = 188
+          AnchorSideLeft.Control = chkShow60M
+          AnchorSideTop.Control = chkShow3CM
+          Left = 378
           Height = 23
           Top = 98
           Width = 81
@@ -4776,9 +4896,9 @@ object frmPreferences: TfrmPreferences
           TabOrder = 21
         end
         object chkShow2MM: TCheckBox
-          AnchorSideLeft.Control = chkShow6CM
-          AnchorSideTop.Control = chkShow25MM
-          Left = 279
+          AnchorSideLeft.Control = chkShow40M
+          AnchorSideTop.Control = chkShow3CM
+          Left = 461
           Height = 23
           Top = 98
           Width = 81
@@ -4786,32 +4906,33 @@ object frmPreferences: TfrmPreferences
           TabOrder = 22
         end
         object chkShow1MM: TCheckBox
-          AnchorSideLeft.Control = chkShow3CM
-          AnchorSideTop.Control = chkShow2MM
-          Left = 370
+          AnchorSideLeft.Control = chkShow2190M
+          AnchorSideTop.Control = chkShow3CM
+          AnchorSideTop.Side = asrBottom
+          Left = 6
           Height = 23
-          Top = 98
+          Top = 121
           Width = 81
           Caption = '241 GHz'
           TabOrder = 23
         end
         object chkCW: TCheckBox
-          AnchorSideLeft.Control = chkShow6MM
+          AnchorSideLeft.Control = chkShow60M
           AnchorSideTop.Control = chkShow6MM
           AnchorSideTop.Side = asrBottom
-          Left = 6
+          Left = 378
           Height = 23
-          Top = 121
+          Top = 128
           Width = 48
           Caption = 'CW'
           TabOrder = 24
         end
         object chkSSB: TCheckBox
-          AnchorSideLeft.Control = chkShow13CM
+          AnchorSideLeft.Control = chkShow40M
           AnchorSideTop.Control = chkCW
-          Left = 97
+          Left = 461
           Height = 23
-          Top = 121
+          Top = 128
           Width = 51
           Caption = 'SSB'
           TabOrder = 25
@@ -4828,9 +4949,9 @@ object frmPreferences: TfrmPreferences
           TabOrder = 26
         end
         object chkShow4M: TCheckBox
-          AnchorSideLeft.Control = chkShow13CM
-          AnchorSideTop.Control = chkShow6M
-          Left = 97
+          AnchorSideLeft.Control = chkShow80M
+          AnchorSideTop.Control = chkShow8M
+          Left = 283
           Height = 23
           Top = 52
           Width = 71
@@ -4838,19 +4959,21 @@ object frmPreferences: TfrmPreferences
           TabOrder = 27
         end
         object chkShow60M: TCheckBox
-          AnchorSideLeft.Control = chkShow3CM
-          AnchorSideTop.Control = chkShow80M
-          Left = 370
+          AnchorSideLeft.Control = chkShow80M
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = chkShow2190M
+          Left = 378
           Height = 23
           Top = 6
           Width = 67
+          BorderSpacing.Left = 16
           Caption = '5 MHz'
           TabOrder = 28
         end
         object chkShow125M: TCheckBox
-          AnchorSideLeft.Control = chkShow6CM
-          AnchorSideTop.Control = chkShow2M
-          Left = 279
+          AnchorSideLeft.Control = chkShow40M
+          AnchorSideTop.Control = chkShow8M
+          Left = 461
           Height = 23
           Top = 52
           Width = 83
@@ -4858,23 +4981,24 @@ object frmPreferences: TfrmPreferences
           TabOrder = 29
         end
         object chkShow33CM: TCheckBox
-          AnchorSideLeft.Control = chkShow70CM
-          AnchorSideLeft.Side = asrBottom
+          AnchorSideLeft.Control = chkShow630M
           AnchorSideTop.Control = chkShow70CM
-          Left = 453
+          Left = 97
           Height = 23
-          Top = 52
+          Top = 75
           Width = 83
           Caption = '900 MHz'
           TabOrder = 30
         end
         object chkShow630M: TCheckBox
-          AnchorSideLeft.Control = chkShow13CM
+          AnchorSideLeft.Control = chkShow2190M
+          AnchorSideLeft.Side = asrBottom
           AnchorSideTop.Control = chkShow2190M
           Left = 97
           Height = 23
           Top = 6
           Width = 75
+          BorderSpacing.Left = 16
           Caption = '472kHz'
           TabOrder = 31
         end
@@ -4891,6 +5015,27 @@ object frmPreferences: TfrmPreferences
           BorderSpacing.Bottom = 1
           Caption = 'Show country name in the DX cluster spot'
           TabOrder = 32
+        end
+        object chkShow8M: TCheckBox
+          AnchorSideLeft.Control = chkShow2190M
+          AnchorSideTop.Control = chkShow30M
+          AnchorSideTop.Side = asrBottom
+          Left = 6
+          Height = 23
+          Top = 52
+          Width = 75
+          Caption = '40 MHz'
+          TabOrder = 33
+        end
+        object chkShow5M: TCheckBox
+          AnchorSideLeft.Control = chkShow160M
+          AnchorSideTop.Control = chkShow8M
+          Left = 188
+          Height = 23
+          Top = 52
+          Width = 75
+          Caption = '60 MHz'
+          TabOrder = 34
         end
       end
       object gbDXCAlert: TGroupBox
@@ -5019,7 +5164,7 @@ object frmPreferences: TfrmPreferences
     end
     object tabFont: TTabSheet
       Caption = 'Fonts'
-      ClientHeight = 672
+      ClientHeight = 722
       ClientWidth = 836
       object GroupBox7: TGroupBox
         Left = 14
@@ -5230,7 +5375,7 @@ object frmPreferences: TfrmPreferences
     end
     object tabWazItu: TTabSheet
       Caption = 'WAZ, ITU zones'
-      ClientHeight = 672
+      ClientHeight = 722
       ClientWidth = 836
       object GroupBox8: TGroupBox
         Left = 14
@@ -5373,7 +5518,7 @@ object frmPreferences: TfrmPreferences
     end
     object tabIOTA: TTabSheet
       Caption = 'IOTA'
-      ClientHeight = 672
+      ClientHeight = 722
       ClientWidth = 836
       object GroupBox10: TGroupBox
         Left = 22
@@ -5430,7 +5575,7 @@ object frmPreferences: TfrmPreferences
     end
     object tabMemebership: TTabSheet
       Caption = 'Membership'
-      ClientHeight = 672
+      ClientHeight = 722
       ClientWidth = 836
       object GroupBox11: TGroupBox
         AnchorSideLeft.Control = tabMemebership
@@ -5872,7 +6017,7 @@ object frmPreferences: TfrmPreferences
     end
     object tabBandMap: TTabSheet
       Caption = 'Bandmap'
-      ClientHeight = 672
+      ClientHeight = 722
       ClientWidth = 836
       object GroupBox16: TGroupBox
         Left = 13
@@ -6191,7 +6336,7 @@ object frmPreferences: TfrmPreferences
     end
     object tabXplanet: TTabSheet
       Caption = 'xplanet support'
-      ClientHeight = 672
+      ClientHeight = 722
       ClientWidth = 836
       object GroupBox21: TGroupBox
         Left = 14
@@ -6467,7 +6612,7 @@ object frmPreferences: TfrmPreferences
     end
     object tabZipCode: TTabSheet
       Caption = 'Zip code tracking'
-      ClientHeight = 672
+      ClientHeight = 722
       ClientWidth = 836
       object GroupBox25: TGroupBox
         Left = 6
@@ -6724,7 +6869,7 @@ object frmPreferences: TfrmPreferences
     end
     object tabLoTW: TTabSheet
       Caption = 'LoTW/eQSL support'
-      ClientHeight = 672
+      ClientHeight = 722
       ClientWidth = 836
       object lblLoTWBkg: TLabel
         AnchorSideLeft.Control = cmbLoTWBckColor
@@ -7066,7 +7211,7 @@ object frmPreferences: TfrmPreferences
     end
     object tabCWInterface: TTabSheet
       Caption = 'CW interface'
-      ClientHeight = 672
+      ClientHeight = 722
       ClientWidth = 836
       OnContextPopup = tabCWInterfaceContextPopup
       OnExit = tabCWInterfaceExit
@@ -7610,7 +7755,7 @@ object frmPreferences: TfrmPreferences
         BorderSpacing.Left = 6
         BorderSpacing.Top = 6
         Caption = ' Reading data from fldigi'
-        ClientHeight = 310
+        ClientHeight = 326
         ClientWidth = 722
         TabOrder = 0
         object Label91: TLabel
@@ -7952,7 +8097,7 @@ object frmPreferences: TfrmPreferences
         Width = 724
         BorderSpacing.Top = 6
         Caption = 'Reading data from wsjtx'
-        ClientHeight = 246
+        ClientHeight = 262
         ClientWidth = 722
         TabOrder = 1
         object GroupBox52: TGroupBox
@@ -8298,7 +8443,7 @@ object frmPreferences: TfrmPreferences
     end
     object tabAutoBackup: TTabSheet
       Caption = 'Exit & Auto backup'
-      ClientHeight = 672
+      ClientHeight = 722
       ClientWidth = 836
       object GroupBox32: TGroupBox
         Left = 8
@@ -8446,7 +8591,7 @@ object frmPreferences: TfrmPreferences
     end
     object tabExtViewers: TTabSheet
       Caption = 'External viewers'
-      ClientHeight = 672
+      ClientHeight = 722
       ClientWidth = 836
       object Label99: TLabel
         Left = 23
@@ -8534,7 +8679,7 @@ object frmPreferences: TfrmPreferences
     end
     object tabCallbook: TTabSheet
       Caption = 'Callbook support'
-      ClientHeight = 672
+      ClientHeight = 722
       ClientWidth = 836
       object GroupBox38: TGroupBox
         Left = 13
@@ -8599,7 +8744,7 @@ object frmPreferences: TfrmPreferences
     end
     object tabRBN: TTabSheet
       Caption = 'RBN support'
-      ClientHeight = 672
+      ClientHeight = 722
       ClientWidth = 836
       object chkRBNAutoConn: TCheckBox
         AnchorSideLeft.Control = lblRbnWindowOpen
@@ -8918,7 +9063,7 @@ object frmPreferences: TfrmPreferences
     end
     object tabOnlineLog: TTabSheet
       Caption = 'Online log upload'
-      ClientHeight = 676
+      ClientHeight = 722
       ClientWidth = 836
       object GroupBox44: TGroupBox
         AnchorSideLeft.Control = tabOnlineLog
@@ -8929,7 +9074,7 @@ object frmPreferences: TfrmPreferences
         Width = 650
         BorderSpacing.Left = 12
         Caption = ' HamQTH '
-        ClientHeight = 177
+        ClientHeight = 193
         ClientWidth = 648
         TabOrder = 0
         object chkHaUpEnabled: TCheckBox
@@ -9068,7 +9213,7 @@ object frmPreferences: TfrmPreferences
         Width = 650
         BorderSpacing.Top = 3
         Caption = ' ClubLog '
-        ClientHeight = 207
+        ClientHeight = 223
         ClientWidth = 648
         TabOrder = 1
         object chkClUpEnabled: TCheckBox
@@ -9240,7 +9385,7 @@ object frmPreferences: TfrmPreferences
         Width = 650
         BorderSpacing.Top = 3
         Caption = ' HRDLog.net '
-        ClientHeight = 177
+        ClientHeight = 193
         ClientWidth = 648
         TabOrder = 2
         object chkHrUpEnabled: TCheckBox
@@ -9396,9 +9541,9 @@ object frmPreferences: TfrmPreferences
         AnchorSideLeft.Control = chkIgnoreLoTW
         AnchorSideTop.Control = chkIgnoreLoTW
         AnchorSideTop.Side = asrBottom
-        Left = 13
+        Left = 12
         Height = 23
-        Top = 599
+        Top = 676
         Width = 316
         Caption = 'Ignore changes caused by QSL sent/received'
         OnChange = chkIgnoreQSLChange
@@ -9408,9 +9553,9 @@ object frmPreferences: TfrmPreferences
         AnchorSideLeft.Control = chkIgnoreQSL
         AnchorSideTop.Control = chkIgnoreQSL
         AnchorSideTop.Side = asrBottom
-        Left = 13
+        Left = 12
         Height = 23
-        Top = 622
+        Top = 699
         Width = 256
         Caption = 'Ignore changes caused by QSO edit'
         OnChange = chkIgnoreEditChange
@@ -9419,7 +9564,7 @@ object frmPreferences: TfrmPreferences
     end
     object tabCondx: TTabSheet
       Caption = 'Propagation'
-      ClientHeight = 672
+      ClientHeight = 722
       ClientWidth = 836
       object rbCondxAsImage: TRadioButton
         Left = 25
@@ -9492,11 +9637,11 @@ object frmPreferences: TfrmPreferences
   object Panel1: TPanel
     AnchorSideBottom.Side = asrBottom
     Left = 1006
-    Height = 703
+    Height = 753
     Top = 0
     Width = 88
     Align = alRight
-    ClientHeight = 703
+    ClientHeight = 753
     ClientWidth = 88
     TabOrder = 1
     object btnOK: TButton
@@ -9561,7 +9706,7 @@ object frmPreferences: TfrmPreferences
   end
   object lbPreferences: TListBox
     Left = 0
-    Height = 703
+    Height = 753
     Top = 0
     Width = 160
     Align = alLeft
