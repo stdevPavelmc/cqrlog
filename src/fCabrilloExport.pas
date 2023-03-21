@@ -541,8 +541,9 @@ begin
   try try
     AssignFile(r,'/tmp/CabrilloReject.log');
     Rewrite(r);
-    pbCabExport.Max := dmData.qCQRLOG.RecordCount;
     dmData.qCQRLOG.Last;
+    pbCabExport.Max := dmData.qCQRLOG.RecordCount;
+
     while not dmData.qCQRLOG.bof do
     begin
       tmp:='';

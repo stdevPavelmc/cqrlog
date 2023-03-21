@@ -1013,6 +1013,7 @@ var
   qsl_via : String = '';
   i : Integer = 0;
 begin
+  dmData.qCQRLOG.Last; //to get proper count
   lblComment.Caption := 'Inserting QSL managers ...';
   pBarProg.Max := dmData.qCQRLOG.RecordCount;
   Application.ProcessMessages;

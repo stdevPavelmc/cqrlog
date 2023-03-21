@@ -5510,6 +5510,7 @@ begin
     dmUtils.LoadFontSettings(frmNewQSO)
   end;
 
+  dmData.qQSOBefore.Last; // to be sure the count is proper in next if
   if fViewQSO or fEditQSO then
     lblQSONr.Caption := IntToStr(dmData.qQSOBefore.RecordCount)
   else

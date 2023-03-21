@@ -166,6 +166,7 @@ begin
   dmData.trW1.StartTransaction;
   try
     dmData.W1.Open;
+    dmData.W1.Last;
     RecordCount := dmData.W1.Fields[0].AsString;
     if (RecordCount = '') then
       RecordCount := '0';

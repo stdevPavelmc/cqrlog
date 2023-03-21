@@ -219,6 +219,7 @@ begin
       trBands.RollBack;
     trBands.StartTransaction;
     qBands.Open;
+    //qBands.Last; //to get proper count
     //Writeln('qBands.RecorfdCount: ',qBands.RecordCount);
     if qBands.RecordCount = 0 then
       exit;
@@ -1210,6 +1211,7 @@ begin
     qCallAlert.Open;
     if qCallAlert.RecordCount > 0 then
    begin
+      qCallAlert.Last; //to get proper count
       if dmData.DebugLevel>=1 then Writeln('Alert: Call hits with ', qCallAlert.RecordCount,' records');
       qCallAlert.First;
       while ( (not qCallAlert.Eof) and (not Result) ) do
