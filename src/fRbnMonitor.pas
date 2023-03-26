@@ -656,8 +656,8 @@ begin
   sgRbn.Cells[2,0] := 'DX';
   sgRbn.Cells[3,0] := 'Mode';
   sgRbn.Cells[4,0] := 'dB';
-  sgRbn.Cells[5,0] := 'Q';
-  sgRbn.Cells[6,0] := 'D';
+  sgRbn.Cells[5,0] := 'Qsl';
+  sgRbn.Cells[6,0] := 'DXCC';
 
   if ((not(TRbnThread = nil)) and ( cqrini.ReadBool('RBN','AutoConnectM',False) )) then
      acConnectExecute(nil);
