@@ -1,4 +1,8 @@
 
+ #### NOTE: upgrading to 2.6.0.(114) (or higer) will change database table "cqrlog_common" to version 6
+ ####       If you return back to previous cqrlog version you need to restore the database 
+ ####       (copy backup folder  ~/.config/cqrlog-YYYYMMDD-HHMMSS to name ~/.config/cqrlog)
+ 
  #### For now on alpha test binaries beginning from 2.6.0.(107) are compiled using system that has GLIBC version 2.35
  #### If you can not start Cqrlog after update check your GLIBC version with command console: ldd --version
  #### Update GLIBC if it is below 2.3.5
