@@ -803,7 +803,21 @@ begin
         end;
     end;
     itmp := Pos('DX DE',UpperCase(tmp));
-    if (itmp > 0) or TryStrToFloat(copy(tmp,1,Pos(' ',tmp)-1),f)  then
+    if (itmp > 0) or (TryStrToFloat(copy(tmp,1,Pos(' ',tmp)-1),f) and (UpperCase(tmp[1])<>'E'))  then
+    {
+    Chk of tmp[1]<>'E' needed:
+    sh/he E6
+    E6 Niue-E6: 16 degs - dist: 9440 mi, 15192 km Reciprocal heading: 352 degs
+    OH1KH de OH1RCF  1-Apr-2023 1000Z dxspider >
+
+    E[number] at beginning of line passes tryStrToFLoat as scientific number expression
+    and we want to catch only numbers of frequencies in 12345.6 format.
+    They appear if "sh/dx" command is issued
+
+    sh/dx 1
+      28074.0 JA6GXP       1-Apr-2023 1033Z FT8 -22dB from PM52 814Hz     <F4UJU>
+    OH1KH de OH1RCF  1-Apr-2023 1033Z dxspider >
+    }
     begin
       EnterCriticalsection(frmDXCluster.csTelnet);
       if dmData.DebugLevel>=1 then Writeln('Enter critical section On Receive');
