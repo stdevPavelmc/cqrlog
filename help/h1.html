@@ -441,23 +441,29 @@ for each operation.
 </table>
 <br><br>
 This option allows an easy setup of the log fields to be exported into ADIF or HTML format.
-Only checked fields are exported. The 'Column' option names columns at header line. 'Width' option denotes the column width in approx. count of 16px characters. 
+<br>Only checked fields are exported. The 'Column' option names columns at header line. 'Width' option denotes the column width in approx. count of 16px characters. 
 Both options affect only for the HTML export. 
 <br>The SAT mode field is not stored in the database but instead calculated on the fly from frequency and RX frequency and for SAT QSOs only.
 <br>Width setting is ignored if "HTML auto column width" is checked when longest text in column (column name or data) sets the column width.
-<br>Distances are not exported when doing log backup at cqlog closing phase. They will be calculated and exported (if selected) in ADIF, HTML and QSL label printing.
+<br><br>Distances are not exported when doing log backup at cqlog closing phase. They will be calculated and exported (if selected) in ADIF, HTML and QSL label printing.
  Calculation of distances requires that preferences/station/locator is set and applied (automatic) to every qso and that at least 4 digit locator
-  (in case "ll" is added as 5 and 6th char to get the center of grid) of destination station logged. Sometimes importing logs from other logging program may leave own station locator unset. In this case QSO list/File/Group edit must be used for updating "my locator" field.
+  (in case "ll" is added as 5 and 6th char to get the center of grid) of destination station logged. 
+<br>Sometimes importing logs from other logging program may leave own station locator unset. In this case QSO list/File/Group edit must be used for updating "my locator" field.
 
 <br><br>
 <a name=ah11><h2><strong>DX cluster</strong></h2></a>
 <img src=img/h14.png border=0><br><br>
-This dialog allows an easy setup of the DX cluster spot filtering. Check the bands you want
-to display. If you want to supress (ie. filter out) spots for some DX countries, put
-its prefixes in the box below. Use a semicolon as a separator.
+<strong>Show only spots</strong><br>
+This dialog allows an easy setup of the DX cluster spot filtering. Check the bands and modes you want
+to display. 
+<br><br><strong>Note: </strong>Mode checkboxes here refer to <a href="h1.html#ah8">Preferences/Modes</a> set for every rig separately, and DATA refers to setting of "Log mode" there.
+<br>Each mode's frequency limits are set at <a href="h1.html#ah6">Preferences/Bands/Frequencies</a>.
+<br>Without proper setting of these spot filtering can not work and may not drop Spots you wish to disable, or may not show Spots you want to see.
+<br><br> If you want to supress (ie. filter out) spots for some DX countries, put
+those prefixes in the box below. Use a semicolon as a separator.
 <p>
-<strong>Callsign alert</strong> - allows you to enter callsigns that you are interested in. Eg. some special station for an award etc.<br>
-<strong>Run this command when callsign is spotted:</strong> will run select command when any of callsigns you've enter appears in the cluster.<br>
+<strong>Callsign alert</strong><br>Allows you to enter callsigns that you are interested in. Eg. some special station for an award etc.<br>
+<strong>Run this command when callsign is spotted</strong><br>Will run select command when any of callsigns you've enter appears in the cluster.<br>
 E.g. use this if you want to see small window with information:<br><br>
 <i> zenity --info --text='Callsign $CALLSIGN detected at $FREQ $MODE' --title=Info</i><br><br>
 You have to install zenity, first. <i>(Thans to SV2RCK for the tip!)</i>
@@ -474,10 +480,11 @@ This is also possible with "notify-send". The display duration is set in ms (-t 
 
 </p>
 <p>
-<strong>Show country name in the DX cluster spot</strong> - next to every spot, you will se the coutry name of the DX station<br>
-<strong>Send these commands to telnet DXCluster when connected</strong> - one or several commands with comma separated can be sent to DXCluster after connect is initialized.
- If your command(s) have space(s) between, like "<strong>acc/spot by_zone 14,15,16 and not (on hf/data or on hf/rtty)</strong>" it is recommended to close each command between double quotes.<br>
-<strong>Connect to DX cluster after program startup</strong> - after log is opened, cqrlog will connect to your default cluster. Please remember that
+<strong>Show country name in the DX cluster spot</strong><br>Next to every spot, you will se the coutry name of the DX station<br>
+<strong>Send these commands to telnet DXCluster when connected</strong><br>One or several commands with comma separated can be sent to DXCluster after connect is initialized.
+ If your command(s) have space(s) between, 
+<br>like "<strong>acc/spot by_zone 14,15,16 and not (on hf/data or on hf/rtty)</strong>" it is recommended to close each command between double quotes.<br>
+<strong>Connect to DX cluster after program startup</strong><br>After log is opened, cqrlog will connect to your default cluster. Please remember that
 username and password(if needed) have to be filled in the cluster list.
 </p>
 <p align=center><img src=img/line.png></p>

@@ -240,7 +240,7 @@ type
     chkCounty3: TCheckBox;
     chkCounty4: TCheckBox;
     chkCounty5: TCheckBox;
-    chkCW1: TCheckBox;
+    chkDATA: TCheckBox;
     chkDate3: TCheckBox;
     chkDate4: TCheckBox;
     chkDate5: TCheckBox;
@@ -1349,6 +1349,7 @@ begin
   cqrini.WriteBool('DXCluster', 'Show1MM', chkShow1MM.Checked);
   cqrini.WriteBool('DXCluster', 'CW', chkCW.Checked);
   cqrini.WriteBool('DXCluster', 'SSB', chkSSB.Checked);
+  cqrini.WriteBool('DXCluster', 'DATA', chkDATA.Checked);
   cqrini.WriteString('DXCluster', 'NotShow', edtDoNotShow.Text);
   cqrini.WriteBool('DXCluster', 'ConAfterRun', chkConToDXC.Checked);
   cqrini.WriteBool('DXCluster','ShowDxcCountry',chkShowDxcCountry.Checked);
@@ -2998,6 +2999,7 @@ begin
   chkShow1MM.Checked := cqrini.ReadBool('DXCluster', 'Show1MM', True);
   chkCW.Checked := cqrini.ReadBool('DXCluster', 'CW', True);
   chkSSB.Checked := cqrini.ReadBool('DXCluster', 'SSB', True);
+  chkDATA.Checked := cqrini.ReadBool('DXCluster', 'DATA', True);
   edtDoNotShow.Text := cqrini.ReadString('DXCluster', 'NotShow', '');
   cmbNewCountry.Selected := cqrini.ReadInteger('DXCluster', 'NewCountry', 0);
   cmbNewBand.Selected := cqrini.ReadInteger('DXCluster', 'NewBand', 0);

@@ -124,6 +124,7 @@ type
     gcfgNotShow : String;
     gcfgCW : Boolean;
     gcfgSSB : Boolean;
+    gcfgDATA: Boolean;
     gcfgEU  : Boolean;
     gcfgAS  : Boolean;
     gcfgAF  : Boolean;
@@ -1025,6 +1026,7 @@ var
 
   cfgCW : Boolean;
   cfgSSB : Boolean;
+  cfgDATA: Boolean;
   cfgEU  : Boolean;
   cfgAS  : Boolean;
   cfgAF  : Boolean;
@@ -1049,6 +1051,7 @@ begin
     iITU   := giITU;
     cfgCW  := gcfgCW;
     cfgSSB := gcfgSSB;
+    cfgDATA:= gcfgDATA;
     cfgEU  := gcfgEU;
     cfgAS  := gcfgAS;
     cfgNA  := gcfgNA;
@@ -1145,7 +1148,7 @@ begin
   begin
     Result := false;
     if dmData.DebugLevel >=1 then
-      Writeln('Cannot show this sport because of settings ...');
+      Writeln('Cannot show this spot because of Show only spots (band) settings ...');
     exit
   end;
 
@@ -1161,9 +1164,18 @@ begin
       Result := false
   end;
 
-  if (result = False) then
-    exit;
+  if not cfgDATA  then
+  begin
+    if (mode=cqrini.ReadString('Band'+IntToStr(frmTRXControl.cmbRig.ItemIndex), 'Datamode', 'RTTY')) then
+      Result := false
+  end;
 
+  if (result = False) then
+   Begin
+    if dmData.DebugLevel >=1 then
+       Writeln('Cannot show this spot because of Show only spots (mode) settings ...');
+    exit;
+   end;
   if wDXCC = '*' then
   begin
     if Pos(prefix+';',iDXCC) = 0 then
@@ -1606,6 +1618,7 @@ begin
     giITU   := cqrini.ReadString('BandMap','iITU','');
     gcfgCW  := cqrini.ReadBool('DXCluster','CW',true);
     gcfgSSB := cqrini.ReadBool('DXCluster','SSB',True);
+    gcfgDATA:= cqrini.ReadBool('DXCluster','DATA',True);
     gcfgEU  := cqrini.ReadBool('BandMap','wEU',True);
     gcfgAS  := cqrini.ReadBool('BandMap','wAS',True);
     gcfgNA  := cqrini.ReadBool('BandMap','wNA',True);

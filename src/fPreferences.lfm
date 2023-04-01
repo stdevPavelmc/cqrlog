@@ -5037,6 +5037,17 @@ object frmPreferences: TfrmPreferences
           Caption = '60 MHz'
           TabOrder = 34
         end
+        object chkDATA: TCheckBox
+          AnchorSideLeft.Control = chkShow80M
+          AnchorSideTop.Control = chkShow6MM
+          AnchorSideTop.Side = asrBottom
+          Left = 283
+          Height = 23
+          Top = 121
+          Width = 60
+          Caption = 'DATA'
+          TabOrder = 35
+        end
       end
       object gbDXCAlert: TGroupBox
         AnchorSideLeft.Control = tabDXCluster
