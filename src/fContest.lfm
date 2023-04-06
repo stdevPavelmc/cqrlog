@@ -965,6 +965,52 @@ object frmContest: TfrmContest
       TabOrder = 0
       TabStop = False
     end
+    object lblCqFreq: TLabel
+      AnchorSideTop.Control = btnCQstart
+      AnchorSideTop.Side = asrCenter
+      Left = 297
+      Height = 1
+      Hint = 'Shows Frequency last used for CQ calling (F1 memory).'#10'Double click on Frequency or Ctrl+L sets rig to that frequency and mode.'
+      Top = 36
+      Width = 1
+      BorderSpacing.Left = 12
+      Color = clYellow
+      ParentColor = False
+      ParentFont = False
+      ParentShowHint = False
+      ShowHint = True
+      Transparent = False
+      OnClick = lblCqFreqClick
+    end
+    object lblCQLbl: TLabel
+      AnchorSideLeft.Control = lblCqFreq
+      AnchorSideTop.Control = lblCQrepeat
+      Left = 297
+      Height = 17
+      Top = 2
+      Width = 82
+      Caption = 'Last CQ Freq'
+      ParentColor = False
+    end
+    object lblCqMode: TLabel
+      AnchorSideLeft.Control = lblCqFreq
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = btnCQstart
+      AnchorSideTop.Side = asrCenter
+      Left = 304
+      Height = 1
+      Hint = 'Shows Mode last used for CQ calling (F1 memory).'#10'Double click on mode or Ctrl+L sets rig to that frequency and mode.'
+      Top = 36
+      Width = 1
+      BorderSpacing.Left = 6
+      Color = clYellow
+      ParentColor = False
+      ParentFont = False
+      ParentShowHint = False
+      ShowHint = True
+      Transparent = False
+      OnClick = lblCqFreqClick
+    end
   end
   object tmrESC2: TTimer
     Enabled = False

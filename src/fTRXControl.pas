@@ -131,8 +131,6 @@ type
     procedure mnuProgPrefClick(Sender : TObject);
     procedure mnuShowUsrClick(Sender : TObject);
     procedure mnuShowVfoClick(Sender : TObject);
-    procedure rbRadio1Click(Sender : TObject);
-    procedure rbRadio2Click(Sender : TObject);
     procedure tmrRadioTimer(Sender : TObject);
   private
     MouseWheelUsed : Boolean;
@@ -705,18 +703,6 @@ begin
   gbVfo.Visible := not gbVfo.Visible;
   mnuShowVfo.Checked := gbVfo.Visible;
   cqrini.WriteBool('TRX', 'ShowVfo', gbVfo.Visible);
-end;
-
-procedure TfrmTRXControl.rbRadio1Click(Sender : TObject);
-begin
-  LoadUsrButtonCaptions;
-  InitializeRig;
-end;
-
-procedure TfrmTRXControl.rbRadio2Click(Sender : TObject);
-begin
-  LoadUsrButtonCaptions;
-  InitializeRig;
 end;
 
 procedure TfrmTRXControl.tmrRadioTimer(Sender : TObject);

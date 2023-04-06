@@ -5692,6 +5692,11 @@ begin
    if LastFkey = 0 then
     begin
       if (Sender <> nil ) then LastFKey := Key;   //LastKey resets by  KeyUp. Nil sender is a mouse click on button
+      if ( frmContest.Showing and (key = VK_F1)) then  //set the "lastCqFreq" @contest window
+        Begin
+          frmContest.lblCqMode.Caption:=frmTRXControl.GetRawMode;
+          frmContest.lblCqFreq.Caption := FormatFloat('0.00',frmTRXControl.GetFreqkHz);
+        end;
       if ((cmbMode.Text='SSB') or (cmbMode.Text='FM') or (cmbMode.Text='AM')) then
        begin
         RunVK(dmUtils.GetDescKeyFromCode(Key));

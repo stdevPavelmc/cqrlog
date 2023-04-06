@@ -91,7 +91,7 @@ implementation
 {$R *.lfm}
 
 { TfrmCWType }
-uses fTRXControl,fNewQSO,dUtils,dData, uMyIni;
+uses fTRXControl,fNewQSO,dUtils,dData, uMyIni, fContest;
 
 function TfrmCWType.PassedKey(key:char):boolean;
 Begin
@@ -188,10 +188,17 @@ procedure TfrmCWType.btnF1Click(Sender: TObject);
 begin
   m.SetFocus; //after click focus back to memo
   if Assigned(frmNewQSO.CWint) and (frmNewQSO.cmbMode.Text='CW') then
-   frmNewQSO.CWint.SendText(dmUtils.GetCWMessage('F1',frmNewQSO.edtCall.Text,
+     begin
+      frmNewQSO.CWint.SendText(dmUtils.GetCWMessage('F1',frmNewQSO.edtCall.Text,
       frmNewQSO.edtHisRST.Text, frmNewQSO.edtContestSerialSent.Text,frmNewQSO.edtContestExchangeMessageSent.Text,
       frmNewQSO.edtContestSerialReceived.Text,frmNewQSO.edtContestExchangeMessageReceived.Text,
-      frmNewQSO.edtName.Text,frmNewQSO.lblGreeting.Caption,''))
+      frmNewQSO.edtName.Text,frmNewQSO.lblGreeting.Caption,''));
+      if frmContest.Showing then  //set the "lastCqFreq" @contest window
+        Begin
+          frmContest.lblCqMode.Caption:=frmTRXControl.GetRawMode;
+          frmContest.lblCqFreq.Caption := FormatFloat('0.00',frmTRXControl.GetFreqkHz);
+        end;
+     end
     else ShowMessage('Radio:   Not in CW mode!'+LineEnding+'or'+LineEnding+'CW interface:   No keyer defined! ');
 end;
 

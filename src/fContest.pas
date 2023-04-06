@@ -38,6 +38,9 @@ type
     edtSRX: TEdit;
     edtSRXStr: TEdit;
     gbStatus: TGroupBox;
+    lblCqFreq: TLabel;
+    lblCqMode: TLabel;
+    lblCQLbl: TLabel;
     lblCQperiod: TLabel;
     lblCQrepeat: TLabel;
     lblSpeed: TLabel;
@@ -96,6 +99,7 @@ type
     procedure chkTabAllChange(Sender: TObject);
     procedure cmbContestNameExit(Sender: TObject);
     procedure edtRSTrEnter(Sender: TObject);
+    procedure lblCqFreqClick(Sender: TObject);
     procedure mnuReSetAllClick(Sender: TObject);
     procedure mnuCountyrCountAllClick(Sender: TObject);
     procedure mnuDXCountryCountClick(Sender: TObject);
@@ -184,6 +188,7 @@ var
 
   CQcount   : integer;
 
+
 implementation
 
 {$R *.lfm}
@@ -244,6 +249,11 @@ begin
   if (Key >= VK_F1) and (Key <= VK_F10) and (Shift = []) then
   begin
      SendFmemory(key);
+     if key=VK_F1 then
+        Begin
+          lblCqMode.Caption:=frmTRXControl.GetRawMode;
+          lblCqFreq.Caption := FormatFloat('0.00',frmTRXControl.GetFreqkHz);
+        end;
      key := 0;
     if (frmNewQSO.cmbMode.Text = 'SSB') then
       frmNewQSO.RunVK(dmUtils.GetDescKeyFromCode(Key))
@@ -313,6 +323,10 @@ begin
     if key in [VK_1..VK_9] then frmNewQSO.SetSplit(chr(key));
   if ((Shift = [ssCTRL]) and (key = VK_0)) then
     frmTRXControl.DisableSplit;
+
+  //Jump to last CQ freq,mode
+  if  ((Shift = [ssCTRL]) and (key = VK_L)) then
+                              lblCqFreqClick(nil);
 end;
 
 procedure TfrmContest.edtCallExit(Sender: TObject);
@@ -627,6 +641,14 @@ begin
                 FmemorySent:=true;
                 SendFmemory(VK_F2);
               end;
+end;
+
+procedure TfrmContest.lblCqFreqClick(Sender: TObject);
+var
+   f:double;
+Begin
+ if TryStrToFloat(lblCqFreq.Caption,f) then
+     frmtrxcontrol.SetModeFreq(lblCqMode.Caption,lblCqFreq.Caption);
 end;
 
 procedure TfrmContest.edtCallChange(Sender: TObject);
