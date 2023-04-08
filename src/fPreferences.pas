@@ -436,6 +436,7 @@ type
     DateEditCall: TDateEdit;
     DateEditLoc: TDateEdit;
     dlgColor : TColorDialog;
+    edtCondxTextUrl: TEdit;
     edtDataCmd: TEdit;
     edtHrdUrl: TEdit;
     edtClubLogUrl: TEdit;
@@ -770,8 +771,8 @@ type
     lblADIFport: TLabel;
     lblADIFaddr: TLabel;
     lblwsjtport: TLabel;
-    Label204: TLabel;
-    Label205: TLabel;
+    lblDnloadCondxImg: TLabel;
+    lblCondxImgexample: TLabel;
     lblDebug : TLabel;
     Label207: TLabel;
     lblwsjtaddr: TLabel;
@@ -1553,6 +1554,7 @@ begin
   cqrini.WriteString('OnlineLog','HrUrl',edtHrdUrl.Text);
 
   cqrini.WriteString('prop','Url',edtCondxImageUrl.Text);
+  cqrini.WriteString('prop','UrlTxt',edtCondxTextUrl.Text);
   cqrini.WriteBool('prop','AsImage',rbCondxAsImage.Checked);
   cqrini.WriteBool('prop','AsText',rbCondxAsText.Checked);
   cqrini.WriteBool('prop','Values',chkShowCondxValues.Checked);
@@ -3211,6 +3213,7 @@ begin
   chkHrUpEnabledChange(nil);
 
   edtCondxImageUrl.Text      := cqrini.ReadString('prop','Url','http://www.hamqsl.com/solarbrief.php');
+  edtCondxTextUrl.Text       := cqrini.ReadString('prop','UrlTxt','https://www.hamqsl.com/solarxml.php' );
   rbCondxAsImage.Checked     := cqrini.ReadBool('prop','AsImage',True);
   rbCondxAsText.Checked      := cqrini.ReadBool('prop','AsText',False);
   chkShowCondxValues.Checked := cqrini.ReadBool('prop','Values',True);

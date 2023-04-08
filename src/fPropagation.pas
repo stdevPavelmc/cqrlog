@@ -157,7 +157,7 @@ begin
       end
     end
     else begin
-      if HTTP.HTTPMethod('GET', 'https://www.hamqsl.com/solarxml.php' ) then
+      if HTTP.HTTPMethod('GET', cqrini.ReadString('prop','UrlTxt','https://www.hamqsl.com/solarxml.php' )) then
       begin
         m.LoadFromStream(HTTP.Document);
         m.SaveToFile(dmData.HomeDir+'solar.xml');

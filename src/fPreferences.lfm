@@ -9578,33 +9578,46 @@ object frmPreferences: TfrmPreferences
       ClientHeight = 722
       ClientWidth = 836
       object rbCondxAsImage: TRadioButton
-        Left = 25
+        AnchorSideLeft.Control = tabCondx
+        AnchorSideTop.Control = tabCondx
+        Left = 24
         Height = 23
-        Top = 16
+        Top = 24
         Width = 207
+        BorderSpacing.Left = 24
+        BorderSpacing.Top = 24
         Caption = 'Show propagation as image'
         Checked = True
         TabOrder = 0
         TabStop = True
       end
       object edtCondxImageUrl: TEdit
-        Left = 72
+        AnchorSideLeft.Control = lblDnloadCondxImg
+        AnchorSideTop.Control = lblDnloadCondxImg
+        AnchorSideTop.Side = asrBottom
+        Left = 61
         Height = 34
-        Top = 72
+        Top = 70
         Width = 528
         TabOrder = 1
         Text = 'edtCondxImageUrl'
       end
-      object Label204: TLabel
-        Left = 74
+      object lblDnloadCondxImg: TLabel
+        AnchorSideLeft.Control = rbCondxAsImage
+        AnchorSideLeft.Side = asrCenter
+        AnchorSideTop.Control = rbCondxAsImage
+        AnchorSideTop.Side = asrBottom
+        Left = 61
         Height = 17
-        Top = 48
+        Top = 53
         Width = 133
+        BorderSpacing.Top = 6
         Caption = 'Downoad data from:'
         ParentColor = False
       end
       object rbCondxAsText: TRadioButton
-        Left = 25
+        AnchorSideLeft.Control = rbCondxAsImage
+        Left = 24
         Height = 23
         Top = 152
         Width = 190
@@ -9612,36 +9625,59 @@ object frmPreferences: TfrmPreferences
         TabOrder = 2
       end
       object chkShowCondxValues: TCheckBox
-        Left = 56
+        AnchorSideLeft.Control = edtCondxTextUrl
+        AnchorSideTop.Control = edtCondxTextUrl
+        AnchorSideTop.Side = asrBottom
+        Left = 61
         Height = 23
-        Top = 185
+        Top = 209
         Width = 195
         Caption = 'Show A, K, SSN, FOF2 etc.'
         TabOrder = 3
       end
       object chkCondxCalcHF: TCheckBox
-        Left = 56
+        AnchorSideLeft.Control = chkShowCondxValues
+        AnchorSideTop.Control = chkShowCondxValues
+        AnchorSideTop.Side = asrBottom
+        Left = 61
         Height = 23
-        Top = 217
+        Top = 232
         Width = 288
         Caption = 'Show calculated prediction for HF bands'
         TabOrder = 4
       end
       object chkCondxCalcVHF: TCheckBox
-        Left = 56
+        AnchorSideLeft.Control = chkShowCondxValues
+        AnchorSideTop.Control = chkCondxCalcHF
+        AnchorSideTop.Side = asrBottom
+        Left = 61
         Height = 23
-        Top = 249
+        Top = 255
         Width = 297
         Caption = 'Show calculated prediction for VHF bands'
         TabOrder = 5
       end
-      object Label205: TLabel
-        Left = 72
+      object lblCondxImgexample: TLabel
+        AnchorSideLeft.Control = edtCondxImageUrl
+        AnchorSideTop.Control = edtCondxImageUrl
+        AnchorSideTop.Side = asrBottom
+        Left = 61
         Height = 17
         Top = 104
         Width = 393
         Caption = 'Look at http://www.hamqsl.com/solar.html for more variants'
         ParentColor = False
+      end
+      object edtCondxTextUrl: TEdit
+        AnchorSideLeft.Control = edtCondxImageUrl
+        AnchorSideTop.Control = rbCondxAsText
+        AnchorSideTop.Side = asrBottom
+        Left = 61
+        Height = 34
+        Top = 175
+        Width = 528
+        TabOrder = 6
+        Text = 'edtCondxTextUrl'
       end
     end
   end
