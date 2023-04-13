@@ -548,6 +548,8 @@ begin
     rbIgnoreDupes.ShowHint:=not b;;
     cmbContestName.ShowHint:=not b;
     mStatus.ShowHint:=not b;
+    lblCqMode.ShowHint:=not b;
+    lblCqFreq.ShowHint:=not b;
    finally
    end;
 end;
