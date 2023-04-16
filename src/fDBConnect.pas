@@ -317,6 +317,10 @@ begin
 end;
 
 procedure TfrmDBConnect.btnNewLogClick(Sender: TObject);
+var
+  db          :string;
+  cnr,nr      :integer;
+  l           :TStringList;
 begin
   frmNewLog := TfrmNewLog.Create(nil);
   try
@@ -324,15 +328,45 @@ begin
     frmNewLog.ShowModal;
     if frmNewLog.ModalResult = mrOK then
     begin
-      //if dmData.LogName <> '' then
-      //  dmData.CloseDatabases;
-      dmData.CreateDatabase(StrToInt(frmNewLog.edtLogNR.Text),
-                            frmNewLog.edtLogName.Text);
-      UpdateGridFields
-    end
+      dmData.CreateDatabase(StrToInt(frmNewLog.edtLogNR.Text),frmNewLog.edtLogName.Text);
+      UpdateGridFields;
+      if frmNewLog.edtLogCpyNR.Text<>'' then
+       Begin
+          cnr:=StrToInt(frmNewLog.edtLogCpyNR.Text); //this nr log exists and strtoint works: tested in "newlog"
+          db := dmData.GetProperDBName(cnr);
+          if dmData.DBName<>'' then
+            dmData.SaveConfigFile;
+          dmData.Q.Close;
+          if dmData.trQ.Active then dmData.trQ.Rollback;
+          dmData.Q.SQL.Text := 'select config_file from '+db+'.cqrlog_config';
+          dmData.trQ.StartTransaction;
+          l := TStringList.Create;
+          try  try
+            dmData.Q.Open;
+            l.Text := dmData.Q.Fields[0].AsString;
+            nr:=StrToInt(frmNewLog.edtLogNR.Text);  //this nr log just created strtoint works: tested in "newlog"
+            db := dmData.GetProperDBName(nr);
+            dmData.Q.Close;
+            if dmData.trQ.Active then dmData.trQ.Rollback;
+            dmData.Q.SQL.Text := 'update '+db+'.cqrlog_config set config_file =:config_file';
+            dmData.trQ.StartTransaction;
+            dmData.Q.Params[0].AsString := l.Text;
+            dmData.Q.ExecSQL
+            except
+              dmData.trQ.Rollback
+            end;
+            dmData.trQ.Commit;
+            ShowMessage('Config copied successfully')
+            finally
+              dmData.Q.Close;
+              l.Free
+            end;
+
+       end;
+      end;
   finally
     frmNewLog.Free
-  end
+  end;
 end;
 
 procedure TfrmDBConnect.btnOpenLogClick(Sender: TObject);
