@@ -14,10 +14,11 @@ type
   { TfrmImportLoTWWeb }
 
   TfrmImportLoTWWeb = class(TForm)
-    btnDownload: TButton;
     btnClose: TButton;
+    btnDownload: TButton;
     btnPreferences: TButton;
     cbImports: TCheckBox;
+    chkChangeDate: TCheckBox;
     chkShowNew: TCheckBox;
     edtCall: TEdit;
     edtDateFrom: TEdit;
@@ -30,6 +31,7 @@ type
     pnlSettings: TPanel;
     pnlButtons: TPanel;
     procedure cbImportsChange(Sender: TObject);
+    procedure chkChangeDateChange(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: boolean);
     procedure FormShow(Sender: TObject);
     procedure btnDownloadClick(Sender: TObject);
@@ -169,6 +171,8 @@ begin
         Free
       end;
       mStat.Lines.Add('Import complete ...');
+      if chkChangeDate.Checked then
+         cqrini.WriteString('LoTWImp','DateFrom',FormatDateTime('YYYY-MM-DD', Now));
       if chkShowNew.Checked then
       begin
         mStat.Lines.Add('');
@@ -206,6 +210,7 @@ procedure TfrmImportLoTWWeb.FormShow(Sender: TObject);
 begin
   dmUtils.LoadWindowPos(self);
   chkShowNew.Checked := cqrini.ReadBool('LoTWImp','ShowNewQSOs',True);
+  chkChangeDate.Checked:=cqrini.ReadBool('LoTWImp','ChangeDate',False);
   edtDateFrom.Text   := cqrini.ReadString('LoTWImp','DateFrom','1990-01-01');
   edtCall.Text       := cqrini.ReadString('LoTWImp','Call',
                         cqrini.ReadString('Station','Call',''));
@@ -222,6 +227,11 @@ end;
 procedure TfrmImportLoTWWeb.cbImportsChange(Sender: TObject);
 begin
   cqrini.WriteBool('LoTWImp','Import',cbImports.Checked);
+end;
+
+procedure TfrmImportLoTWWeb.chkChangeDateChange(Sender: TObject);
+begin
+  cqrini.WriteBool('LoTWImp','ChangeDate',chkChangeDate.Checked);
 end;
 
 procedure TfrmImportLoTWWeb.SockCallBack (Sender: TObject; Reason:  THookSocketReason; const  Value: string);
