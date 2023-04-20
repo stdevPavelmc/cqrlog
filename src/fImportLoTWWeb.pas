@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs,
   httpsend, blcksock, StdCtrls, ExtCtrls, inifiles, ssl_openssl, ssl_openssl_lib,
-  synacode;
+  synacode, DateUtils;
 
 type
 
@@ -172,7 +172,7 @@ begin
       end;
       mStat.Lines.Add('Import complete ...');
       if chkChangeDate.Checked then
-         cqrini.WriteString('LoTWImp','DateFrom',FormatDateTime('YYYY-MM-DD', Now));
+         cqrini.WriteString('LoTWImp','DateFrom',FormatDateTime('YYYY-MM-DD', IncDay(Today, -1)));
       if chkShowNew.Checked then
       begin
         mStat.Lines.Add('');
