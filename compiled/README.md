@@ -1,14 +1,17 @@
 
- #### NOTE: upgrading to 2.6.0.(115) (or higer) will change database table "cqrlog_common" to version 6
- ####       If you return back to previous cqrlog version you need to restore the database 
- ####       (copy backup folder  ~/.config/cqrlog-YYYYMMDD-HHMMSS to name ~/.config/cqrlog)
+ #### NOTE: Upgrading to 2.6.0.(115) (or higer) will change database table "cqrlog_common" to version 6.
+ If you return back to previous cqrlog version you need to restore the database.
+( if you used newupdate.sh it is to copy backup folder  ~/.config/cqrlog-YYYYMMDD-HHMMSS to name ~/.config/cqrlog )
  
- #### For now on alpha test binaries beginning from 2.6.0.(107) are compiled using system that has GLIBC version 2.35
- #### If you can not start Cqrlog after update check your GLIBC version with command console: ldd --version
- #### Update GLIBC if it is below 2.3.5
+ #### NOTE: For now on alpha test binaries beginning from 2.6.0.(107) are compiled using system that has GLIBC version 2.35.
+If you can not start Cqrlog after update check your GLIBC version with command console: ***ldd --version***
+Update GLIBC if it is below 2.3.5.
+If you do not want to do that you can compile this source (see 1 folder up) with your current OS version and get it running.
+Note that the source version is usually one step higher than ready compiled versions.
  
- #### At the moment there is no new official version source release. That is why alpha (115) is VERY far ahead from official.
- #### You see all changes from changelog in first start of (115). It can be opened also later from "Help".
+ #### NOTE: At the moment there is no new official version source release. That is why alpha (115) is ***VERY far ahead*** from official.
+From [Changelog](https://htmlpreview.github.io/?https://github.com/OH1KH/cqrlog/blob/loc_testing/src/changelog.html) 
+you can see all changes. It appears also at first start of (115), and can be accessed via "Help" when Cqrlog is running.
 
 
 Latest cqrlog alpha test binaries can be found from this folder.
@@ -20,14 +23,13 @@ They contain all accepted pull requests from official source (that may not be re
 
     Commits on Jul 24, 2022 Merge pull request #529 from OH1KH/direct_load_filter 
 
- Binaries (cqr2,cqr3,cqr5,cqr6 zips) include latest official source WITH alpha additions and Pull Requests that have not yet applied.
+ Binaries (cqr2,cqr3,cqr5,cqr6 zips) include latest official source ***WITH alpha additions and Pull Requests that have not yet applied***.
  
  To see what are the latest official updates look at <https://github.com/ok2cqr/cqrlog/commits/master>
  To see updates in this alpha version look at <https://github.com/OH1KH/cqrlog/commits/loc_testing>
 
  To read about UTF8 special charcters in logs read file UTF8_logs.md
  
-LAST UPDATE
  
 BINARIES:
 ---------
@@ -51,7 +53,7 @@ BINARIES:
    
 **This is NOT official release !**
 
-   **ALWAYS !!  FIRST DO BACKUP OF YOUR LOGS AND SETTINGS !!**
+   ***ALWAYS !!  FIRST DO BACKUP OF YOUR LOGS AND SETTINGS !!***
    
    If you use script-install (see below) it makes backups for you.
    Otherwise see "manual-install (below).
@@ -66,7 +68,7 @@ BINARIES:
 ============================================
 
 
-## -------------------SCRIPT-INSTALL--------------------
+### -------------------SCRIPT-INSTALL--------------------
 
 **There is now new script for update. You need to download only the script and start it.**
 **It will do rest of downloads for you and then install updates.**
@@ -108,7 +110,7 @@ I have tested this script many times while writing it. How ever it may fail with
 
 So you USE IT ON YOUR OWN RISK !
 
-Here is a video showing update in use: https://www.youtube.com/watch?v=Jt_D5sICJVo
+Here is a video showing update in use https://www.youtube.com/watch?v=H_QLQhQyFVg&t
 
 Other way to update is to do it manually as follows:
 
@@ -147,102 +149,80 @@ Then check execution rights.
     sudo cp /usr/bin/cqrlog /usr/bin/cqrlog_old
     sudo cp /tmp/cqrlog /usr/bin/
     sudo chmod a+x /usr/bin/cqrlog  
+    
 
- ## A list what is not included into official cqrlog GitHub source and exist only in Test versions is listed below.
+## -------------------MANUAL-COMPILE--------------------
+
+
+Once you have a running Cqrlog installed you can do update also by making the compile from source code.
+For getting source code there are two ways:
+
+clone my whole Git reporsitory using command terminal:
+
+	git clone https://github.com/OH1KH/cqrlog.git
+
+This will make folder "cqrlog" to your home directory if cloning is issued on that directory.
+After that, to get into Alpha branch, give command:
+
+	git checkout loc_testing
+
+Now you have the Alpha source in hand.
+Good side with "git clone" is that on next time you like to upgrade you just open command console and change directory to "cqrlog" ("cd cqrlog") and issue command "git pull" and new updates are applied and you are ready to compile and install again.
+
+Other way is to download just the current version's source with web browser from https://github.com/OH1KH/cqrlog/tree/loc_testing At that page you see green button "Code". By pressing that you find "Download.zip" that allows to download the source code as zip file.
+Once downloaded and extracted you are at same point as after "git checkout loc_testing" above.
+How ever you can not do new uptates later with "git pull". You have to download the zip file again.
+
+Once you have source you need tools to compile. Using command termnal install them.
+
+	sudo apt install lazarus
+
+That will install FreePascal compiler and Lazarus GUI. Issuing that line results a long list of dependencies to install, just say Y (yes) to install them all.
+
+If your Lazarus is very old from package you find latest version from https://www.lazarus-ide.org It is always recommended to use latest version as package versions can be very old, as seen with Cqrlog packages. At the moment lazarus-ide version is 2.2.6
+
+When lazarus-ide is installed you need to change to source directory, either git cloned or extracted from zip. ("cd cqrlog")
+After that start the compile process, issue:
+
+	make
+
+When compile has finished install the new Cqrlog with command
+
+	sudo make install
+
+That is all!
+
+
+
+With some OS "make" result errors. Then usually using the lazarus-ide works.
+Start lazarus-ide typing that to command terminal, or start from startup menu icon "lazarus".
+At first start it goes through some settings. If all Tabs show OK you are ready to continue.
+
+Lazarus starts first to empty form. Use top menu "Project/Open Project" and navigate to your "cqrlog" source folder. There you see subfolder "src". Navigate to that folder and you see "cqrlog.lpi".  Open that.
+
+Once opened select top menu "View/Messages" to see compiler messages. Then select top menu "Run/Compile".
+Wait and finally you should see a green line on Messages window. It means that compile is over.
+
+You find new cqrlog from folder "src" as file "cqrlog"
+You can now try command terminal:
+
+	cd cqrlog  (this is the source root folder, as before)
+	sudo make install
+
+If succeeded you have new version with new help installed. If not, you can just copy file "cqrlog" from folder "src" to "/usr/bin"
+There already exists a file named "cqrlog" (that is the old version) you can first copy it somewhere, if you like, before
+coping over the new one.
+You need "sudo" for this copy.
+
+	sudo cp src/cqrlog /usr/bin
+
+
+
+
+### A list what is not included into official cqrlog GitHub source and exist only in Alpha test versions can be found from [Changelog](https://htmlpreview.github.io/?https://github.com/OH1KH/cqrlog/blob/loc_testing/src/changelog.html) 
  
-RESET/IGNORE ONLINE LOG UPLOAD MARKERS
+### Some Cqrlog related videos can be found from  <https://www.youtube.com/channel/UC3yPCVYmfeBzDSwTosOe2fQ>
 
-    Pteferences/Online log has now new two checkboxes to prevent some reloading to online logs:
-    Ignore changes caused by QSL sent/received (marked by hand or label printing) 
-    Ignore changes caused by QSO edit
-    And QSO list/Online log-menu has new selection: Remove all upload markers to flush pending uploads.
-
-
-QT5 VERSION
-
-If you like to test QT5 version you need to install libqt5pas.
-libqt5pas is a library that bridges between Qt5 and your Lazarus application. 
-Newer distros have working versions available in their repositories.
-
-Using your distros repository:
-   - Fedora, Mageia - sudo dnf install qt5pas<enter>
-   - Ubuntu, Debian - sudo apt install libqt5pas1 <enter>
-
-Note that some long term release distributions, ie Ubuntu 18.04 have an incompatible version of libqt5pas 
-(even though it appears to have the same version number as later distros!). 
-You will see an error message and a crash if your app uses TMemo. 
-You should install the downloaded packages mentioned below or build your own new version of the library.
-
-  - When running that version please note if you find clipping or wrong positions at windows.
-    Check also how GTK2 version shows up, they are little bit different. GTK may show up ok, but QT5 has
-    clipping (usually in that way).    
-   
-CQ MONITOR USA STATES
-
-  - separate source for this can be found from branch "states"
-  - CQ-monitor checbox "USt" that allows USA states to monitored wsjt-CQs
-  - when you check it at first time it suggests loading from fcc.gov it should suggest same after 90 days of usage to update data.
-   - US callsign=state (fcc_states.tab) file is over 10Mb and ist is loaded to RAM for runtime.
-    Seeking a callsingn from there takes some time.
-
-   How the update works? 
-   
-   You can make it happen again if you delete files
-   "EN.dat" and "fcc_states.tab" from folder ~/.config/cqrlog/ctyfiles.
-   If you delete just file "fcc_states.tab" you can make only the rebuld part to run again.
-
-   How it works when there are many USA stations on band at every decode?
-
-   Conditions here are so poor that I can hear only few USA stations for every now and then (but lot of europeans)
-   There is another runtime list that grows up from decoded callsigns=states. The idea is that there are just
-   several stations on band at same time and so seeking from runtimelist first may give faster response times.
-   The runtime list is cleared when you close wsjt-remote (and reopen it). 
-   So that is the way to find out has it any speed improvement for CQ decodes.
-
-   If you want debug dump start with:
-
-    cqrlog debug=-4
-
-   That gives a bit less debug text. Just CQ-monitor related debugs. Note that value is "minus 4"!
-
-RTTY MODE IS DATA
-
-   - separate source for this can be found from branch "rtty_data"
-   - At preferences/Modes you will see a new "DATA" that replaces the old "RTTY". Defaults for that are
-    rig cmd:RTTY data mode:RTTY that acts like pervious cqrlogs.
-
-   You can state your own "data mode" and command that is used with rig when that mode is in use.
-   They can be different now. The "thing" is that your data mode is now used with DXCluster spots
-   like RTTY was used before.
-   I have now settings (for IC7300) DATA bandwidth: 0 Hz, Rig cmd:PKTUSB and data mode: FT8
-   So I will get DXCluster FT8 spots colored now against my log.
-
-   There is one known problem: 
-   When you push "DATA" (former RTTY) button at TRXControl the "Rig cmd" will be sent to your rig.
-   That is ok, but when your rig sends back them mode (that is same as "Rig cmd") it is converted
-   back to "Data mode" at NeWQSO.
-   Imagine you set data mode to SSTV and rig cmd to USB. Sending that to rig is ok, but when rig
-   returns mode also all your USB fone qsos will be set as SSTV.
-   That's why it only works properly with rigs that have separate data mode to use.
-
-   Same way "preferences/TRXcontrol/Change defaut frequencies" now points to "DATA" instead of "RTTY",
-   and you have to set "preferences/bands/frequencies" "DATA" column to correspond your data mode.
-   By defaut it points to RTTY frequencies.
-
-LOG OR DATABASE SERVER CHANGE
-
-  - separate source for this can be found from branch "remote_local_db_switch"
-  - prevent to kill open log (NewQSO/File/Open or create new log/Delete log)
-  - prevent to load settings to open log (NewQSO/File/Open or create new log/Utils/Configuration/Import)
-  - log change should work now better (NewQSO/File/Open or create new log/Open)
-  - database server change works better, but still have bugs. (NewQSO/File/Open or create new log/save data to local machine/external server)
-
-ONLINE LOG UPLOAD
-
-  - Bottom of Preferences/Online log upload has some checkboxes to affect to online log upload. See help/Quick start/Online log upload support for more information.
-  
-Some cqrlog related videos can be found from  <https://www.youtube.com/channel/UC3yPCVYmfeBzDSwTosOe2fQ>
-
-All kind of reports are welcome. You can send them them to mycallsign at sral dot fi
+All kind of reports are welcome. You can find my address from callbooks.
 
      
