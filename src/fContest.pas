@@ -210,7 +210,11 @@ begin
     key := 0;
   end;
 
-  //esc and double esc
+  //Ctrl+esc
+  if ((Shift = [ssShift]) and (key = VK_ESCAPE)) then
+    EscTimes:=2;  //removes callsing on following "case EscTimes of"
+
+  //esc, double and triple esc
   if key = VK_ESCAPE then
   begin
     case EscTimes of
