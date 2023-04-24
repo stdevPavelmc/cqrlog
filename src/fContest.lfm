@@ -13,7 +13,7 @@ object frmContest: TfrmContest
   OnHide = FormHide
   OnKeyDown = FormKeyDown
   OnShow = FormShow
-  LCLVersion = '2.2.4.0'
+  LCLVersion = '2.2.6.0'
   object edtCall: TEdit
     AnchorSideLeft.Control = lblContestName
     AnchorSideTop.Control = lblCall
@@ -680,11 +680,11 @@ object frmContest: TfrmContest
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = cmbContestName
     AnchorSideTop.Side = asrCenter
-    Left = 580
+    Left = 571
     Height = 17
     Top = 15
     Width = 33
-    BorderSpacing.Left = 18
+    BorderSpacing.Left = 9
     Caption = 'WPM'
     ParentColor = False
   end
@@ -1012,6 +1012,49 @@ object frmContest: TfrmContest
       OnClick = lblCqFreqClick
     end
   end
+  object lblQSOSince: TLabel
+    AnchorSideLeft.Control = lblSpeed
+    AnchorSideTop.Control = chkTabAll
+    Left = 571
+    Height = 17
+    Hint = 'Shows time (MM:SS) since last logged Qso'
+    Top = 43
+    Width = 22
+    Caption = 'QS:'
+    ParentColor = False
+    ParentShowHint = False
+    ShowHint = True
+  end
+  object lblRate10: TLabel
+    AnchorSideLeft.Control = lblQSOSince
+    AnchorSideTop.Control = chkHint
+    Left = 571
+    Height = 17
+    Hint = 'Total QSO rate / 10 minutes'
+    Top = 66
+    Width = 50
+    AutoSize = False
+    Caption = 'q/10'
+    ParentColor = False
+    ParentShowHint = False
+    ShowHint = True
+  end
+  object lblRate60: TLabel
+    AnchorSideLeft.Control = lblRate10
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = lblRate10
+    Left = 624
+    Height = 17
+    Hint = 'Total QSO rate / 1 hour'
+    Top = 66
+    Width = 50
+    AutoSize = False
+    BorderSpacing.Left = 3
+    Caption = 'q/60'
+    ParentColor = False
+    ParentShowHint = False
+    ShowHint = True
+  end
   object tmrESC2: TTimer
     Enabled = False
     OnTimer = tmrESC2Timer
@@ -1124,6 +1167,11 @@ object frmContest: TfrmContest
     Interval = 3000
     OnTimer = tmrCQTimer
     Left = 584
+    Top = 264
+  end
+  object tmrScore: TTimer
+    OnTimer = tmrScoreTimer
+    Left = 624
     Top = 264
   end
 end

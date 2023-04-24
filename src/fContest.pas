@@ -38,6 +38,9 @@ type
     edtSRX: TEdit;
     edtSRXStr: TEdit;
     gbStatus: TGroupBox;
+    lblQSOSince: TLabel;
+    lblRate10: TLabel;
+    lblRate60: TLabel;
     lblCqFreq: TLabel;
     lblCqMode: TLabel;
     lblCQLbl: TLabel;
@@ -82,6 +85,7 @@ type
     sbContest: TStatusBar;
     spCQperiod: TSpinEdit;
     spCQrepeat: TSpinEdit;
+    tmrScore: TTimer;
     tmrCQ: TTimer;
     tmrESC2: TTimer;
     procedure btClearAllClick(Sender: TObject);
@@ -140,8 +144,16 @@ type
     procedure spCQperiodChange(Sender: TObject);
     procedure tmrCQTimer(Sender: TObject);
     procedure tmrESC2Timer(Sender: TObject);
+    procedure tmrScoreTimer(Sender: TObject);
   private
     { private declarations }
+      AllQsos,
+      AllDx,
+      AllOwnC,
+      AllCountries,
+      QsoRate10,
+      QsoRate60,
+      QsoSince        : integer;
     procedure SetActualReportForModeFromRadio;
     procedure InitInput;
     procedure ChkSerialNrUpd(IncNr: boolean);
@@ -154,6 +166,7 @@ type
     procedure MWCStatus;
     procedure NACStatus;
     procedure CommonStatus;
+    procedure Rates;
     procedure SendFmemory(key:word);
     function CheckDupe(call:string):boolean;
     procedure CQstart(start:boolean);
@@ -376,6 +389,7 @@ end;
 
 procedure TfrmContest.btSaveClick(Sender: TObject);
 begin
+  tmrScore.Enabled:=false;
   if chkLoc.Checked then
    begin
      case MsgIs of
@@ -429,7 +443,8 @@ begin
     Writeln('input finale');
   ChkSerialNrUpd(chkNRInc.Checked);
   initInput;
-
+  QsoSince:=0;
+  tmrScore.Enabled:=true;
 end;
 
 procedure TfrmContest.btClearAllClick(Sender: TObject);
@@ -474,7 +489,11 @@ end;
 procedure TfrmContest.btnCQstartClick(Sender: TObject);
 begin
     if btnCQstart.Font.Color = clGreen then
-     CQstart(true)
+     begin
+      CQstart(true);
+      lblCqMode.Caption:=frmTRXControl.GetRawMode;
+      lblCqFreq.Caption := FormatFloat('0.00',frmTRXControl.GetFreqkHz);
+     end
   else
      Cqstart(false);
 end;
@@ -554,6 +573,9 @@ begin
     mStatus.ShowHint:=not b;
     lblCqMode.ShowHint:=not b;
     lblCqFreq.ShowHint:=not b;
+    lblQSOSince.ShowHint:=not b;
+    lblRate10.ShowHint:=not b;
+    lblRate60.ShowHint:=not b;
    finally
    end;
 end;
@@ -743,6 +765,7 @@ procedure TfrmContest.FormCreate(Sender: TObject);
 begin
   frmContest.KeyPreview := True;
   dmUtils.InsertContests(cmbContestName);
+  QsoSince:=0;
 end;
 procedure TfrmContest.SaveSettings;
 var
@@ -1001,6 +1024,13 @@ procedure TfrmContest.tmrESC2Timer(Sender: TObject);
 begin
   EscTimes := 0; //time for counts passed
   tmrESC2.Enabled := False;
+end;
+
+procedure TfrmContest.tmrScoreTimer(Sender: TObject);
+begin
+  tmrScore.Enabled:=false;
+  cmbContestNameExit(nil);
+  tmrScore.Enabled:=true;
 end;
 
 procedure TfrmContest.SetActualReportForModeFromRadio;
@@ -1270,6 +1300,9 @@ Begin
     mStatus.Lines.Add('----------------------------------------------------------------------------------');
     mStatus.Lines.Add(' Total    Pts: ' + IntToStr(QSOc[1]+QSOc[2])+'   Multipliers: '+IntToStr(MULc[1]+MULc[2])+
                       '   Score: '+ IntToStr( (QSOc[1]+QSOc[2]) * (MULc[1]+MULc[2])) );
+
+    AllQsos:= QSOc[1]+QSOc[2];
+    Rates;
 end;
 
 procedure  TfrmContest.NACStatus;
@@ -1375,6 +1408,9 @@ Begin
      mStatus.Lines.Add('Locator list: '+LocList);
      mStatus.Lines.Add('-----------------------------------------------------------');
      mStatus.Lines.Add('Total points: '+ IntToStr(Points+LocPoints)+'          Max QRB: '+IntToStr(MaxQRB));
+
+     AllQsos:=Qsos;
+     Rates;
 end;
 
 procedure  TfrmContest.CommonStatus;
@@ -1385,6 +1421,7 @@ var
   ContestBandPtr  : array[0..10] of byte = (2,3,5,7,9,11,12,13,14,16,18);  // 160M to 23cm  Points to dUtils.cBands
   b               : byte;
   MsgMpSum        : integer;
+
 
  Begin
     DXList:='';
@@ -1406,6 +1443,8 @@ var
         if dmData.DebugLevel >=1 then
                                      Writeln(dmData.CQ.SQL.Text);
         dmData.CQ.Open();
+
+        AllQsos:= dmData.CQ.FieldByName('QSOs').AsInteger;
         if popCommonStatus.Items[0].Checked then
            mStatus.Lines.Add('QSO count: '+ dmData.CQ.FieldByName('QSOs').AsString);
 
@@ -1564,8 +1603,53 @@ var
               mStatus.Lines.Add('-'+dUtils.cBands[ContestBandPtr[b]]+'='+copy(SRXSList,1,length(SRXSList)-1));
         end;
      end;
-    dmData.CQ.Close;
 
+    dmData.CQ.Close;
+   Rates;
+end;
+procedure  TfrmContest.Rates;
+Begin
+  if AllQsos>0 then
+    Begin
+    //last qso since
+    //--------------------------------------------------------------
+      {dmData.CQ.Close;
+      if dmData.trCQ.Active then dmData.trCQ.Rollback;
+      dmData.CQ.SQL.Text :=
+      'select sec_to_time(timestampdiff(second,concat(qsodate," ",time_off),utc_timestamp())) as last from cqrlog_main order by id_cqrlog_main desc limit 1';
+      if dmData.DebugLevel >=1 then
+                                       Writeln(dmData.CQ.SQL.Text);
+      dmData.CQ.Open();
+      lblQsoSince.Caption:=dmData.CQ.FieldByName('last').AsString;
+      }
+      inc(QsoSince);
+      //print format here MM:SS
+      lblQsoSince.Caption:='QS: '+Format('%.2d', [QsoSince div 60])+':'+Format('%.2d', [QsoSince mod 60]);
+
+    //qso rate 10min
+    //--------------------------------------------------------------
+      dmData.CQ.Close;
+      if dmData.trCQ.Active then dmData.trCQ.Rollback;
+      dmData.CQ.SQL.Text :=
+      'select count(callsign) as rate from cqrlog_main where timestampdiff(minute,concat(qsodate," ",time_off),utc_timestamp())<10';
+      if dmData.DebugLevel >=1 then
+                                       Writeln(dmData.CQ.SQL.Text);
+      dmData.CQ.Open();
+      lblRate10.Caption:=dmData.CQ.FieldByName('rate').AsString+'/10';
+
+    //qso rate 1h
+    //--------------------------------------------------------------
+    dmData.CQ.Close;
+    if dmData.trCQ.Active then dmData.trCQ.Rollback;
+    dmData.CQ.SQL.Text :=
+    'select count(callsign) as rate from cqrlog_main where timestampdiff(minute,concat(qsodate," ",time_off),utc_timestamp())<60';
+    if dmData.DebugLevel >=1 then
+                                     Writeln(dmData.CQ.SQL.Text);
+    dmData.CQ.Open();
+    lblRate60.Caption:=dmData.CQ.FieldByName('rate').AsString+'/60';
+
+    end;   // AllQsos>0
+    dmData.CQ.Close;
 end;
 
 end.
