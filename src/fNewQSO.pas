@@ -3044,7 +3044,7 @@ begin
            if dmData.DebugLevel>=1 then Writeln('timespec: ', ParNum);
            //----------------------------------------------------
            if dmData.DebugLevel>=1 then Writeln('Remote name: ', RemoteName);
-           if RemoteName = 'WSJT-X' then   //no contest in JTDX
+           if Pos('WSJT',RemoteName)>0 then   //no contest in JTDX
             begin
                  if dmData.DebugLevel>=1 then Writeln('Tail logging part entered');
                  OpCall := UpperCase(trim(StrBuf(index)));  //operator callsign (in contest, club etc.)
