@@ -18,7 +18,7 @@ interface
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, inifiles,
   ExtCtrls, ComCtrls, StdCtrls, Buttons, httpsend, uColorMemo,
-  db, lcltype, Menus, ActnList, Spin, dynlibs, lNetComponents, lnet;
+  db, lcltype, Menus, ActnList, Spin, Grids, dynlibs, lNetComponents, lnet;
 
 type
   { TfrmDXCluster }
@@ -40,8 +40,29 @@ type
     btnPreferences : TButton;
     dlgDXfnt: TFontDialog;
     edtCommand: TEdit;
+    edtF1: TEdit;
+    edtF10: TEdit;
+    edtF2: TEdit;
+    edtF3: TEdit;
+    edtF4: TEdit;
+    edtF5: TEdit;
+    edtF6: TEdit;
+    edtF7: TEdit;
+    edtF8: TEdit;
+    edtF9: TEdit;
     edtTelAddress: TEdit;
     Label1: TLabel;
+    lblShift: TLabel;
+    lblF1: TLabel;
+    lblF10: TLabel;
+    lblF2: TLabel;
+    lblF3: TLabel;
+    lblF4: TLabel;
+    lblF5: TLabel;
+    lblF6: TLabel;
+    lblF7: TLabel;
+    lblF8: TLabel;
+    lblF9: TLabel;
     lblInfo: TLabel;
     MenuItem1 : TMenuItem;
     mnuSkimQSLCheck: TMenuItem;
@@ -62,6 +83,7 @@ type
     pnlTelnet: TPanel;
     pnlWeb: TPanel;
     popPreferences : TPopupMenu;
+    tabFkeys: TTabSheet;
     tabTelnet: TTabSheet;
     tabWeb: TTabSheet;
     tmrAutoConnect: TTimer;
@@ -73,6 +95,8 @@ type
     procedure acProgPrefExecute(Sender : TObject);
     procedure Button2Click(Sender: TObject);
     procedure btnPreferencesClick(Sender : TObject);
+    procedure edtF2Exit(Sender: TObject);
+    procedure edtFExit(Sender: TObject);
     procedure FormActivate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure btnHelpClick(Sender: TObject);
@@ -88,6 +112,7 @@ type
     procedure mnuCallalertClick(Sender : TObject);
     procedure mnuSkimAllowFreqClick(Sender: TObject);
     procedure mnuSkimQSLCheckClick(Sender: TObject);
+    procedure tabFkeysShow(Sender: TObject);
     procedure tmrAutoConnectTimer(Sender: TObject);
     procedure tmrSpotsTimer(Sender: TObject);
     procedure trChatSizeChange(Sender: TObject);
@@ -365,6 +390,25 @@ begin
   popPreferences.PopUp(p.x, p.y)
 end;
 
+procedure TfrmDXCluster.edtF2Exit(Sender: TObject);
+begin
+
+end;
+
+procedure TfrmDXCluster.edtFExit(Sender: TObject);
+begin
+   cqrini.WriteString('DXCluster','F1key',edtF1.Text);
+   cqrini.WriteString('DXCluster','F2key',edtF2.Text);
+   cqrini.WriteString('DXCluster','F3key',edtF3.Text);
+   cqrini.WriteString('DXCluster','F4key',edtF4.Text);
+   cqrini.WriteString('DXCluster','F5key',edtF5.Text);
+   cqrini.WriteString('DXCluster','F6key',edtF6.Text);
+   cqrini.WriteString('DXCluster','F7key',edtF7.Text);
+   cqrini.WriteString('DXCluster','F8key',edtF8.Text);
+   cqrini.WriteString('DXCluster','F9key',edtF9.Text);
+   cqrini.WriteString('DXCluster','F10key',edtF10.Text);
+end;
+
 procedure TfrmDXCluster.acProgPrefExecute(Sender : TObject);
 begin
   cqrini.WriteInteger('Pref', 'ActPageIdx', 10);  //set DXCuster tab active. Number may change if preferences page change
@@ -437,6 +481,7 @@ begin
   FirstWebGet := True;
   lTelnet := TLTelnetClientComponent.Create(nil);
   ReloadDXCPref := True;
+  tabFkeys.TabVisible:=false;
 
   lTelnet.OnConnect    := @lConnect;
   lTelnet.OnDisconnect := @lDisconnect;
@@ -489,13 +534,57 @@ end;
 procedure TfrmDXCluster.FormKeyUp(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-  if (key= VK_ESCAPE) then
-  begin
-    frmNewQSO.ReturnToNewQSO;
-    key := 0
-  end
+  if key = VK_ESCAPE then
+                  begin
+                    frmNewQSO.ReturnToNewQSO;
+                    key := 0
+                  end;
+  if (Key >= VK_F1) and (Key <= VK_F10) and (ConTelnet = True) and (Shift = [ssShift])  then
+   begin
+      case key of
+        VK_F1     :Begin
+                    if edtF1.Text<>'' then SendCommand(edtF1.Text);
+                      key := 0
+                   end;
+        VK_F2     :Begin
+                    if edtF2.Text<>'' then SendCommand(edtF2.Text);
+                      key := 0
+                   end;
+        VK_F3     :Begin
+                    if edtF3.Text<>'' then SendCommand(edtF3.Text);
+                      key := 0
+                   end;
+        VK_F4     :Begin
+                    if edtF4.Text<>'' then SendCommand(edtF4.Text);
+                      key := 0
+                   end;
+        VK_F5     :Begin
+                    if edtF5.Text<>'' then SendCommand(edtF5.Text);
+                      key := 0
+                   end;
+        VK_F6     :Begin
+                    if edtF6.Text<>'' then SendCommand(edtF6.Text);
+                      key := 0
+                   end;
+        VK_F7     :Begin
+                    if edtF7.Text<>'' then SendCommand(edtF7.Text);
+                      key := 0
+                   end;
+        VK_F8     :Begin
+                    if edtF8.Text<>'' then SendCommand(edtF8.Text);
+                      key := 0
+                   end;
+        VK_F9     :Begin
+                    if edtF9.Text<>'' then SendCommand(edtF9.Text);
+                      key := 0
+                   end;
+        VK_F10    :Begin
+                    if edtF10.Text<>'' then SendCommand(edtF10.Text);
+                      key := 0
+                   end;
+      end;
+  end;
 end;
-
 procedure TfrmDXCluster.WebDbClick(where:longint;mb:TmouseButton;ms:TShiftState);
 var
   spot : String = '';
@@ -572,6 +661,8 @@ begin
   if cqrini.ReadBool('DXCluster', 'ConAfterRun', False) then
     tmrAutoConnect.Enabled := True;
   pnlChat.Height := cqrini.ReadInteger('DXCluster','ChatSize',2);  //default now 2 = invisible
+
+  tabFkeysShow(nil);
 end;
 
 procedure TfrmDXCluster.btnClearClick(Sender: TObject);
@@ -612,12 +703,15 @@ begin
   begin
     StopAllConnections;
     btnTelConnect.Caption := 'Connect';
+    tabFkeys.TabVisible:=false;
     ConWeb := False;
   end
   else begin
     ConnectToTelnet;
     btnTelConnect.Caption := 'Disconnect';
     ConTelnet := True;
+    tabFkeys.TabVisible:=True;
+    pgDXCluster.ActivePage:=tabTelnet;
     if (Sender <> nil) then
       edtCommand.SetFocus
   end
@@ -689,6 +783,20 @@ begin
   cqrini.WriteBool('Skimmer', 'QSLEnable', mnuSkimQSLCheck.Checked);
 end;
 
+procedure TfrmDXCluster.tabFkeysShow(Sender: TObject);
+begin
+        edtF1.Text:=cqrini.ReadString('DXCluster', 'F1key', '');
+        edtF2.Text:=cqrini.ReadString('DXCluster', 'F2key', '');
+        edtF3.Text:=cqrini.ReadString('DXCluster', 'F3key', '');
+        edtF4.Text:=cqrini.ReadString('DXCluster', 'F4key', '');
+        edtF5.Text:=cqrini.ReadString('DXCluster', 'F5key', '');
+        edtF6.Text:=cqrini.ReadString('DXCluster', 'F6key', '');
+        edtF7.Text:=cqrini.ReadString('DXCluster', 'F7key', '');
+        edtF8.Text:=cqrini.ReadString('DXCluster', 'F8key', '');
+        edtF9.Text:=cqrini.ReadString('DXCluster', 'F9key', '');
+        edtF10.Text:=cqrini.ReadString('DXCluster', 'F10key', '');
+end;
+
 procedure TfrmDXCluster.tmrAutoConnectTimer(Sender: TObject);
 begin
   tmrAutoConnect.Enabled := False;
@@ -707,13 +815,13 @@ end;
 procedure TfrmDXCluster.lConnect(aSocket: TLSocket);
 begin
   btnTelConnect.Caption := 'Disconnect';
-  ConTelnet := True
+  ConTelnet := True;
 end;
 
 procedure TfrmDXCluster.lDisconnect(aSocket: TLSocket);
 begin
   btnTelConnect.Caption := 'Connect';
-  ConTelnet := False
+  ConTelnet := False;
 end;
 
 procedure TfrmDXCluster.lReceive(aSocket: TLSocket);
