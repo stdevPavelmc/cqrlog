@@ -8103,7 +8103,7 @@ object frmPreferences: TfrmPreferences
         AnchorSideTop.Control = GroupBox31
         AnchorSideTop.Side = asrBottom
         Left = 6
-        Height = 264
+        Height = 300
         Top = 340
         Width = 724
         BorderSpacing.Top = 6
