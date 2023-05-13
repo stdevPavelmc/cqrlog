@@ -1,7 +1,7 @@
 
  #### NOTE: Upgrading to 2.6.0.(115) (or higer) will change database table "cqrlog_common" to version 6.
  If you return back to previous cqrlog version you need to restore the database.
-( if you used newupdate.sh it is to copy backup folder  ~/.config/cqrlog-YYYYMMDD-HHMMSS to name ~/.config/cqrlog )
+( if you used newupdate.sh it is to copy backup foder  ~/.config/cqrlog-YYYYMMDD-HHMMSS to name ~/.config/cqrlog )
  
  #### NOTE: For now on alpha test binaries beginning from 2.6.0.(107) are compiled using system that has GLIBC version 2.35.
 If you can not start Cqrlog after update check your GLIBC version with command console: ***ldd --version***
@@ -9,9 +9,9 @@ Update GLIBC if it is below 2.3.5.
 If you do not want to do that you can compile this source (see 1 folder up) with your current OS version and get it running.
 Note that the source version is usually one step higher than ready compiled versions.
  
- #### NOTE: At the moment there is no new official version source release. That is why alpha (115) is ***VERY far ahead*** from official.
+ #### NOTE: At the moment there is no new official version source release. That is why alpha (116) is ***VERY far ahead*** from official.
 From [Changelog](https://htmlpreview.github.io/?https://github.com/OH1KH/cqrlog/blob/loc_testing/src/changelog.html) 
-you can see all changes. It appears also at first start of (115), and can be accessed via "Help" when Cqrlog is running.
+you can see all changes. It appears also at first start of (116), and can be accessed via "Help" when Cqrlog is running.
 
 
 Latest cqrlog alpha test binaries can be found from this folder.
