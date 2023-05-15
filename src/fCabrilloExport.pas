@@ -550,8 +550,8 @@ begin
       // Check for missing mandatory fields
       if (dmData.qCQRLOG.FieldByName('qsodate').AsString  = '') then
                                                            tmp:=tmp+'Missing qsodate, ';
-      if (dmData.qCQRLOG.FieldByName('time_on').AsString  = '') then
-                                                           tmp:=tmp+'Missing time_on, ';
+      if (dmData.qCQRLOG.FieldByName('time_off').AsString  = '') then
+                                                           tmp:=tmp+'Missing time_off, ';
       if (dmData.qCQRLOG.FieldByName('callsign').AsString = '') then
                                                            tmp:=tmp+'Missing callsign, ';
       if (CabrilloBandToFreq(dmData.qCQRLOG.FieldByName('band').AsString) = '') then
@@ -639,7 +639,7 @@ begin
          tmp:=tmp +
             CabrilloMode(dmData.qCQRLOG.FieldByName('mode').AsString)+' '+
             dmData.qCQRLOG.FieldByName('qsodate').AsString+' '+
-            StringReplace(dmData.qCQRLOG.FieldByName('time_on').AsString,':','',[rfReplaceAll, rfIgnoreCase])+' '+
+            StringReplace(dmData.qCQRLOG.FieldByName('time_off').AsString,':','',[rfReplaceAll, rfIgnoreCase])+' '+
             Format('%0:-'+edtCabCallWdt.Text+'s', [mycall]);
             //end of common header
 
