@@ -493,6 +493,7 @@ begin
       CQstart(true);
       lblCqMode.Caption:=frmTRXControl.GetRawMode;
       lblCqFreq.Caption := FormatFloat('0.00',frmTRXControl.GetFreqkHz);
+      edtCall.SetFocus;
      end
   else
      Cqstart(false);
