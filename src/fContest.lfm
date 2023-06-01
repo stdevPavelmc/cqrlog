@@ -781,7 +781,7 @@ object frmContest: TfrmContest
     Top = 158
     Width = 52
     Caption = 'S&&P'
-    OnChange = chkSPChange
+    OnClick = chkSPClick
     ParentShowHint = False
     ShowHint = True
     TabOrder = 24
@@ -815,13 +815,13 @@ object frmContest: TfrmContest
       AnchorSideBottom.Control = gbStatus
       AnchorSideBottom.Side = asrBottom
       Left = 3
-      Height = 100
+      Height = 91
       Hint = 'Shows status of contest.'#10'If contest has any name common status counting is used. That'#10'includes QSO counts for all, dx and own continent with lists of'#10'DX and own continent prefixes.'#10'Also received messages are counted and listed allowing msg'#10'multiplier count.'#10'Use can control these with left click of mouse pointing between'#10'text "Status" and status display area'#10'.'#10'Currently if there are contest names that include "mwc"or "ok1wc"'#10'and "nac" those statuses are counted by MWC or NAC rules'#10'.'#10'Update is done evey time QSO is saved or 2xESC is pressed.'
-      Top = 9
+      Top = 18
       Width = 665
       Anchors = [akTop, akLeft, akRight, akBottom]
       BorderSpacing.Left = 3
-      BorderSpacing.Top = 9
+      BorderSpacing.Top = 18
       BorderSpacing.Right = 3
       BorderSpacing.Bottom = 3
       ParentShowHint = False

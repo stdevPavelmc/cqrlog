@@ -98,7 +98,7 @@ type
     procedure chkNRIncChange(Sender: TObject);
     procedure chkNRIncClick(Sender : TObject);
     procedure chkQspChange(Sender: TObject);
-    procedure chkSPChange(Sender: TObject);
+    procedure chkSPClick(Sender: TObject);
     procedure chkTrueRSTChange(Sender: TObject);
     procedure chkTabAllChange(Sender: TObject);
     procedure cmbContestNameExit(Sender: TObject);
@@ -605,9 +605,22 @@ begin
   SetTabOrders;
 end;
 
-procedure TfrmContest.chkSPChange(Sender: TObject);
+procedure TfrmContest.chkSPClick(Sender: TObject);
 begin
-  CQpanel.Enabled:=not chkSP.Checked;
+     if chkSP.Checked then
+     Begin
+        lblCall.Font.Color:=clRed;
+        lblRSTs.Font.Color:=clRed;
+        lblNRs.Font.Color:=clRed;
+        lblMSGs.Font.Color:=clRed;
+     end
+    else
+     Begin
+        lblCall.Font.Color:=clGreen;
+        lblRSTs.Font.Color:=clGreen;
+        lblNRs.Font.Color:=clGreen;
+        lblMSGs.Font.Color:=clGreen;
+     end;
 end;
 
 procedure TfrmContest.chkTrueRSTChange(Sender: TObject);
@@ -875,6 +888,7 @@ begin
   tmrCQ.Enabled:=False;
   tmrCQ.Interval:=spCQperiod.Value;
   CQcount:=0;
+  chkSPClick(nil); //to set the right color to TX labels
 end;
 
 procedure TfrmContest.MsgIsPopChk(nr:integer);
