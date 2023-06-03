@@ -152,7 +152,7 @@ object frmTRXControl: TfrmTRXControl
   OnKeyDown = FormKeyDown
   OnKeyUp = FormKeyUp
   OnShow = FormShow
-  LCLVersion = '2.2.2.0'
+  LCLVersion = '2.2.6.0'
   object gbMode: TGroupBox
     AnchorSideLeft.Control = gbVfo
     AnchorSideTop.Control = gbVfo
@@ -874,5 +874,11 @@ object frmTRXControl: TfrmTRXControl
       Caption = 'Add/Modify memory'
       OnExecute = acAddModMemExecute
     end
+  end
+  object tmrSetRigTime: TTimer
+    Enabled = False
+    OnTimer = tmrSetRigTimeTimer
+    Left = 128
+    Top = 112
   end
 end

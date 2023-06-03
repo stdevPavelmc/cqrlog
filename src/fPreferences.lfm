@@ -17,7 +17,7 @@ object frmPreferences: TfrmPreferences
   OnCreate = FormCreate
   OnShow = FormShow
   Position = poMainFormCenter
-  LCLVersion = '2.2.4.0'
+  LCLVersion = '2.2.6.0'
   object pgPreferences: TPageControl
     Left = 160
     Height = 753
@@ -2259,7 +2259,7 @@ object frmPreferences: TfrmPreferences
         BorderSpacing.Left = 6
         BorderSpacing.Top = 4
         Caption = ' rigctld '
-        ClientHeight = 86
+        ClientHeight = 70
         ClientWidth = 655
         TabOrder = 0
         object lblRigctdPath: TLabel
@@ -2523,7 +2523,7 @@ object frmPreferences: TfrmPreferences
           Width = 511
           BorderSpacing.Top = 3
           Caption = 'Radio one serial parameters'
-          ClientHeight = 146
+          ClientHeight = 130
           ClientWidth = 509
           TabOrder = 11
           object lblSerialRSpd: TLabel
@@ -2949,11 +2949,12 @@ object frmPreferences: TfrmPreferences
           AnchorSideLeft.Side = asrBottom
           AnchorSideTop.Control = chkRSendCWR
           AnchorSideTop.Side = asrCenter
-          Left = 517
+          Left = 520
           Height = 23
           Hint = 'Check if rigctld has started with --vfo parameter. '#10'if result is posirive (1) the polling command format '#10'used will be different.'
           Top = 113
           Width = 103
+          BorderSpacing.Left = 3
           Caption = 'Use \chkvfo'
           Checked = True
           OnChange = TRXParamsChange
@@ -2994,13 +2995,14 @@ object frmPreferences: TfrmPreferences
           AnchorSideLeft.Control = chkRVfo
           AnchorSideTop.Control = chkRVfo
           AnchorSideTop.Side = asrBottom
-          Left = 517
+          Left = 520
           Height = 23
           Hint = 'Should Power ON command to be sent when initializing rig'
           Top = 136
           Width = 131
           Caption = 'Rig pwr ON cmd'
           Checked = True
+          OnChange = TRXParamsChange
           ParentShowHint = False
           ShowHint = True
           State = cbChecked
@@ -3016,6 +3018,18 @@ object frmPreferences: TfrmPreferences
           BorderSpacing.Top = 3
           Caption = 'Radio'
           ParentColor = False
+        end
+        object chkUTC2R: TCheckBox
+          AnchorSideLeft.Control = chkRPwrOn
+          AnchorSideTop.Control = chkRPwrOn
+          AnchorSideTop.Side = asrBottom
+          Left = 520
+          Height = 23
+          Top = 159
+          Width = 120
+          Caption = 'Set UTC to Rig'
+          OnChange = TRXParamsChange
+          TabOrder = 14
         end
       end
     end
@@ -5043,7 +5057,7 @@ object frmPreferences: TfrmPreferences
           AnchorSideTop.Side = asrBottom
           Left = 283
           Height = 23
-          Top = 121
+          Top = 128
           Width = 60
           Caption = 'DATA'
           TabOrder = 35
@@ -8108,7 +8122,7 @@ object frmPreferences: TfrmPreferences
         Width = 724
         BorderSpacing.Top = 6
         Caption = 'Reading data from wsjtx'
-        ClientHeight = 262
+        ClientHeight = 298
         ClientWidth = 722
         TabOrder = 1
         object GroupBox52: TGroupBox

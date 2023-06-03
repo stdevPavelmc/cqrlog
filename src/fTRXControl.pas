@@ -80,6 +80,7 @@ type
     pnlRig : TPanel;
     pnlMain : TPanel;
     pnlPower : TPanel;
+    tmrSetRigTime: TTimer;
     tmrRadio : TTimer;
     procedure acAddModMemExecute(Sender : TObject);
     procedure btnMemWriClick(Sender : TObject);
@@ -132,6 +133,7 @@ type
     procedure mnuShowUsrClick(Sender : TObject);
     procedure mnuShowVfoClick(Sender : TObject);
     procedure tmrRadioTimer(Sender : TObject);
+    procedure tmrSetRigTimeTimer(Sender: TObject);
   private
     MouseWheelUsed : Boolean;
     radio : TRigControl;
@@ -149,6 +151,8 @@ type
     btn6MBand : String;
     btn2MBand : String;
     btn70CMBand : String;
+
+    currMin      :String; //for timing rig command: set_clock
 
     function GetActualMode : String;
     function GetModeNumber(mode : String) : Cardinal;
@@ -710,6 +714,25 @@ begin
   SynTRX;
 end;
 
+procedure TfrmTRXControl.tmrSetRigTimeTimer(Sender: TObject);
+var
+   m  : String;
+begin
+     tmrSetRigTime.Enabled:=False;
+     m:= FormatDateTime('n',Now);
+     if currMin='' then currMin:=m;
+     if currMin<>m then //minute has changed set rig time
+        Begin
+            m:='+\set_clock '+FormatDateTime('yyyy-mm-dd"T"hh:mm',dmutils.GetDateTime(0))+'+00';
+            if Assigned(radio) then
+                          radio.UsrCmd(m);
+            if ((dmData.DebugLevel >= 1) or ((abs(dmData.DebugLevel) and 8) = 8)) then
+              writeln(m);
+        end
+      else
+       tmrSetRigTime.Enabled:=True; //continue waiting
+end;
+
 procedure TfrmTRXControl.FormClose(Sender : TObject; var CloseAction : TCloseAction);
 begin
   cqrini.WriteInteger('TRX', 'RigInUse', cmbRig.ItemIndex);
@@ -1103,7 +1126,6 @@ begin
   mnuShowPwr.Checked := pnlPower.Visible;
 
 
-
   if not radio.Connected then
       begin
         FreeAndNil(radio);
@@ -1126,6 +1148,13 @@ begin
             Writeln('CW keyer reloaded by TRControl radio' + RigInUse + ' change');
         end;
 
+      if cqrini.ReadBool('TRX'+RigInUse, 'UTC2Rig', False) then
+             Begin
+              currMin:='';
+              tmrSetRigTime.Enabled:=True; //sets rig time on next minute change
+              if ((dmData.DebugLevel >= 1) or ((abs(dmData.DebugLevel) and 8) = 8)) then
+                 Writeln('Set UTC to radio' + RigInUse + ' on next full minute');
+             end;
     end;
 end;
 
