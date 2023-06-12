@@ -1350,10 +1350,10 @@ begin
     if chkMap.Checked then
         begin
           CqPeriodTimerStart;
-          if LocalDbg then
+          //if LocalDbg then
            Writeln('Other line:', Message);
           if  (pos('RR73',Message)= length(Message)-3)
-           or (pos(' 73',Message)= length(Message)-1) then
+           or (pos(' 73',Message)= length(Message)-2) then
               ClLine:='*'
            else
               ClLine:=')';
