@@ -778,6 +778,8 @@ begin
   frmTRXControl.cmbRig.ItemIndex:=cqrini.ReadInteger('TRX', 'RigInUse', 1);
   frmTRXControl.cmbRigCloseUp(nil);
   frmTRXControl.InitializeRig;
+  frmRotControl.rbRotor1.Checked:= cqrini.ReadBool('ROT','Use1',True);
+  frmRotControl.rbRotor2.Checked:= not(cqrini.ReadBool('ROT','Use1',True));
   frmRotControl.InicializeRot;
 
   OpenFreqMemories('');

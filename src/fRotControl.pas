@@ -69,6 +69,7 @@ type
     MouseWheelUsed : Boolean;
   public
     { public declarations }
+    BeamDir : Double;
     procedure SynROT;
     function  InicializeRot : Boolean;
     procedure UpdateAZdisp(Az,AzMin,AzMax:Double;UseState:Boolean);
@@ -82,7 +83,7 @@ implementation
 
 { TfrmRotControl }
 
-uses dUtils, dData;
+uses dUtils, dData, fGrayline;
 
 procedure TfrmRotControl.FormShow(Sender: TObject);
 begin
@@ -97,6 +98,7 @@ begin
   btnStop.Visible:=cqrini.ReadBool('ROT','Stopbtn',False);
   mnuStopbtn.Checked:=cqrini.ReadBool('ROT','Stopbtn',False);
   if pnlMinMax.Visible then gbAzimuth.Height:=70;
+  Beamdir:=-1;
 end;
 
 procedure TfrmRotControl.gbAzimuthClick(Sender: TObject);
@@ -146,11 +148,13 @@ end;
 
 procedure TfrmRotControl.rbRotor1Click(Sender: TObject);
 begin
+  cqrini.WriteBool('ROT','Use1',rbRotor1.Checked);
   InicializeRot
 end;
 
 procedure TfrmRotControl.rbRotor2Click(Sender: TObject);
 begin
+  cqrini.WriteBool('ROT','Use1',rbRotor1.Checked);
   InicializeRot
 end;
 
@@ -168,7 +172,7 @@ end;
 procedure TfrmRotControl.FormDestroy(Sender: TObject);
 begin
   if Assigned(rotor) then
-    FreeAndNil(rotor)
+       FreeAndNil(rotor)
 end;
 
 procedure TfrmRotControl.FormKeyUp(Sender: TObject; var Key: Word;
@@ -409,10 +413,29 @@ end;
 
 procedure TfrmRotControl.SynROT;
 var
-  Az : Double ;
+  Az          :Double;
+  mylat,mylon :currency;
+  exlat,exlon :extended;
+  dist        :longint;
 begin
+  exlon:=0;
+  exlat:=0;
+  dist :=1000;
   if Assigned(rotor) then
-    Az := rotor.GetAzimut
+   begin
+    Az := rotor.GetAzimut;
+    if frmGrayline.Showing then
+       Begin
+        if (Trunc(Az)<>BeamDir) and frmGrayline.pumShowBeamPath.Checked then
+          Begin
+            dist :=cqrini.ReadInteger('Program', 'GraylineGBeamLineLength',1500); //in kilometers
+            dmutils.CoordinateFromLocator(frmNewQSO.CurrentMyLoc,mylat,mylon);
+            frmGrayline.CalculateLatLonOfNewPoint(mylon,mylat,dist,Trunc(Az),exlon,exlat);
+            frmGrayline.PlotGreatCircleArcLine(mylon,mylat,exlon,exlat,2);
+            Beamdir:=Trunc(Az);
+          end;
+       end;
+   end
   else
     Az := 0;
   lblAzimuth.Caption := FormatFloat(empty_azimuth+';;',Az)

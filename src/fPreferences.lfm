@@ -1,18 +1,18 @@
 object frmPreferences: TfrmPreferences
-  Left = 0
-  Height = 652
-  Top = 123
-  Width = 1103
+  Left = 2
+  Height = 709
+  Top = 3
+  Width = 1095
   HelpType = htKeyword
   HelpKeyword = 'help/h1.html'
-  HorzScrollBar.Page = 1090
-  VertScrollBar.Page = 639
+  HorzScrollBar.Page = 1082
+  VertScrollBar.Page = 696
   ActiveControl = lbPreferences
   AutoScroll = True
   BorderIcons = [biSystemMenu]
   Caption = 'Preferences'
-  ClientHeight = 639
-  ClientWidth = 1090
+  ClientHeight = 696
+  ClientWidth = 1082
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
   OnShow = FormShow
@@ -243,21 +243,20 @@ object frmPreferences: TfrmPreferences
         AnchorSideTop.Control = edtQSOColorDate
         AnchorSideTop.Side = asrBottom
         Left = 6
-        Height = 203
+        Height = 230
         Top = 333
-        Width = 626
+        Width = 666
         BorderSpacing.Top = 9
         Caption = ' Offsets and colors'
-        ClientHeight = 185
-        ClientWidth = 624
+        ClientHeight = 212
+        ClientWidth = 664
         TabOrder = 7
         object lblUtc: TLabel
           AnchorSideLeft.Control = edtOffset
-          AnchorSideLeft.Side = asrCenter
           AnchorSideBottom.Control = edtOffset
-          Left = 193
+          Left = 176
           Height = 17
-          Top = 11
+          Top = 26
           Width = 27
           Anchors = [akLeft, akBottom]
           Caption = 'UTC'
@@ -269,7 +268,7 @@ object frmPreferences: TfrmPreferences
           AnchorSideTop.Side = asrBottom
           Left = 6
           Height = 17
-          Top = 79
+          Top = 94
           Width = 59
           BorderSpacing.Top = 15
           Caption = 'Grayline:'
@@ -281,7 +280,7 @@ object frmPreferences: TfrmPreferences
           AnchorSideBottom.Control = edtSunOffset
           Left = 233
           Height = 17
-          Top = 11
+          Top = 26
           Width = 76
           Anchors = [akLeft, akBottom]
           Caption = 'Sun rise/set'
@@ -294,7 +293,7 @@ object frmPreferences: TfrmPreferences
           AnchorSideRight.Control = edtSunOffset
           Left = 176
           Height = 34
-          Top = 28
+          Top = 43
           Width = 60
           Anchors = [akTop, akRight]
           BorderSpacing.Right = 6
@@ -308,7 +307,7 @@ object frmPreferences: TfrmPreferences
           AnchorSideTop.Side = asrBottom
           Left = 128
           Height = 34
-          Top = 96
+          Top = 111
           Width = 50
           TabOrder = 1
           Text = '0'
@@ -321,7 +320,7 @@ object frmPreferences: TfrmPreferences
           AnchorSideRight.Side = asrBottom
           Left = 242
           Height = 34
-          Top = 28
+          Top = 43
           Width = 58
           Anchors = [akTop, akRight]
           BorderSpacing.Left = 6
@@ -334,10 +333,10 @@ object frmPreferences: TfrmPreferences
           AnchorSideTop.Side = asrBottom
           Left = 3
           Height = 38
-          Top = 26
+          Top = 41
           Width = 122
           BorderSpacing.Left = 3
-          BorderSpacing.Top = 6
+          BorderSpacing.Top = 21
           Caption = 'get UTC from '#10'computer time'
           OnClick = chkSysUTCClick
           TabOrder = 3
@@ -348,8 +347,9 @@ object frmPreferences: TfrmPreferences
           AnchorSideTop.Side = asrBottom
           Left = 6
           Height = 34
-          Top = 130
+          Top = 148
           Width = 294
+          BorderSpacing.Top = 3
           Caption = 'Sometimes grayline is not accurate, you can '#10'enter the correction here (in hours, try -1.25)'
           ParentColor = False
         end
@@ -366,39 +366,41 @@ object frmPreferences: TfrmPreferences
           ParentColor = False
         end
         object edtGCStep: TEdit
-          AnchorSideLeft.Control = lblGCHint
-          AnchorSideLeft.Side = asrCenter
+          AnchorSideLeft.Control = edtGCLineWidth
+          AnchorSideLeft.Side = asrBottom
           AnchorSideTop.Control = edtGrayLineOffset
           AnchorSideTop.Side = asrCenter
-          Left = 430
+          Left = 392
           Height = 34
-          Top = 96
-          Width = 80
+          Top = 111
+          Width = 55
+          BorderSpacing.Left = 9
+          MaxLength = 4
           OnExit = edtGCStepExit
           TabOrder = 4
         end
         object edtGCPolarDivisor: TEdit
+          AnchorSideLeft.Control = edtGCStep
+          AnchorSideLeft.Side = asrBottom
           AnchorSideTop.Control = edtGrayLineOffset
           AnchorSideTop.Side = asrCenter
-          AnchorSideRight.Control = gbOffsets
           AnchorSideRight.Side = asrBottom
-          Left = 538
+          Left = 456
           Height = 34
-          Top = 96
-          Width = 80
-          Anchors = [akTop, akRight]
-          BorderSpacing.Right = 6
+          Top = 111
+          Width = 55
+          BorderSpacing.Left = 9
+          MaxLength = 2
           NumbersOnly = True
           OnExit = edtGCPolarDivisorExit
           TabOrder = 5
         end
         object lblGCStep: TLabel
           AnchorSideLeft.Control = edtGCStep
-          AnchorSideLeft.Side = asrCenter
           AnchorSideBottom.Control = edtGCStep
-          Left = 456
+          Left = 392
           Height = 17
-          Top = 79
+          Top = 94
           Width = 29
           Anchors = [akLeft, akBottom]
           Caption = 'Step'
@@ -406,11 +408,10 @@ object frmPreferences: TfrmPreferences
         end
         object lblGCDivisor: TLabel
           AnchorSideLeft.Control = edtGCPolarDivisor
-          AnchorSideLeft.Side = asrCenter
           AnchorSideBottom.Control = edtGCPolarDivisor
-          Left = 555
+          Left = 456
           Height = 17
-          Top = 79
+          Top = 94
           Width = 46
           Anchors = [akLeft, akBottom]
           Caption = 'Divisor'
@@ -422,22 +423,22 @@ object frmPreferences: TfrmPreferences
           AnchorSideTop.Side = asrBottom
           AnchorSideRight.Control = gbOffsets
           AnchorSideRight.Side = asrBottom
-          Left = 322
+          Left = 328
           Height = 51
-          Top = 130
+          Top = 148
           Width = 296
           Anchors = [akTop, akRight]
-          BorderSpacing.Right = 6
+          BorderSpacing.Top = 3
+          BorderSpacing.Right = 40
           Caption = 'Great circle plotting setps in decimal degrees'#10'Step divisor is used in  N and S polar areas'#10'where distance/degree is smaller'
           ParentColor = False
         end
         object lblGLOffset: TLabel
           AnchorSideLeft.Control = edtGrayLineOffset
-          AnchorSideLeft.Side = asrCenter
           AnchorSideBottom.Control = edtGrayLineOffset
-          Left = 133
+          Left = 128
           Height = 17
-          Top = 79
+          Top = 94
           Width = 40
           Anchors = [akLeft, akBottom]
           Caption = 'Offset'
@@ -445,79 +446,168 @@ object frmPreferences: TfrmPreferences
         end
         object edtGCLineWidth: TEdit
           AnchorSideLeft.Control = lblGCHint
-          AnchorSideTop.Control = edtGCStep
-          Left = 322
+          AnchorSideTop.Control = edtGrayLineOffset
+          Left = 328
           Height = 34
-          Top = 96
-          Width = 80
+          Top = 111
+          Width = 55
+          MaxLength = 2
           NumbersOnly = True
           OnExit = edtGCLineWidthExit
           TabOrder = 6
         end
         object lblGCwidth: TLabel
           AnchorSideLeft.Control = edtGCLineWidth
-          AnchorSideLeft.Side = asrCenter
           AnchorSideBottom.Control = edtGCLineWidth
           Left = 328
           Height = 17
-          Top = 79
-          Width = 69
+          Top = 94
+          Width = 50
           Anchors = [akLeft, akBottom]
-          Caption = 'Line Width'
+          Caption = 'P-Width'
           ParentColor = False
         end
         object lblGC_SP_Color: TLabel
-          AnchorSideLeft.Control = btnSPColor
-          AnchorSideLeft.Side = asrCenter
           AnchorSideTop.Control = lblUtc
           Left = 342
           Height = 17
-          Top = 11
-          Width = 91
-          Caption = 'ShortPath line'
+          Top = 26
+          Width = 34
+          Caption = 'Short'
           ParentColor = False
         end
         object lblGC_LP_Color: TLabel
-          AnchorSideLeft.Side = asrCenter
+          AnchorSideLeft.Control = btnLPColor
           AnchorSideTop.Control = lblUtc
-          Left = 503
+          Left = 442
           Height = 17
-          Top = 11
-          Width = 88
-          Caption = 'LongPath line'
+          Top = 26
+          Width = 31
+          Caption = 'Long'
           ParentColor = False
         end
-        object btnSPColor: TButton
+        object Label12: TLabel
           AnchorSideLeft.Control = lblGCHint
-          AnchorSideTop.Control = edtOffset
-          Left = 322
+          AnchorSideTop.Control = LblTimes
+          Left = 328
+          Height = 17
+          Top = 3
+          Width = 127
+          Caption = 'Grayline path lines:'
+          ParentColor = False
+        end
+        object lblGC_BP_Color: TLabel
+          AnchorSideLeft.Control = btnBPColor
+          AnchorSideTop.Control = lblUtc
+          Left = 544
+          Height = 17
+          Top = 26
+          Width = 38
+          Caption = 'Beam'
+          ParentColor = False
+        end
+        object edtGCBeamWidth: TEdit
+          AnchorSideLeft.Control = edtGCPolarDivisor
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = edtGrayLineOffset
+          AnchorSideTop.Side = asrCenter
+          AnchorSideRight.Side = asrBottom
+          Left = 520
           Height = 34
-          Hint = 'Click to select color'
-          Top = 28
-          Width = 130
-          Caption = 'Select Color'
-          Color = clYellow
-          OnClick = btnSPColorClick
-          ParentShowHint = False
-          ShowHint = True
+          Top = 111
+          Width = 55
+          BorderSpacing.Left = 9
+          MaxLength = 2
+          NumbersOnly = True
+          OnChange = edtGCBeamWidthChange
+          OnExit = edtGCPolarDivisorExit
           TabOrder = 7
         end
-        object btnLPColor: TButton
-          AnchorSideTop.Control = edtOffset
-          AnchorSideRight.Control = lblGCHint
+        object lblGCBeamWidth: TLabel
+          AnchorSideLeft.Control = edtGCBeamWidth
+          AnchorSideBottom.Control = edtGCBeamWidth
+          Left = 520
+          Height = 17
+          Top = 94
+          Width = 52
+          Anchors = [akLeft, akBottom]
+          Caption = 'B-Width'
+          ParentColor = False
+        end
+        object edtGCBeamLength: TEdit
+          AnchorSideLeft.Control = lblGCBeamWidth
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = edtGrayLineOffset
+          AnchorSideTop.Side = asrCenter
           AnchorSideRight.Side = asrBottom
-          Left = 488
+          Left = 581
           Height = 34
-          Hint = 'Click to select color'
-          Top = 28
-          Width = 130
-          Anchors = [akTop, akRight]
-          Caption = 'Select Color'
-          Color = clFuchsia
-          OnClick = btnLPColorClick
-          ParentShowHint = False
-          ShowHint = True
+          Top = 111
+          Width = 55
+          BorderSpacing.Left = 9
+          MaxLength = 4
+          NumbersOnly = True
+          OnChange = edtGCBeamWidthChange
+          OnExit = edtGCPolarDivisorExit
           TabOrder = 8
+        end
+        object lblGCBeamLength: TLabel
+          AnchorSideLeft.Control = edtGCBeamLength
+          AnchorSideBottom.Control = edtGCBeamWidth
+          Left = 581
+          Height = 17
+          Top = 94
+          Width = 44
+          Anchors = [akLeft, akBottom]
+          Caption = 'Length'
+          ParentColor = False
+        end
+        object btnSPColor: TColorButton
+          AnchorSideLeft.Control = lblGCHint
+          AnchorSideTop.Control = edtOffset
+          Left = 340
+          Height = 34
+          Top = 43
+          Width = 90
+          BorderSpacing.Left = 12
+          BorderWidth = 1
+          ButtonColorAutoSize = False
+          ButtonColorSize = 20
+          ButtonColor = clYellow
+          Caption = 'Color'
+          Color = clDefault
+        end
+        object btnLPColor: TColorButton
+          AnchorSideLeft.Control = btnSPColor
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = edtOffset
+          Left = 442
+          Height = 34
+          Top = 43
+          Width = 90
+          BorderSpacing.Left = 12
+          BorderWidth = 1
+          ButtonColorAutoSize = False
+          ButtonColorSize = 20
+          ButtonColor = clFuchsia
+          Caption = 'Color'
+          Color = clDefault
+        end
+        object btnBPColor: TColorButton
+          AnchorSideLeft.Control = btnLPColor
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = edtOffset
+          Left = 544
+          Height = 34
+          Top = 43
+          Width = 90
+          BorderSpacing.Left = 12
+          BorderWidth = 1
+          ButtonColorAutoSize = False
+          ButtonColorSize = 20
+          ButtonColor = clRed
+          Caption = 'Color'
+          Color = clDefault
         end
       end
       object chkShowMiles: TCheckBox
@@ -537,7 +627,7 @@ object frmPreferences: TfrmPreferences
         AnchorSideTop.Side = asrBottom
         Left = 6
         Height = 33
-        Top = 542
+        Top = 569
         Width = 213
         AutoSize = True
         BorderSpacing.Top = 6
@@ -582,23 +672,6 @@ object frmPreferences: TfrmPreferences
         Caption = 'show with different color'
         ParentColor = False
       end
-      object btnSelectQSOColor: TButton
-        AnchorSideLeft.Control = lblDiffColor
-        AnchorSideLeft.Side = asrBottom
-        AnchorSideTop.Control = edtQSOColorDate
-        AnchorSideTop.Side = asrCenter
-        Left = 414
-        Height = 33
-        Hint = 'Click to select color'
-        Top = 291
-        Width = 130
-        BorderSpacing.Left = 12
-        Caption = 'Select Color'
-        OnClick = btnSelectQSOColorClick
-        ParentShowHint = False
-        ShowHint = True
-        TabOrder = 12
-      end
       object lblQsoColorDate: TLabel
         AnchorSideLeft.Control = edtQSOColorDate
         AnchorSideLeft.Side = asrCenter
@@ -620,7 +693,23 @@ object frmPreferences: TfrmPreferences
         Top = 181
         Width = 446
         Caption = 'Check for newer version of DOK database  after program startup'
-        TabOrder = 13
+        TabOrder = 12
+      end
+      object btnSelectQSOColor: TColorButton
+        AnchorSideLeft.Control = lblDiffColor
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = edtQSOColorDate
+        Left = 414
+        Height = 34
+        Top = 290
+        Width = 90
+        BorderSpacing.Left = 12
+        BorderWidth = 1
+        ButtonColorAutoSize = False
+        ButtonColorSize = 20
+        ButtonColor = clBlack
+        Caption = 'Color'
+        Color = clDefault
       end
     end
     object tabStation: TTabSheet
@@ -633,7 +722,7 @@ object frmPreferences: TfrmPreferences
         Top = 16
         Width = 312
         Caption = 'General'
-        ClientHeight = 166
+        ClientHeight = 150
         ClientWidth = 310
         TabOrder = 0
         object Label4: TLabel
@@ -706,7 +795,7 @@ object frmPreferences: TfrmPreferences
         Top = 208
         Width = 312
         Caption = 'Contest Info'
-        ClientHeight = 194
+        ClientHeight = 178
         ClientWidth = 310
         TabOrder = 1
         object Label10: TLabel
@@ -796,7 +885,7 @@ object frmPreferences: TfrmPreferences
         AnchorSideTop.Side = asrCenter
         Left = 330
         Height = 17
-        Top = 401
+        Top = 404
         Width = 31
         BorderSpacing.Left = 5
         Caption = 'days'
@@ -806,14 +895,14 @@ object frmPreferences: TfrmPreferences
         AnchorSideLeft.Control = tabNewQSO
         AnchorSideTop.Control = tabNewQSO
         Left = 20
-        Height = 160
-        Top = 10
-        Width = 600
+        Height = 170
+        Top = 3
+        Width = 636
         BorderSpacing.Left = 20
-        BorderSpacing.Top = 10
+        BorderSpacing.Top = 3
         Caption = ' Default values '
-        ClientHeight = 158
-        ClientWidth = 598
+        ClientHeight = 152
+        ClientWidth = 634
         TabOrder = 0
         object Label5: TLabel
           AnchorSideLeft.Control = edtRST_S
@@ -869,14 +958,12 @@ object frmPreferences: TfrmPreferences
         end
         object Label11: TLabel
           AnchorSideLeft.Control = edtComments
-          AnchorSideBottom.Control = GroupBox1
-          AnchorSideBottom.Side = asrBottom
+          AnchorSideBottom.Control = edtComments
           Left = 5
           Height = 17
-          Top = 101
+          Top = 96
           Width = 118
           Anchors = [akLeft, akBottom]
-          BorderSpacing.Bottom = 40
           Caption = 'Comment for QSO'
           ParentColor = False
         end
@@ -932,7 +1019,7 @@ object frmPreferences: TfrmPreferences
           AnchorSideBottom.Side = asrBottom
           Left = 5
           Height = 34
-          Top = 119
+          Top = 113
           Width = 216
           Anchors = [akLeft, akBottom]
           BorderSpacing.Left = 5
@@ -978,6 +1065,30 @@ object frmPreferences: TfrmPreferences
           OnClick = btnChangeDefModeClick
           TabOrder = 7
         end
+        object edtOperator: TEdit
+          AnchorSideLeft.Control = cmbFreq
+          AnchorSideBottom.Control = GroupBox1
+          AnchorSideBottom.Side = asrBottom
+          Left = 263
+          Height = 34
+          Top = 113
+          Width = 216
+          Anchors = [akLeft, akBottom]
+          BorderSpacing.Bottom = 5
+          OnExit = edtOperatorExit
+          TabOrder = 8
+        end
+        object Label13: TLabel
+          AnchorSideLeft.Control = edtOperator
+          AnchorSideBottom.Control = edtComments
+          Left = 263
+          Height = 17
+          Top = 96
+          Width = 276
+          Anchors = [akLeft, akBottom]
+          Caption = 'Operator (if different than station callsign)'
+          ParentColor = False
+        end
       end
       object chkUseSpaceBar: TCheckBox
         AnchorSideLeft.Control = tabNewQSO
@@ -985,7 +1096,7 @@ object frmPreferences: TfrmPreferences
         AnchorSideTop.Side = asrBottom
         Left = 20
         Height = 23
-        Top = 254
+        Top = 257
         Width = 272
         BorderSpacing.Left = 20
         Caption = 'Use spacebar to move between fields'
@@ -997,7 +1108,7 @@ object frmPreferences: TfrmPreferences
         AnchorSideTop.Side = asrBottom
         Left = 20
         Height = 23
-        Top = 300
+        Top = 303
         Width = 211
         BorderSpacing.Left = 20
         Caption = 'Refresh data after save QSO'
@@ -1009,7 +1120,7 @@ object frmPreferences: TfrmPreferences
         AnchorSideTop.Side = asrBottom
         Left = 20
         Height = 23
-        Top = 277
+        Top = 280
         Width = 387
         BorderSpacing.Left = 20
         Caption = 'Skip over mode and frequency when radio is connected'
@@ -1021,7 +1132,7 @@ object frmPreferences: TfrmPreferences
         AnchorSideTop.Side = asrBottom
         Left = 20
         Height = 23
-        Top = 323
+        Top = 326
         Width = 332
         BorderSpacing.Left = 20
         Caption = 'Enable auto search on HamQTH.com/QRZ.COM'
@@ -1033,7 +1144,7 @@ object frmPreferences: TfrmPreferences
         AnchorSideTop.Side = asrCenter
         Left = 20
         Height = 23
-        Top = 398
+        Top = 401
         Width = 244
         BorderSpacing.Left = 20
         Caption = 'Show recent QSO records for last '
@@ -1046,7 +1157,7 @@ object frmPreferences: TfrmPreferences
         AnchorSideTop.Side = asrBottom
         Left = 269
         Height = 34
-        Top = 392
+        Top = 395
         Width = 56
         BorderSpacing.Left = 5
         OnKeyPress = edtRecetQSOsKeyPress
@@ -1059,7 +1170,7 @@ object frmPreferences: TfrmPreferences
         AnchorSideTop.Side = asrBottom
         Left = 20
         Height = 23
-        Top = 346
+        Top = 349
         Width = 281
         BorderSpacing.Left = 20
         Caption = 'Ignore HamQTH.com/QRZ.COM qsl info'
@@ -1071,7 +1182,7 @@ object frmPreferences: TfrmPreferences
         AnchorSideTop.Side = asrBottom
         Left = 20
         Height = 23
-        Top = 369
+        Top = 372
         Width = 578
         BorderSpacing.Left = 20
         Caption = 'If ''QSL via'' field contains other info than a call sign, move to ''Comment to QSO'' field'
@@ -1083,7 +1194,7 @@ object frmPreferences: TfrmPreferences
         AnchorSideTop.Side = asrBottom
         Left = 20
         Height = 23
-        Top = 180
+        Top = 183
         Width = 276
         BorderSpacing.Left = 20
         BorderSpacing.Top = 10
@@ -1097,7 +1208,7 @@ object frmPreferences: TfrmPreferences
         AnchorSideTop.Side = asrCenter
         Left = 306
         Height = 27
-        Top = 178
+        Top = 181
         Width = 74
         AutoSize = False
         BorderSpacing.Left = 10
@@ -1110,7 +1221,7 @@ object frmPreferences: TfrmPreferences
         AnchorSideTop.Side = asrBottom
         Left = 40
         Height = 23
-        Top = 208
+        Top = 211
         Width = 414
         BorderSpacing.Left = 40
         BorderSpacing.Top = 3
@@ -1123,7 +1234,7 @@ object frmPreferences: TfrmPreferences
         AnchorSideTop.Side = asrBottom
         Left = 40
         Height = 23
-        Top = 231
+        Top = 234
         Width = 387
         BorderSpacing.Left = 40
         Caption = 'Mark only the first QSO, first band QSO, first mode QSO'
@@ -1135,7 +1246,7 @@ object frmPreferences: TfrmPreferences
         AnchorSideTop.Side = asrBottom
         Left = 20
         Height = 23
-        Top = 426
+        Top = 429
         Width = 458
         BorderSpacing.Left = 20
         Caption = 'In previous QSO list show also QSO with call/p, call/m, W6/call etc.'
@@ -1147,7 +1258,7 @@ object frmPreferences: TfrmPreferences
         AnchorSideTop.Side = asrBottom
         Left = 20
         Height = 23
-        Top = 449
+        Top = 452
         Width = 199
         BorderSpacing.Left = 20
         Caption = 'Clear RIT after saving QSO'
@@ -1159,7 +1270,7 @@ object frmPreferences: TfrmPreferences
         AnchorSideTop.Side = asrBottom
         Left = 20
         Height = 23
-        Top = 472
+        Top = 475
         Width = 419
         BorderSpacing.Left = 20
         Caption = 'Always overwrite info from previous QSO with callbook data'
@@ -1171,7 +1282,7 @@ object frmPreferences: TfrmPreferences
         AnchorSideTop.Side = asrBottom
         Left = 20
         Height = 23
-        Top = 518
+        Top = 521
         Width = 241
         BorderSpacing.Left = 20
         Caption = 'Capitalise first letter in QTH field'
@@ -1183,7 +1294,7 @@ object frmPreferences: TfrmPreferences
         AnchorSideTop.Side = asrBottom
         Left = 40
         Height = 23
-        Top = 495
+        Top = 498
         Width = 405
         BorderSpacing.Left = 40
         Caption = 'Always overwrite only CQ, ITU zones, county and US state'
@@ -1195,7 +1306,7 @@ object frmPreferences: TfrmPreferences
         AnchorSideTop.Side = asrBottom
         Left = 20
         Height = 23
-        Top = 541
+        Top = 544
         Width = 253
         BorderSpacing.Left = 20
         Caption = 'Fill Award field from previous QSO '
@@ -1207,7 +1318,7 @@ object frmPreferences: TfrmPreferences
         AnchorSideTop.Side = asrBottom
         Left = 20
         Height = 23
-        Top = 564
+        Top = 567
         Width = 168
         BorderSpacing.Left = 20
         Caption = 'Enable satellite mode'
@@ -1220,7 +1331,7 @@ object frmPreferences: TfrmPreferences
         AnchorSideTop.Side = asrCenter
         Left = 366
         Height = 23
-        Top = 398
+        Top = 401
         Width = 345
         BorderSpacing.Left = 5
         Caption = 'instead of recent, show QSOs B4 with logged call'
@@ -1232,7 +1343,7 @@ object frmPreferences: TfrmPreferences
         AnchorSideTop.Side = asrBottom
         Left = 20
         Height = 23
-        Top = 587
+        Top = 590
         Width = 279
         BorderSpacing.Left = 20
         Caption = 'Upload SAT info to AMSAT status page'
@@ -1244,7 +1355,7 @@ object frmPreferences: TfrmPreferences
         AnchorSideTop.Side = asrBottom
         Left = 40
         Height = 17
-        Top = 610
+        Top = 613
         Width = 528
         BorderSpacing.Left = 40
         Caption = 'User defined web button. Macros: $CALL, $BAND, $FREQ, $MODE, $LOC, $MYLOC'
@@ -1256,7 +1367,7 @@ object frmPreferences: TfrmPreferences
         AnchorSideTop.Side = asrBottom
         Left = 20
         Height = 34
-        Top = 627
+        Top = 630
         Width = 548
         BorderSpacing.Left = 20
         TabOrder = 22
@@ -2259,7 +2370,7 @@ object frmPreferences: TfrmPreferences
         BorderSpacing.Left = 6
         BorderSpacing.Top = 4
         Caption = ' rigctld '
-        ClientHeight = 70
+        ClientHeight = 86
         ClientWidth = 655
         TabOrder = 0
         object lblRigctdPath: TLabel
@@ -2523,7 +2634,7 @@ object frmPreferences: TfrmPreferences
           Width = 511
           BorderSpacing.Top = 3
           Caption = 'Radio one serial parameters'
-          ClientHeight = 130
+          ClientHeight = 146
           ClientWidth = 509
           TabOrder = 11
           object lblSerialRSpd: TLabel

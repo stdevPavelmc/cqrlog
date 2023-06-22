@@ -32,7 +32,9 @@ type
     btnBrowseBackup1: TButton;
     btnDefineProfile1: TButton;
     btnHelp1: TButton;
-    btnLPColor: TButton;
+    btnBPColor: TColorButton;
+    btnSPColor: TColorButton;
+    btnLPColor: TColorButton;
     btnWsjtPath: TButton;
     btnSecondLoad: TButton;
     btnFrequencies1: TButton;
@@ -73,9 +75,7 @@ type
     btnAlertCallsigns: TButton;
     btnCfgStorage: TButton;
     btnAddTrxMem : TButton;
-    btnSelectQSOColor : TButton;
     btnForceMembershipUpdate : TButton;
-    btnSPColor: TButton;
     cb136kHz: TCheckBox;
     cb472kHz: TCheckBox;
     cb160m: TCheckBox;
@@ -434,11 +434,15 @@ type
     cmbCWRadio: TComboBox;
     cmbIfaceType: TComboBox;
     cmbDataMode: TComboBox;
+    btnSelectQSOColor: TColorButton;
     DateEditCall: TDateEdit;
     DateEditLoc: TDateEdit;
     dlgColor : TColorDialog;
+    edtOperator: TEdit;
     edtCondxTextUrl: TEdit;
     edtDataCmd: TEdit;
+    edtGCBeamWidth: TEdit;
+    edtGCBeamLength: TEdit;
     edtHrdUrl: TEdit;
     edtClubLogUrl: TEdit;
     edtClubLogUrlDel: TEdit;
@@ -639,6 +643,11 @@ type
     Label1: TLabel;
     Label10: TLabel;
     Label108: TLabel;
+    Label12: TLabel;
+    Label13: TLabel;
+    lblGCBeamWidth: TLabel;
+    lblGCBeamLength: TLabel;
+    lblGC_BP_Color: TLabel;
     lblRadio: TLabel;
     lblCWRadio: TLabel;
     lblNoRigForCW: TLabel;
@@ -952,11 +961,8 @@ type
     procedure btnChangeDefFreqClick(Sender: TObject);
     procedure btnChangeDefModeClick(Sender: TObject);
     procedure btnHelp1Click(Sender: TObject);
-    procedure btnLPColorClick(Sender: TObject);
-    procedure btnSPColorClick(Sender: TObject);
     procedure btnWsjtPathClick(Sender: TObject);
     procedure btnFldigiPathClick(Sender: TObject);
-    procedure btnSelectQSOColorClick(Sender : TObject);
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure btnBrowseBackupClick(Sender: TObject);
@@ -995,6 +1001,7 @@ type
     procedure edtAlertCmdExit(Sender: TObject);
     procedure edtDataCmdChange(Sender: TObject);
     procedure edtDigiModesExit(Sender: TObject);
+    procedure edtGCBeamWidthChange(Sender: TObject);
     procedure edtGCLineWidthExit(Sender: TObject);
     procedure edtGCPolarDivisorExit(Sender: TObject);
     procedure edtGCStepExit(Sender: TObject);
@@ -1004,6 +1011,7 @@ type
     procedure edtK3NGSerSpeedChange(Sender: TObject);
     procedure edtLocChange(Sender: TObject);
     procedure edtLocExit(Sender: TObject);
+    procedure edtOperatorExit(Sender: TObject);
     procedure edtPdfFilesExit(Sender: TObject);
     procedure edtRecetQSOsKeyPress(Sender: TObject; var Key: char);
     procedure edtRigCountChange(Sender: TObject);
@@ -1131,6 +1139,7 @@ begin
   cqrini.WriteString('NewQSO', 'Mode', cmbMode.Text);
   cqrini.WriteString('NewQSO', 'QSL_S', cmbQSL_S.Text);
   cqrini.WriteString('NewQSO', 'RemQSO', edtComments.Text);
+  cqrini.WriteString('NewQSO', 'Op', edtOperator.Text);
   cqrini.WriteString('NewQSO', 'UsrBtn', edtUsrBtn.Text);
   cqrini.WriteBool('NewQSO', 'UseSpaceBar', chkUseSpaceBar.Checked);
   cqrini.WriteBool('NewQSO', 'RefreshAfterSave', chkRefreshAfterSave.Checked);
@@ -1164,8 +1173,11 @@ begin
   cqrini.WriteFloat('Program', 'GraylineGCstep',StrToCurr(edtGCStep.Caption));
   cqrini.WriteInteger('Program', 'GraylineGCPolarDivisor',StrToInt(edtGCPolarDivisor.Caption));
   cqrini.WriteInteger('Program', 'GraylineGCLineWidth',StrToInt(edtGCLineWidth.Caption));
-  cqrini.WriteString('Program', 'GraylineGCLineSPColor', ColorToString(btnSPColor.Color));
-  cqrini.WriteString('Program', 'GraylineGCLineLPColor', ColorToString(btnLPColor.Color));
+  cqrini.WriteString('Program', 'GraylineGCLineSPColor', ColorToString(btnSPColor.ButtonColor));
+  cqrini.WriteString('Program', 'GraylineGCLineLPColor', ColorToString(btnLPColor.ButtonColor));
+  cqrini.WriteString('Program', 'GraylineGCLineBEColor', ColorToString(btnBPColor.ButtonColor));
+  cqrini.WriteInteger('Program', 'GraylineGBeamLineWidth',StrToInt(edtGCBeamWidth.Caption));
+  cqrini.WriteInteger('Program', 'GraylineGBeamLineLength',StrToInt(edtGCBeamLength.Caption));
 
   if  edtWebBrowser.Text = '' then  edtWebBrowser.Text:= dmUtils.MyDefaultBrowser; //may not be empty string
   cqrini.WriteString('Program', 'WebBrowser', edtWebBrowser.Text);
@@ -1179,7 +1191,7 @@ begin
   cqrini.WriteBool('Program', 'SysUTC', chkSysUTC.Checked);
   cqrini.WriteBool('Program','ShowMiles',chkShowMiles.Checked);
   cqrini.WriteBool('Program', 'QSODiffColor', chkQSOColor.Checked);
-  cqrini.WriteInteger('Program', 'QSOColor', btnSelectQSOColor.Color);
+  cqrini.WriteInteger('Program', 'QSOColor', btnSelectQSOColor.ButtonColor);
   cqrini.WriteString('Program', 'QSOColorDate', edtQSOColorDate.Text);
 
   cqrini.WriteBool('Columns', 'Date', chkDate.Checked);
@@ -1635,6 +1647,10 @@ begin
   if frmPropagation.Showing then
     frmPropagation.RefreshPropagation;
 
+  frmNewQSO.Op:=edtOperator.text;
+  cqrini.WriteString('TMPQSO','OP',edtOperator.text);
+  frmNewQSO.ShowOperator;
+
   frmTRXControl.SetDebugMode(chkTrxControlDebug.Checked or (dmData.DebugLevel>0));
 
   if ((frmNewQSO.sbNewQSO.Panels[0].Text = '') or (frmNewQSO.sbNewQSO.Panels[0].Text = cMyLoc)) then
@@ -2018,14 +2034,6 @@ begin
        ShowMessage('File not found!');
 end;
 
-procedure TfrmPreferences.btnSelectQSOColorClick(Sender : TObject);
-begin
-  dlgColor.Color := btnSelectQSOColor.Color;
-  if dlgColor.Execute then
-    btnSelectQSOColor.Color := dlgColor.Color;
-  btnSelectQSOColor.Repaint;
-end;
-
 procedure TfrmPreferences.btnChangeDefFreqClick(Sender: TObject);
 begin
   frmNewQSODefValues := TfrmNewQSODefValues.Create(frmPreferences);
@@ -2075,22 +2083,6 @@ begin
   dmUtils.OpenInApp('file://' + dmData.HelpDir + 'index.html' );
 end;
 
-procedure TfrmPreferences.btnLPColorClick(Sender: TObject);
-begin
-  dlgColor.Color := btnLPColor.Color;
-  if dlgColor.Execute then
-    btnLPColor.Color := dlgColor.Color;
-  btnLPColor.Repaint;
-end;
-
-
-procedure TfrmPreferences.btnSPColorClick(Sender: TObject);
-begin
-  dlgColor.Color := btnSPColor.Color;
-  if dlgColor.Execute then
-    btnSPColor.Color := dlgColor.Color;
-  btnSPColor.Repaint;
-end;
 
 procedure TfrmPreferences.btnWsjtPathClick(Sender: TObject);
 begin
@@ -2515,6 +2507,11 @@ begin
   cmbDataMode.ItemIndex:=i;
 end;
 
+procedure TfrmPreferences.edtGCBeamWidthChange(Sender: TObject);
+begin
+
+end;
+
 function TfrmPreferences.DataModeInput(s:string):string;
 begin
   s:=Upcase(s);
@@ -2631,6 +2628,11 @@ begin
     edtLoc.Text:='';
     edtLoc.SetFocus;
    end;
+end;
+
+procedure TfrmPreferences.edtOperatorExit(Sender: TObject);
+begin
+  edtOperator.text:=Trim(Uppercase(edtOperator.text));
 end;
 
 procedure TfrmPreferences.edtRecetQSOsKeyPress(Sender: TObject; var Key: char);
@@ -2764,6 +2766,7 @@ begin
   cmbMode.Text := cqrini.ReadString('NewQSO', 'Mode', 'CW');
   cmbQSL_S.Text := cqrini.ReadString('NewQSO', 'QSL_S', '');
   edtComments.Text := cqrini.ReadString('NewQSO', 'RemQSO', '');
+  edtOperator.Text := cqrini.ReadString('NewQSO', 'Op', '');
   edtUsrBtn.Text := cqrini.ReadString('NewQSO', 'UsrBtn', 'https://www.qrzcq.com/call/$CALL');
   chkUseSpaceBar.Checked := cqrini.ReadBool('NewQSO', 'UseSpaceBar', False);
   chkRefreshAfterSave.Checked := cqrini.ReadBool('NewQSO', 'RefreshAfterSave', True);
@@ -2796,8 +2799,11 @@ begin
   edtGCStep.Caption :=  CurrToStr(cqrini.ReadFloat('Program', 'GraylineGCstep',0.1));
   edtGCPolarDivisor.Caption := IntToStr(cqrini.ReadInteger('Program', 'GraylineGCPolarDivisor',10));
   edtGCLineWidth.Caption :=  IntToStr(cqrini.ReadInteger('Program', 'GraylineGCLineWidth',2));
-  btnSPColor.Color := StringToColor(cqrini.ReadString('Program', 'GraylineGCLineSPColor', 'clYellow' ));
-  btnLPColor.Color := StringToColor(cqrini.ReadString('Program', 'GraylineGCLineLPColor', 'clFuchsia' ));
+  btnSPColor.ButtonColor := StringToColor(cqrini.ReadString('Program', 'GraylineGCLineSPColor','clYellow' ));
+  btnLPColor.ButtonColor := StringToColor(cqrini.ReadString('Program', 'GraylineGCLineLPColor','clFuchsia' ));
+  btnBPColor.ButtonColor:= StringToColor(cqrini.ReadString('Program', 'GraylineGCLineBEColor','clRed'));
+  edtGCBeamWidth.Caption:= IntToStr(cqrini.ReadInteger('Program', 'GraylineGBeamLineWidth',2));
+  edtGCBeamLength.Caption:= IntToStr(cqrini.ReadInteger('Program', 'GraylineGBeamLineLength',1500));
 
 
   edtWebBrowser.Text := cqrini.ReadString('Program', 'WebBrowser', dmUtils.MyDefaultBrowser);
@@ -2810,7 +2816,7 @@ begin
   chkSysUTC.Checked := cqrini.ReadBool('Program', 'SysUTC', True);
   chkShowMiles.Checked := cqrini.ReadBool('Program','ShowMiles',False);
   chkQSOColor.Checked := cqrini.ReadBool('Program', 'QSODiffColor', False);
-  btnSelectQSOColor.Color := cqrini.ReadInteger('Program', 'QSOColor', clPurple);
+  btnSelectQSOColor.ButtonColor := cqrini.ReadInteger('Program', 'QSOColor', clPurple);
   edtQSOColorDate.Text := cqrini.ReadString('Program', 'QSOColorDate', '');
 
   if cqrini.ReadBool('Program', 'BandStatMHz', True) then

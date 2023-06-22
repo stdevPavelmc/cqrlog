@@ -629,7 +629,6 @@ type
     DiffCalls          : byte;
     RememberAutoMode : Boolean;
     IsJS8Callrmt     : Boolean; //way to isolate adif from JS8's JSON
-    Op         : String;
     QSLcfm,
     eQSLcfm,
     LoTWcfm    : String;
@@ -681,7 +680,6 @@ type
     function CheckFreq(freq : String) : String;
     procedure WaitWeb(secs:integer);
     function RigCmd2DataMode(mode:String):String;
-    procedure ShowOperator;
     procedure StartUpRemote;
     procedure NewLogSplash;
 
@@ -698,6 +696,7 @@ type
     RemoteName  : String; //with wsjt has name from UDP datagram
     RemoteActive: String; //Actve remote name, empty if no remote running.
     CallFromSpot: Boolean; //Used with wsjtx UDP#15
+    Op          : String;
 
     WsjtxSock             : TUDPBlockSocket; //receive socket
     WsjtxSockS            : TUDPBlockSocket; //multicast send socket
@@ -724,6 +723,7 @@ type
 
     property EditQSO : Boolean read fEditQSO write fEditQSO default False;
     property ViewQSO : Boolean read fViewQSO write fViewQSO default False;
+    procedure ShowOperator;
 
     procedure DisableRemoteMode;   //Moved from private
     procedure SaveRemote;
@@ -1256,12 +1256,13 @@ procedure TfrmNewQSO.ClearGrayLineMapLine;
 var
   lat,long :currency;
 Begin
-  frmGrayLine.ob^.GC_line_clear;
+  frmGrayLine.ob^.GC_line_clear; //clear short and long path lines
   dmUtils.CoordinateFromLocator(dmUtils.CompleteLoc(CurrentMyLoc),lat,long);
   lat := lat*-1;
   frmGrayLine.ob^.jachcucaru(true,long,lat,long+0.03,lat+0.03); //trying to make own qth dot a bit bigger
                                                                 //the Grayline window zoom affects to visibility anyhow
   frmGrayline.Refresh;
+  frmRotControl.BeamDir:=-1;
 end;
 
 procedure TfrmNewQSO.ClearAll;
@@ -1487,7 +1488,13 @@ begin
 
   if cqrini.ReadBool('CW', 'NoReset', false) then     //is set: user does not want reset CW keyer at rig switch/init
                                         InitializeCW; //so we have to do it at least once: Here.
-  Op := '';
+
+  Op := cqrini.ReadString('NewQSO', 'Op', '');
+  if OP<>'' then
+   begin
+    cqrini.WriteString('TMPQSO','OP',Op);
+    ShowOperator;
+   end;
 
   if dbgrdQSOBefore.Visible then
     mnuQSOBefore.Caption := 'Disable QSO before grid'

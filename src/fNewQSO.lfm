@@ -2138,7 +2138,7 @@ object frmNewQSO: TfrmNewQSO
   OnKeyUp = FormKeyUp
   OnShow = FormShow
   OnWindowStateChange = FormWindowStateChange
-  LCLVersion = '2.2.2.0'
+  LCLVersion = '2.2.6.0'
   object pnlAll: TPanel
     AnchorSideTop.Control = dbgrdQSOBefore
     AnchorSideTop.Side = asrBottom
