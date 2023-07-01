@@ -4886,6 +4886,7 @@ begin
     tabSatellite.Font.Color := clRed
   else
     tabSatellite.Font.Color := clDefault;
+  old_prop   := dmSatellite.GetPropShortName(cmbPropagation.Text); //keep prop mode even when no qsos saved yet
 end;
 
 procedure TfrmNewQSO.cmbQSL_REnter(Sender: TObject);
@@ -5657,7 +5658,6 @@ begin
       end
       else
       begin
-        old_prop   := dmSatellite.GetPropShortName(cmbPropagation.Text); //keep prop mode even when no qsos saved yet
         if Assigned(CWint) then CWint.StopSending;
         EscFirstPressDone   := True;
         tmrESC.Enabled := True
