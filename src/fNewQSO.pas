@@ -5655,8 +5655,9 @@ begin
         old_cfreq := '';
         old_cmode := '';
       end
-      else begin
-
+      else
+      begin
+        old_prop   := dmSatellite.GetPropShortName(cmbPropagation.Text); //keep prop mode even when no qsos saved yet
         if Assigned(CWint) then CWint.StopSending;
         EscFirstPressDone   := True;
         tmrESC.Enabled := True
