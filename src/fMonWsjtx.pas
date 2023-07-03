@@ -714,7 +714,7 @@ begin
       //map mode allows text printing. Printing stays on when return to monitor mode.
       chknoHistory.Visible := False;
       sgMonitor.Columns.Items[0].Visible:= false;
-      sgMonitor.Columns.Items[1].Visible:= false;
+      sgMonitor.Columns.Items[1].Visible:= chkdB.Checked;
       sgMonitor.Columns.Items[7].Visible:= true;
       sgMonitor.Columns.Items[6].MinSize:=2;  //map mode -> US state
       sgMonitor.Columns.Items[6].MaxSize:=2;
