@@ -98,9 +98,8 @@ object frmCountyStat: TfrmCountyStat
       Left = 468
       Height = 25
       Top = 33
-      Width = 140
+      Width = 150
       BorderSpacing.Left = 12
-      BorderSpacing.Right = 12
       Caption = 'Refresh statistic'
       OnClick = btnRefreshClick
       TabOrder = 2
@@ -119,22 +118,31 @@ object frmCountyStat: TfrmCountyStat
     ClientWidth = 655
     TabOrder = 1
     object btnClose: TButton
-      Left = 569
+      AnchorSideTop.Control = Panel2
+      AnchorSideTop.Side = asrCenter
+      AnchorSideRight.Control = Panel2
+      AnchorSideRight.Side = asrBottom
+      Left = 568
       Height = 25
-      Top = 6
+      Top = 5
       Width = 75
       Anchors = [akTop, akRight]
+      BorderSpacing.Right = 12
       Cancel = True
       Caption = 'Close'
       ModalResult = 2
       TabOrder = 0
     end
     object btnSaveTo: TButton
-      Left = 480
+      AnchorSideTop.Control = Panel2
+      AnchorSideTop.Side = asrCenter
+      AnchorSideRight.Control = btnClose
+      Left = 481
       Height = 25
-      Top = 6
+      Top = 5
       Width = 75
       Anchors = [akTop, akRight]
+      BorderSpacing.Right = 12
       Caption = 'Save to ...'
       OnClick = btnSaveToClick
       TabOrder = 1

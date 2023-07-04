@@ -75,6 +75,7 @@ var
 begin
   btnRefresh.Font.Color:=clDefault;
   btnRefresh.Font.Style:=[];
+  btnRefresh.Repaint;
   try
     dmData.Q.Close;
     dmData.Q1.Close;
