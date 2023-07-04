@@ -1,7 +1,7 @@
 object frmMain: TfrmMain
-  Left = 290
+  Left = 208
   Height = 669
-  Top = 106
+  Top = 41
   Width = 986
   HelpType = htKeyword
   HelpKeyword = 'help/index.html'
@@ -160,7 +160,7 @@ object frmMain: TfrmMain
   OnKeyDown = FormKeyDown
   OnKeyUp = FormKeyUp
   OnShow = FormShow
-  LCLVersion = '2.2.4.0'
+  LCLVersion = '2.2.6.0'
   object sbMain: TStatusBar
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Side = asrBottom
@@ -1484,6 +1484,10 @@ object frmMain: TfrmMain
       object MenuItem87: TMenuItem
         Action = acBigSquares
       end
+      object MenuItem2: TMenuItem
+        Action = acCounty
+        Caption = 'County'
+      end
       object MenuItem86: TMenuItem
         Caption = '-'
       end
@@ -2042,6 +2046,10 @@ object frmMain: TfrmMain
     object acCreateLoadFilter: TAction
       Caption = 'CreateLoadFilter'
       OnExecute = acCreateLoadFilterExecute
+    end
+    object acCounty: TAction
+      Caption = 'County Statistics'
+      OnExecute = acCountyExecute
     end
   end
   object tmrTime: TTimer

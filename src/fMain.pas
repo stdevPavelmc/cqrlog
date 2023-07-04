@@ -85,6 +85,7 @@ type
     acMarkAlleQSL: TAction;
     acAutoSizeColumns: TAction;
     acCreateLoadFilter: TAction;
+    acCounty: TAction;
     acUploadAllToLoTW: TAction;
     acUploadToAll: TAction;
     acUploadToHrdLog: TAction;
@@ -136,6 +137,7 @@ type
     lblSumDist: TLabel;
     lblSumDistances: TLabel;
     MenuItem1:  TMenuItem;
+    MenuItem2: TMenuItem;
     mnuOR: TMenuItem;
     MenuItemStats: TMenuItem;
     MenuItem100: TMenuItem;
@@ -354,6 +356,7 @@ type
     procedure acCabrilloExportExecute(Sender : TObject);
     procedure acSQLExecute(Sender: TObject);
     procedure acAutoSizeColumnsExecute(Sender: TObject);
+    procedure acCountyExecute(Sender: TObject);
     procedure acUploadAllToLoTWExecute(Sender: TObject);
     procedure acUploadToAllExecute(Sender: TObject);
     procedure acUploadToClubLogExecute(Sender: TObject);
@@ -486,7 +489,7 @@ uses fNewQSO, fPreferences, dUtils, dData, dDXCC, dDXCluster, fMarkQSL, fDXCCSta
   fImportLoTWWeb, fLoTWExport, fGroupEdit, fCustomStat, fSQLConsole, fCallAttachment,
   fEditDetails, fQSLViewer, uMyIni, fRebuildMembStat, fAbout, fBigSquareStat,
   feQSLUpload, feQSLDownload, fSOTAExport, fEDIExport, fCabrilloExport, fRotControl,
-  fLogUploadStatus, fExportPref,uVersion;
+  fLogUploadStatus, fExportPref,uVersion, fCountyStat;
 
 procedure TfrmMain.ReloadGrid;
 begin
@@ -1352,6 +1355,7 @@ begin
      end;
 end;
 
+
 procedure TfrmMain.mnueQSLViewClick(Sender: TObject);
 var
   QSOmode:String;
@@ -1677,6 +1681,16 @@ begin
       ToolButton37.ImageIndex:=34;
       dbgrdMain.Options:=[dgTitles,dgIndicator,dgColumnResize,dgColumnMove,dgColLines,dgRowLines,dgTabs,dgRowSelect,dgAlwaysShowSelection,dgConfirmDelete,dgCancelOnExit,dgMultiselect];
   end;
+end;
+
+procedure TfrmMain.acCountyExecute(Sender: TObject);
+begin
+  frmCountyStat := TfrmCountyStat.Create(frmNewQSO);
+  try
+    frmCountyStat.ShowModal
+  finally
+    FreeAndNil(frmCountyStat)
+  end
 end;
 
 procedure TfrmMain.acUploadAllToLoTWExecute(Sender: TObject);

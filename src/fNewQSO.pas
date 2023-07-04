@@ -82,6 +82,7 @@ type
     acReminder: TAction;
     acContest: TAction;
     acRemoteModeADIF: TAction;
+    acCounty: TAction;
     acUploadToAll: TAction;
     acUploadToHrdLog: TAction;
     acUploadToClubLog: TAction;
@@ -134,6 +135,7 @@ type
     MenuItem41: TMenuItem;
     MenuItem43: TMenuItem;
     MenuItem45: TMenuItem;
+    MenuItem46: TMenuItem;
     MenuItem51: TMenuItem;
     MenuItem52: TMenuItem;
     MenuItem53: TMenuItem;
@@ -141,6 +143,7 @@ type
     MenuItem57: TMenuItem;
     MenuItem58: TMenuItem;
     MenuItem63: TMenuItem;
+    MenuItem84: TMenuItem;
     MenuItem94 : TMenuItem;
     mnueQSLView: TMenuItem;
     mnuRemoteModeADIF: TMenuItem;
@@ -378,6 +381,7 @@ type
     procedure acBigSquareExecute(Sender: TObject);
     procedure acCommentToCallsignExecute(Sender : TObject);
     procedure acContestExecute(Sender: TObject);
+    procedure acCountyExecute(Sender: TObject);
     procedure acCWFKeyExecute(Sender: TObject);
     procedure acHotkeysExecute(Sender: TObject);
     procedure acLocatorMapExecute(Sender: TObject);
@@ -455,6 +459,7 @@ type
     procedure MenuItem11Click(Sender: TObject);
     procedure MenuItem12Click(Sender: TObject);
     procedure MenuItem17Click(Sender: TObject);
+    procedure MenuItem46Click(Sender: TObject);
     procedure MenuItem95Click(Sender: TObject);
     procedure MenuItem96Click(Sender: TObject);
     procedure MenuItem45Click(Sender: TObject);
@@ -821,7 +826,7 @@ uses dUtils, fChangeLocator, fChangeOperator, dDXCC, dDXCluster, dData, fMain, f
      fLongNote, fRefCall, fKeyTexts, fCWType, fExportProgress, fPropagation, fCallAttachment,
      fQSLViewer, fCWKeys, uMyIni, fDBConnect, fAbout, uVersion, fChangelog,
      fBigSquareStat, fSCP, fRotControl, fLogUploadStatus, fRbnMonitor, fException, fCommentToCall,
-     fRemind, fContest, fXfldigi, dMembership, dSatellite;
+     fRemind, fContest, fXfldigi, dMembership, dSatellite, fCountyStat;
 
 
 
@@ -4807,6 +4812,16 @@ begin
   frmContest.Show;
 end;
 
+procedure TfrmNewQSO.acCountyExecute(Sender: TObject);
+begin
+    frmCountyStat := TfrmCountyStat.Create(frmNewQSO);
+  try
+    frmCountyStat.ShowModal
+  finally
+    FreeAndNil(frmCountyStat)
+  end
+end;
+
 procedure TfrmNewQSO.acOpenLogExecute(Sender: TObject);
 var
   old : String;
@@ -5144,6 +5159,11 @@ end;
 procedure TfrmNewQSO.MenuItem17Click(Sender: TObject);
 begin
   ShowHelp
+end;
+
+procedure TfrmNewQSO.MenuItem46Click(Sender: TObject);
+begin
+
 end;
 
 procedure TfrmNewQSO.MenuItem45Click(Sender: TObject);

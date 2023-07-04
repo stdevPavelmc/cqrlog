@@ -30,6 +30,7 @@ type
     dlgSave: TSaveDialog;
     procedure btnRefreshClick(Sender: TObject);
     procedure btnSaveToClick(Sender: TObject);
+    procedure cmbBandsChange(Sender: TObject);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormShow(Sender: TObject);
   private
@@ -114,6 +115,9 @@ begin
     //db.CreateDataset;
     //db.IndexDefs.Add('loc','loc',[ixPrimary]);
     //db.Open;
+    btnRefresh.Font.Color:=clDefault;
+    btnRefresh.Font.Style:=[];
+    btnRefresh.Repaint;
 
     dmData.Q.Close;
     dmData.Q1.Close;
@@ -261,6 +265,13 @@ begin
     cqrini.WriteString('SquareStat','Directory',ExtractFilePath(dlgSave.FileName));
     CopyFile(TmpFile,dlgSave.FileName)
   end
+end;
+
+procedure TfrmBigSquareStat.cmbBandsChange(Sender: TObject);
+begin
+  btnRefresh.Font.Color:=clFuchsia;
+  btnRefresh.Font.Style:=[fsBold];
+  btnRefresh.Repaint;
 end;
 
 procedure TfrmBigSquareStat.WriteHMTLHeader;

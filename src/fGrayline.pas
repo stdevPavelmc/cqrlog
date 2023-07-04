@@ -555,7 +555,7 @@ var R,B,
 Begin
 
      R:=6378.15;     (* Radius of the earth *)
-  //if LocalDbg then
+  if LocalDbg then
    begin
       write('Lat:',FormatFloat('0.00;;',BaseLat));
       write(' Lon:',FormatFloat('0.00;;',BaseLon));
@@ -580,6 +580,7 @@ distcount:=dist div stp; //we need to calculate in small steps. Otherwise precis
 
      lat1:=lat2;
      lon1:=lon2;
+   if LocalDbg then
      begin
       write('Lat>',FormatFloat('0.00;;',RadToDeg(lat1)));
       writeln(' Lon>',FormatFloat('0.00;;',RadToDeg(lon1)));
@@ -589,7 +590,7 @@ distcount:=dist div stp; //we need to calculate in small steps. Otherwise precis
   lat2:=RadToDeg(lat2);
   lon2:=RadToDeg(lon2);
 
-  //if LocalDbg then
+  if LocalDbg then
    begin
       write('Lat:',FormatFloat('0.00;;',lat2));
       writeln(' Lon:',FormatFloat('0.00;;',lon2));

@@ -1,7 +1,7 @@
 object frmNewQSO: TfrmNewQSO
-  Left = 244
+  Left = 0
   Height = 709
-  Top = 66
+  Top = 0
   Width = 1032
   HelpType = htKeyword
   HelpKeyword = 'help/index.html'
@@ -5212,6 +5212,13 @@ object frmNewQSO: TfrmNewQSO
       object MenuItem83: TMenuItem
         Action = acBigSquare
       end
+      object MenuItem84: TMenuItem
+        Action = acCounty
+      end
+      object MenuItem46: TMenuItem
+        Caption = 'CreateLoadFilter'
+        Visible = False
+      end
       object MenuItem21: TMenuItem
         Caption = 'Graphical statistics'
         Visible = False
@@ -5781,6 +5788,11 @@ object frmNewQSO: TfrmNewQSO
       Category = 'File'
       Caption = 'ADIF'
       OnExecute = acRemoteModeADIFExecute
+    end
+    object acCounty: TAction
+      Category = 'Statistics'
+      Caption = 'County'
+      OnExecute = acCountyExecute
     end
   end
   object imgMain: TImageList

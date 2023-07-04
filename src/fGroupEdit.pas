@@ -38,7 +38,6 @@ type
     procedure cmbFieldChange(Sender: TObject);
     procedure cmbValueChange(Sender: TObject);
     procedure FormShow(Sender: TObject);
-    procedure lblFieldClick(Sender: TObject);
   private
     { private declarations }
     WhereTo: String;
@@ -147,11 +146,6 @@ begin
   lblInfo.Caption := 'Apply will afftect '+WhereTo;
   pnlGrpEdt.Repaint;
   lblInfo.Repaint;
-end;
-
-procedure TfrmGroupEdit.lblFieldClick(Sender: TObject);
-begin
-
 end;
 
 procedure TfrmGroupEdit.btnApplyClick(Sender: TObject);

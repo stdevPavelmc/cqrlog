@@ -1,9 +1,9 @@
-object frmBigSquareStat: TfrmBigSquareStat
-  Left = 564
+object frmCountyStat: TfrmCountyStat
+  Left = 561
   Height = 590
-  Top = 141
+  Top = 118
   Width = 655
-  Caption = 'Big square statistic'
+  Caption = 'County statistic'
   ClientHeight = 590
   ClientWidth = 655
   OnClose = FormClose
@@ -94,11 +94,13 @@ object frmBigSquareStat: TfrmBigSquareStat
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = GroupBox1
       AnchorSideTop.Side = asrCenter
+      AnchorSideRight.Side = asrBottom
       Left = 468
       Height = 25
       Top = 33
-      Width = 156
+      Width = 140
       BorderSpacing.Left = 12
+      BorderSpacing.Right = 12
       Caption = 'Refresh statistic'
       OnClick = btnRefreshClick
       TabOrder = 2
@@ -117,37 +119,31 @@ object frmBigSquareStat: TfrmBigSquareStat
     ClientWidth = 655
     TabOrder = 1
     object btnClose: TButton
-      AnchorSideTop.Control = Panel2
-      AnchorSideTop.Side = asrCenter
-      AnchorSideRight.Control = Panel2
-      AnchorSideRight.Side = asrBottom
-      Left = 568
+      Left = 569
       Height = 25
-      Top = 5
+      Top = 6
       Width = 75
       Anchors = [akTop, akRight]
-      BorderSpacing.Right = 12
       Cancel = True
       Caption = 'Close'
       ModalResult = 2
       TabOrder = 0
     end
     object btnSaveTo: TButton
-      AnchorSideTop.Control = Panel2
-      AnchorSideTop.Side = asrCenter
-      AnchorSideRight.Control = btnClose
-      Left = 481
+      Left = 480
       Height = 25
-      Top = 5
+      Top = 6
       Width = 75
       Anchors = [akTop, akRight]
-      BorderSpacing.Right = 12
       Caption = 'Save to ...'
       OnClick = btnSaveToClick
       TabOrder = 1
     end
   end
   object IpHtmlPanel1: TIpHtmlPanel
+    AnchorSideLeft.Control = Panel1
+    AnchorSideTop.Control = Panel1
+    AnchorSideTop.Side = asrBottom
     Left = 0
     Height = 468
     Top = 88
