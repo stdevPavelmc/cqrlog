@@ -148,7 +148,7 @@ object frmGroupEdit: TfrmGroupEdit
   }
   OnShow = FormShow
   Position = poMainFormCenter
-  LCLVersion = '2.2.2.0'
+  LCLVersion = '2.2.6.0'
   object GroupBox1: TGroupBox
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
@@ -172,7 +172,6 @@ object frmGroupEdit: TfrmGroupEdit
       BorderSpacing.Left = 12
       Caption = 'Field:'
       ParentColor = False
-      OnClick = lblFieldClick
     end
     object lblValue: TLabel
       AnchorSideLeft.Control = lblField
