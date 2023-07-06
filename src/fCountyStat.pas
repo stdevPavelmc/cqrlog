@@ -5,18 +5,18 @@ unit fCountyStat;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics,
-  Dialogs, ExtCtrls, StdCtrls, Grids, IpHtml, Ipfilebroker, db, BufDataset,
-  LazFileUtils;
+  Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
+  ExtCtrls, StdCtrls, Grids, ComCtrls, IpHtml, Ipfilebroker, db, BufDataset,
+  LazFileUtils,Dateutils;
 
 type
 
   { TfrmCountyStat }
 
   TfrmCountyStat = class(TForm)
-    btnSaveTo: TButton;
-    btnRefresh: TButton;
     btnClose: TButton;
+    btnRefresh: TButton;
+    btnSaveTo: TButton;
     chkQSL: TCheckBox;
     chkLoTW: TCheckBox;
     chkeQSL: TCheckBox;
@@ -28,11 +28,16 @@ type
     Panel1: TPanel;
     Panel2: TPanel;
     dlgSave: TSaveDialog;
+    pbTot: TProgressBar;
+    tmrBlink: TTimer;
     procedure btnRefreshClick(Sender: TObject);
     procedure btnSaveToClick(Sender: TObject);
     procedure cmbBandsChange(Sender: TObject);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormShow(Sender: TObject);
+    procedure tmrBlinkStartTimer(Sender: TObject);
+    procedure tmrBlinkStopTimer(Sender: TObject);
+    procedure tmrBlinkTimer(Sender: TObject);
   private
     TmpFile : String;
     f  : TextFile;
@@ -65,17 +70,17 @@ end;
 procedure TfrmCountyStat.btnRefreshClick(Sender: TObject);
 var
   tmp : String = '';
+  bnd : String = '';
   grb : String = '';
-  wkd : Word = 0;
-  cfm : Word = 0;
+  allwkd : longint = 0;
+  TotPos : longint = 0;
+  wkd : integer = 0;
+  cfm : integer = 0;
   ll  : String = '';
-  sum_wkd : Word = 0;
-  sum_cfm : Word = 0;
-  db : TBufDataset;
+  sum_wkd : integer = 0;
+  sum_cfm : integer = 0;
 begin
-  btnRefresh.Font.Color:=clDefault;
-  btnRefresh.Font.Style:=[];
-  btnRefresh.Repaint;
+  tmrBlink.Enabled:=False;
   try
     dmData.Q.Close;
     dmData.Q1.Close;
@@ -98,25 +103,40 @@ begin
     end;
     tmp := copy(tmp,1,Length(tmp)-2); //remove "or"
 
+    if cmbBands.Text='ALL' then
+       bnd:=' '
+     else
+      bnd:= ' and band='+QuotedStr(cmbBands.Text);
+
     dmData.trQ.StartTransaction;
     dmData.trQ1.StartTransaction;
     try
-      dmData.Q.SQL.Text := 'select upper(county) as ll FROM cqrlog_main where county <> '+QuotedStr('')+
-                           ' and band='+QuotedStr(cmbBands.Text)+' group by ll';
-      writeln( dmData.Q.SQL.Text);
+      dmData.Q.SQL.Text := 'select upper(county) as ll FROM cqrlog_main where county <> '+QuotedStr('')+' group by ll';
       dmData.Q.Open;
+      dmData.Q.Last;  //this is needed to get proper record count
+      allwkd:=dmData.Q.RecordCount;
+      dmData.Q.Close;
+
+      dmData.Q.SQL.Text := 'select upper(county) as ll FROM cqrlog_main where county <> '+QuotedStr('')+
+                           bnd+' group by ll';
+      dmData.Q.Open;
+      dmData.Q.Last;  //this is needed to get proper record count
+      pbTot.Max:=dmData.Q.RecordCount;
       WriteHMTLHeader;
       writeln(f,'<table>');
+      dmData.Q.First;
       while not dmData.Q.Eof do
       begin
+        inc(TotPos);
+        pbTot.Position:=TotPos;
+        Application.ProcessMessages;
         ll := dmData.Q.Fields[0].AsString;
         writeln(f,'<tr>'+LineEnding+'<td valign="middle">'+LineEnding+'<font color="black"><b>'+ll+'</b></font>'+LineEnding+'</td>');
         writeln(f,'<td align="left">');
         writeln(f,'<font color="black">');
         dmData.Q1.Close;
         dmData.Q1.SQL.Text := 'select count(id_cqrlog_main) FROM cqrlog_main where upper(county)='+
-                              QuotedStr(ll)+' and band = '+QuotedStr(cmbBands.Text);
-        writeln( dmData.Q1.SQL.Text);
+                              QuotedStr(ll)+bnd;
         dmData.Q1.Open;
 
       wkd := dmData.Q1.Fields[0].AsInteger;
@@ -125,9 +145,8 @@ begin
       begin
         dmData.Q1.Close;
         dmData.Q1.SQL.Text := 'select count(id_cqrlog_main) FROM cqrlog_main where upper(county)='+
-                          QuotedStr(ll)+' and band = '+QuotedStr(cmbBands.Text)+
+                          QuotedStr(ll)+bnd+
                               'and ('+tmp+')';
-        writeln( dmData.Q1.SQL.Text);
         dmData.Q1.Open;
         cfm := dmData.Q1.Fields[0].AsInteger;
         sum_cfm := sum_cfm + cfm
@@ -144,13 +163,14 @@ begin
       Writeln(f,'</font>');
       Writeln(f,'</td>');
       Writeln(f,'</tr>');
-      dmData.Q.Next
+      dmData.Q.Next;
       end;
       Writeln(f,'</table>');
       Writeln(f,'<hr>');
       Writeln(f,'<font color="black">'+LineEnding+'<b>Total:</b><br>');
       Writeln(f,'Worked:',sum_wkd,'<br>');
-      Writeln(f,'Confirmed:',sum_cfm);
+      Writeln(f,'Confirmed:',sum_cfm,'<br>');
+      Writeln(f,'<b>Different counties:</b><br>on all bands:',allwkd);
       Writeln(f,'</font>');
       Writeln(f,'</body>');
       Writeln(f,'</html>');
@@ -176,9 +196,8 @@ end;
 
 procedure TfrmCountyStat.cmbBandsChange(Sender: TObject);
 begin
-  btnRefresh.Font.Color:=clFuchsia;
-  btnRefresh.Font.Style:=[fsBold];
-  btnRefresh.Repaint;
+  tmrBlink.Enabled:=True;
+  pbTot.Position:=0;
 end;
 
 procedure TfrmCountyStat.WriteHMTLHeader;
@@ -201,9 +220,10 @@ end;
 
 procedure TfrmCountyStat.FormShow(Sender: TObject);
 begin
-  TmpFile := GetTempFileNameUTF8(dmData.HomeDir,'square');
+  TmpFile := GetTempFileNameUTF8(dmData.HomeDir,'county');
   dmUtils.LoadForm(frmCountyStat);
   dmUtils.FillBandCombo(cmbBands);
+  cmbBands.Items.Insert(0,'ALL');
   if cqrini.ReadInteger('CountyStat','Band',0) > cmbBands.Items.Count-1 then
     cmbBands.ItemIndex := 0
   else
@@ -215,7 +235,48 @@ begin
   dlgSave.InitialDir      := cqrini.ReadString('CountyStat','Directory',dmData.UsrHomeDir);
 
   IpHtmlPanel1.Font.Color := clBlack;
-  btnRefresh.Click
+  pbTot.Min:=0;
+  pbTot.Max:=1;
+  pbTot.Smooth:=True;
+  pbTot.Step:=1;
+  pbTot.Enabled:=True;
+  pbTot.Position:=0;
+  tmrBlink.Enabled:=False;
+  cmbBandsChange(nil);
+end;
+
+procedure TfrmCountyStat.tmrBlinkStartTimer(Sender: TObject);
+begin
+  btnRefresh.Caption:='Press to';
+  btnRefresh.Font.Color:=clGreen;
+  btnRefresh.Repaint;
+end;
+
+procedure TfrmCountyStat.tmrBlinkStopTimer(Sender: TObject);
+begin
+  btnRefresh.Caption:='Refresh statistic';
+  btnRefresh.Font.Color:=clDefault;
+  btnRefresh.Repaint;
+end;
+
+procedure TfrmCountyStat.tmrBlinkTimer(Sender: TObject);
+var
+  C :Tcolor;
+  T:String;
+begin
+  case odd(SecondOf(Now)) of
+    True:  Begin
+            C := clGreen;
+            T :='run statistic'
+           end;
+    False: Begin
+            C := clGreen;
+            T :='Press to'
+    end;
+  end;
+  btnRefresh.Caption:= T;
+  btnRefresh.Font.Color:=C;
+  btnRefresh.Repaint;
 end;
 
 end.

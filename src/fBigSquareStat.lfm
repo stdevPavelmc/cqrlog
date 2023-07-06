@@ -1,7 +1,7 @@
 object frmBigSquareStat: TfrmBigSquareStat
-  Left = 564
+  Left = 295
   Height = 590
-  Top = 141
+  Top = 31
   Width = 655
   Caption = 'Big square statistic'
   ClientHeight = 590
@@ -12,13 +12,14 @@ object frmBigSquareStat: TfrmBigSquareStat
   object Panel1: TPanel
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = Owner
     Left = 0
-    Height = 88
+    Height = 80
     Top = 0
     Width = 655
     Align = alTop
     BevelOuter = bvNone
-    ClientHeight = 88
+    ClientHeight = 80
     ClientWidth = 655
     TabOrder = 0
     object cmbBands: TComboBox
@@ -52,60 +53,97 @@ object frmBigSquareStat: TfrmBigSquareStat
       AnchorSideLeft.Control = cmbBands
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = cmbBands
+      AnchorSideRight.Control = btnRefresh
       Left = 231
-      Height = 72
+      Height = 50
       Top = 9
-      Width = 225
+      Width = 244
+      Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Left = 12
+      BorderSpacing.Right = 12
       Caption = ' Confirmed '
-      ClientHeight = 54
-      ClientWidth = 223
+      ClientHeight = 32
+      ClientWidth = 242
       TabOrder = 1
       object chkQSL: TCheckBox
-        Left = 6
+        AnchorSideLeft.Control = GroupBox1
+        AnchorSideTop.Control = GroupBox1
+        AnchorSideTop.Side = asrCenter
+        Left = 5
         Height = 23
-        Top = 3
+        Top = 5
         Width = 51
+        BorderSpacing.Left = 5
         Caption = 'QSL'
         OnChange = cmbBandsChange
         TabOrder = 0
       end
       object chkLoTW: TCheckBox
-        Left = 70
+        AnchorSideLeft.Control = GroupBox1
+        AnchorSideLeft.Side = asrCenter
+        AnchorSideTop.Control = GroupBox1
+        AnchorSideTop.Side = asrCenter
+        Left = 90
         Height = 23
-        Top = 3
+        Top = 5
         Width = 62
         Caption = 'LoTW'
         OnChange = cmbBandsChange
         TabOrder = 1
       end
       object chkeQSL: TCheckBox
-        Left = 149
+        AnchorSideTop.Control = GroupBox1
+        AnchorSideTop.Side = asrCenter
+        AnchorSideRight.Control = GroupBox1
+        AnchorSideRight.Side = asrBottom
+        Left = 177
         Height = 23
-        Top = 3
+        Top = 5
         Width = 59
+        Anchors = [akTop, akRight]
+        BorderSpacing.Right = 6
         Caption = 'eQSL'
         OnChange = cmbBandsChange
         TabOrder = 2
       end
     end
     object btnRefresh: TButton
-      AnchorSideLeft.Control = GroupBox1
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = GroupBox1
       AnchorSideTop.Side = asrCenter
-      Left = 468
-      Height = 25
-      Top = 33
+      AnchorSideRight.Control = Panel1
+      AnchorSideRight.Side = asrBottom
+      Left = 487
+      Height = 33
+      Top = 18
       Width = 156
-      BorderSpacing.Left = 12
+      Anchors = [akTop, akRight]
+      BorderSpacing.Right = 12
       Caption = 'Refresh statistic'
       OnClick = btnRefreshClick
       TabOrder = 2
     end
+    object pbTot: TProgressBar
+      AnchorSideLeft.Control = cmbBands
+      AnchorSideTop.Control = cmbBands
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = cmbBands
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Side = asrBottom
+      Left = 55
+      Height = 10
+      Top = 54
+      Width = 161
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Top = 12
+      BorderSpacing.Right = 3
+      TabOrder = 3
+    end
   end
   object Panel2: TPanel
     AnchorSideLeft.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = Owner
     Left = 0
     Height = 34
@@ -121,10 +159,10 @@ object frmBigSquareStat: TfrmBigSquareStat
       AnchorSideTop.Side = asrCenter
       AnchorSideRight.Control = Panel2
       AnchorSideRight.Side = asrBottom
-      Left = 568
-      Height = 25
-      Top = 5
-      Width = 75
+      Left = 553
+      Height = 33
+      Top = 1
+      Width = 90
       Anchors = [akTop, akRight]
       BorderSpacing.Right = 12
       Cancel = True
@@ -136,10 +174,10 @@ object frmBigSquareStat: TfrmBigSquareStat
       AnchorSideTop.Control = Panel2
       AnchorSideTop.Side = asrCenter
       AnchorSideRight.Control = btnClose
-      Left = 481
-      Height = 25
-      Top = 5
-      Width = 75
+      Left = 451
+      Height = 33
+      Top = 1
+      Width = 90
       Anchors = [akTop, akRight]
       BorderSpacing.Right = 12
       Caption = 'Save to ...'
@@ -148,9 +186,15 @@ object frmBigSquareStat: TfrmBigSquareStat
     end
   end
   object IpHtmlPanel1: TIpHtmlPanel
+    AnchorSideLeft.Control = Panel1
+    AnchorSideTop.Control = Panel1
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Panel1
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = Panel2
     Left = 0
-    Height = 468
-    Top = 88
+    Height = 476
+    Top = 80
     Width = 655
     Align = alClient
     DataProvider = IpFileDataProvider1
@@ -177,6 +221,14 @@ object frmBigSquareStat: TfrmBigSquareStat
     DefaultExt = '.html'
     Filter = 'HTML files|*.html'
     Left = 64
+    Top = 512
+  end
+  object tmrBlink: TTimer
+    Enabled = False
+    OnTimer = tmrBlinkTimer
+    OnStartTimer = tmrBlinkStartTimer
+    OnStopTimer = tmrBlinkStopTimer
+    Left = 248
     Top = 512
   end
 end
