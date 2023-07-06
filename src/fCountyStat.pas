@@ -73,6 +73,7 @@ var
   bnd : String = '';
   grb : String = '';
   allwkd : longint = 0;
+  thiswkd : longint =0;
   TotPos : longint = 0;
   wkd : integer = 0;
   cfm : integer = 0;
@@ -122,6 +123,7 @@ begin
       dmData.Q.Open;
       dmData.Q.Last;  //this is needed to get proper record count
       pbTot.Max:=dmData.Q.RecordCount;
+      thiswkd:= dmData.Q.RecordCount;
       WriteHMTLHeader;
       writeln(f,'<table>');
       dmData.Q.First;
@@ -170,7 +172,9 @@ begin
       Writeln(f,'<font color="black">'+LineEnding+'<b>Total:</b><br>');
       Writeln(f,'Worked:',sum_wkd,'<br>');
       Writeln(f,'Confirmed:',sum_cfm,'<br>');
-      Writeln(f,'<b>Different counties:</b><br>on all bands:',allwkd);
+      Writeln(f,'<b>Different counties:</b><br>');
+      if cmbBands.Text<>'ALL' then  Writeln(f,'On this band:',thiswkd,'<br>');
+      Writeln(f,'On all bands:',allwkd);
       Writeln(f,'</font>');
       Writeln(f,'</body>');
       Writeln(f,'</html>');

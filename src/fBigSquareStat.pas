@@ -73,6 +73,8 @@ var
   bnd : String = '';
   grb : String = '';
   allwkd : longint = 0;
+  thiswkd : longint =0;
+  allwkdBig : longint = 0;
   TotPos : longint = 0;
   wkd : integer = 0;
   cfm : integer = 0;
@@ -112,6 +114,12 @@ begin
     dmData.trQ.StartTransaction;
     dmData.trQ1.StartTransaction;
     try
+      dmData.Q.SQL.Text := 'select left(loc,2) as ll FROM cqrlog_main where loc <> '+QuotedStr('')+' group by ll';
+      dmData.Q.Open;
+      dmData.Q.Last;
+      allwkdBig:=dmData.Q.RecordCount;
+      dmData.Q.Close;
+
       dmData.Q.SQL.Text := 'select left(loc,4) as ll FROM cqrlog_main where loc <> '+QuotedStr('')+' group by ll';
       dmData.Q.Open;
       dmData.Q.Last;
@@ -125,6 +133,7 @@ begin
       WriteHMTLHeader;
       writeln(f,'<table>');
       pbTot.Max:=dmData.Q.RecordCount;
+      thiswkd:= dmData.Q.RecordCount;
       dmData.Q.First;
       while not dmData.Q.Eof do
       begin
@@ -221,7 +230,9 @@ begin
       Writeln(f,'<font color="black">'+LineEnding+'<b>Total:</b><br>');
       Writeln(f,'Worked:',sum_wkd,'<br>');
       Writeln(f,'Confirmed:',sum_cfm,'<br>');
-      Writeln(f,'<b>Different squares:</b><br>on all bands:',allwkd);
+      Writeln(f,'<b>Different squares:</b><br>');
+      if cmbBands.Text<>'ALL' then  Writeln(f,'On this band:',thiswkd,'<br>');
+      Writeln(f,'On all bands:',allwkdBig,'/',allwkd);
       Writeln(f,'</font>');
       Writeln(f,'</body>');
       Writeln(f,'</html>');
