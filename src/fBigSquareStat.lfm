@@ -1,7 +1,7 @@
 object frmBigSquareStat: TfrmBigSquareStat
-  Left = 295
+  Left = 283
   Height = 590
-  Top = 31
+  Top = 53
   Width = 655
   Caption = 'Big square statistic'
   ClientHeight = 590
@@ -55,14 +55,14 @@ object frmBigSquareStat: TfrmBigSquareStat
       AnchorSideTop.Control = cmbBands
       AnchorSideRight.Control = btnRefresh
       Left = 231
-      Height = 50
+      Height = 42
       Top = 9
       Width = 244
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Left = 12
       BorderSpacing.Right = 12
       Caption = ' Confirmed '
-      ClientHeight = 32
+      ClientHeight = 24
       ClientWidth = 242
       TabOrder = 1
       object chkQSL: TCheckBox
@@ -71,7 +71,7 @@ object frmBigSquareStat: TfrmBigSquareStat
         AnchorSideTop.Side = asrCenter
         Left = 5
         Height = 23
-        Top = 5
+        Top = 1
         Width = 51
         BorderSpacing.Left = 5
         Caption = 'QSL'
@@ -85,7 +85,7 @@ object frmBigSquareStat: TfrmBigSquareStat
         AnchorSideTop.Side = asrCenter
         Left = 90
         Height = 23
-        Top = 5
+        Top = 1
         Width = 62
         Caption = 'LoTW'
         OnChange = cmbBandsChange
@@ -98,7 +98,7 @@ object frmBigSquareStat: TfrmBigSquareStat
         AnchorSideRight.Side = asrBottom
         Left = 177
         Height = 23
-        Top = 5
+        Top = 1
         Width = 59
         Anchors = [akTop, akRight]
         BorderSpacing.Right = 6
@@ -115,7 +115,7 @@ object frmBigSquareStat: TfrmBigSquareStat
       AnchorSideRight.Side = asrBottom
       Left = 487
       Height = 33
-      Top = 18
+      Top = 14
       Width = 156
       Anchors = [akTop, akRight]
       BorderSpacing.Right = 12
@@ -138,6 +138,22 @@ object frmBigSquareStat: TfrmBigSquareStat
       BorderSpacing.Top = 12
       BorderSpacing.Right = 3
       TabOrder = 3
+    end
+    object lblFIlterActive: TLabel
+      AnchorSideLeft.Control = GroupBox1
+      AnchorSideLeft.Side = asrCenter
+      AnchorSideTop.Control = GroupBox1
+      AnchorSideTop.Side = asrBottom
+      Left = 305
+      Height = 17
+      Top = 57
+      Width = 96
+      BorderSpacing.Top = 6
+      Caption = 'Filter is active!'
+      Font.Color = clRed
+      ParentColor = False
+      ParentFont = False
+      Visible = False
     end
   end
   object Panel2: TPanel
@@ -197,6 +213,8 @@ object frmBigSquareStat: TfrmBigSquareStat
     Top = 80
     Width = 655
     Align = alClient
+    BorderWidth = 1
+    BorderStyle = bsSingle
     DataProvider = IpFileDataProvider1
     FixedTypeface = 'Courier New'
     DefaultTypeFace = 'Sans'

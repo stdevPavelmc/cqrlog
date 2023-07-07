@@ -445,7 +445,7 @@ begin
 
                         if chkNot.Checked then tmp:= 'NOT( '+tmp+' )';
                         tmp := 'SELECT * FROM view_cqrlog_main_by_qsodate WHERE ' + tmp + ' ' + grb_by +' ' + OrderBy;
-
+                        dmData.IsFilterSQL:=tmp;
                         dmData.qCQRLOG.Close;
                         dmData.qCQRLOG.SQL.Text := tmp;
                         if dmData.DebugLevel >=1 then

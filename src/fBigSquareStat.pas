@@ -25,6 +25,7 @@ type
     IpFileDataProvider1: TIpFileDataProvider;
     IpHtmlPanel1: TIpHtmlPanel;
     Label1: TLabel;
+    lblFIlterActive: TLabel;
     Panel1: TPanel;
     Panel2: TPanel;
     dlgSave: TSaveDialog;
@@ -82,8 +83,10 @@ var
   sum_wkd : integer = 0;
   sum_cfm : integer = 0;
   db : TBufDataset;
+  TableName : String;
 begin
   tmrBlink.Enabled:=False;
+  TableName:='cqrlog_main';
   try
     dmData.Q.Close;
     dmData.Q1.Close;
@@ -114,19 +117,40 @@ begin
     dmData.trQ.StartTransaction;
     dmData.trQ1.StartTransaction;
     try
-      dmData.Q.SQL.Text := 'select left(loc,2) as ll FROM cqrlog_main where loc <> '+QuotedStr('')+' group by ll';
+      if dmData.IsFilter then
+         begin
+          try
+            TableName:='statistic_filter';
+            dmData.Q.Close;
+            dmData.Q.SQL.Text:='DROP VIEW IF EXISTS '+TableName;
+            dmData.Q.ExecSQL;
+            dmData.trQ.Commit;
+            dmData.Q.Close;
+            dmData.Q.SQL.Text:='CREATE VIEW '+TableName+' AS '+dmData.IsFilterSQL;
+            dmData.Q.ExecSQL;
+            dmData.trQ.Commit;
+            dmData.Q.Close;
+          except
+           on E : EDatabaseError do
+            Begin
+              ShowMessage('Can not create filter view!');
+              Exit;
+            end;
+          end;
+         end;
+      dmData.Q.SQL.Text := 'select left(loc,2) as ll FROM '+TableName+' where loc <> '+QuotedStr('')+' group by ll';
       dmData.Q.Open;
       dmData.Q.Last;
       allwkdBig:=dmData.Q.RecordCount;
       dmData.Q.Close;
 
-      dmData.Q.SQL.Text := 'select left(loc,4) as ll FROM cqrlog_main where loc <> '+QuotedStr('')+' group by ll';
+      dmData.Q.SQL.Text := 'select left(loc,4) as ll FROM '+TableName+' where loc <> '+QuotedStr('')+' group by ll';
       dmData.Q.Open;
       dmData.Q.Last;
       allwkd:=dmData.Q.RecordCount;
       dmData.Q.Close;
 
-      dmData.Q.SQL.Text := 'select upper(left(loc,2)) as ll FROM cqrlog_main where loc <> '+QuotedStr('')+
+      dmData.Q.SQL.Text := 'select upper(left(loc,2)) as ll FROM '+TableName+' where loc <> '+QuotedStr('')+
                            bnd+' group by ll';
       dmData.Q.Open;
       dmData.Q.Last;
@@ -145,7 +169,7 @@ begin
         writeln(f,'<td align="left">');
         writeln(f,'<font color="black">');
         dmData.Q1.Close;
-        dmData.Q1.SQL.Text := 'select upper(left(loc,4)) as lll FROM cqrlog_main where loc like '+
+        dmData.Q1.SQL.Text := 'select upper(left(loc,4)) as lll FROM '+TableName+' where loc like '+
                               QuotedStr(ll+'%')+bnd+' group by lll order by loc';
         dmData.Q1.Open;
 
@@ -172,7 +196,7 @@ begin
           if tmp <> '' then
           begin
             dmData.Q1.Close;
-            dmData.Q1.SQL.Text := 'select upper(left(loc,4)) as lll FROM cqrlog_main where loc like '+
+            dmData.Q1.SQL.Text := 'select upper(left(loc,4)) as lll FROM '+TableName+' where loc like '+
                                   QuotedStr(ll+'%')+bnd+'and ('+tmp+') group by lll order by loc';
             dmData.Q1.Open;
             cfm := 0;
@@ -236,7 +260,19 @@ begin
       Writeln(f,'</font>');
       Writeln(f,'</body>');
       Writeln(f,'</html>');
-      CloseFile(f)
+      CloseFile(f);
+
+      if dmData.IsFilter then
+         begin
+          try
+            dmData.Q.Close;
+            dmData.Q.SQL.Text:='DROP VIEW IF EXISTS '+TableName;
+            dmData.Q.ExecSQL;
+            dmData.trQ.Commit;
+          Finally
+          end;
+         end;
+
     finally
       dmData.trQ.Rollback;
       dmData.trQ1.Rollback
@@ -306,6 +342,7 @@ begin
   pbTot.Enabled:=True;
   pbTot.Position:=0;
   tmrBlink.Enabled:=False;
+  lblFilterActive.Visible:=  dmData.IsFilter;
   cmbBandsChange(nil);
 end;
 

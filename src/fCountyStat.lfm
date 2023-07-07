@@ -138,6 +138,22 @@ object frmCountyStat: TfrmCountyStat
       OnClick = btnRefreshClick
       TabOrder = 3
     end
+    object lblFIlterActive: TLabel
+      AnchorSideLeft.Control = GroupBox1
+      AnchorSideLeft.Side = asrCenter
+      AnchorSideTop.Control = GroupBox1
+      AnchorSideTop.Side = asrBottom
+      Left = 305
+      Height = 17
+      Top = 57
+      Width = 96
+      BorderSpacing.Top = 6
+      Caption = 'Filter is active!'
+      Font.Color = clRed
+      ParentColor = False
+      ParentFont = False
+      Visible = False
+    end
   end
   object Panel2: TPanel
     AnchorSideLeft.Control = Owner
@@ -195,6 +211,8 @@ object frmCountyStat: TfrmCountyStat
     Top = 80
     Width = 653
     Align = alClient
+    BorderWidth = 1
+    BorderStyle = bsSingle
     DataProvider = IpFileDataProvider1
     FixedTypeface = 'Courier New'
     DefaultTypeFace = 'Sans'

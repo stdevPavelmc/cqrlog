@@ -201,6 +201,7 @@ type
 
     eQSLUsers : Array of ShortString;
     CallArray : Array of String[20];
+    IsFilterSQL : String; //String that is created with Filter settings. Isvalid if isfilter is valid, no cleanups.
     IsFilter  : Boolean;
     IsSFilter : Boolean; //Search filter
     //search function uses filter function but user doesn't need to know about it
