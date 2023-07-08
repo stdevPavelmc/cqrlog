@@ -948,6 +948,8 @@ var
   rpt : integer;
   Wcw : char;
   dSpd: integer;
+  IsNewHamlib: boolean=false;
+
             //-----------------------------------------------------------------------------------
             Procedure SendToHamlib(t:string);
             Begin
@@ -956,8 +958,9 @@ var
 
                         while ((rpt > 0) and AllowCW) do
                           Begin
-                             if fDebugMode then
-                               Writeln('HLsend MSG:','b'+t+':');
+                            if IsNewHamlib then t:=' '+t;
+                            if fDebugMode then
+                               Writeln('HLsend MSG: |','b'+t+'|');
                              Rmsg:='';
                              tcp.SendMessage('b'+t+LineEnding);
                              dec(rpt);
@@ -979,10 +982,19 @@ var
                                   end;
                               if pos('-9',Rmsg)>0 then
                                 Begin
-                                 if fDebugMode then
-                                    Writeln('Waiting because of RPRT-9');
-                                  dec(rpt);
-                                  sleep(50);
+                                 if (t=' ') and not IsNewHamlib then
+                                   Begin
+                                     if fDebugMode then
+                                      Writeln('NOTE: This is New Hamlib. Adding space between b-command and text!');
+                                     IsNewHamlib:=True
+                                   end
+                                 else
+                                  Begin
+                                   if fDebugMode then
+                                      Writeln('Waiting before repeat because of RPRT-9');
+                                    dec(rpt);
+                                    sleep(50);
+                                  end;
                                 end
                                else
                                 rpt :=0;
@@ -1025,7 +1037,7 @@ begin
                  '+','-'   : ModSpeed(text[i]);
                  else
                              Begin
-                               if fDebugMode then  Writeln('send letter ',i,' ',text[i]);
+                               if fDebugMode then  Writeln('send letter #',i,': ',text[i]);
                                SendToHamlib(text[i]);
                                Wcw:=#0;
                              end;
@@ -1035,7 +1047,10 @@ begin
             until (i > c);
          end
         else
+        Begin
+         if fDebugMode then  Writeln('Word send: ');
          SendToHamlib(text);
+        end;
       end
      else  if fDebugMode then  Writeln('Empty message!');
 end;
