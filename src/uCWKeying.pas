@@ -940,7 +940,7 @@ end;
 
 procedure TCWHamLib.SendText(text : String);
 const
-     _REPEATS = 500; //times
+     _REPEATS = 300; //times
      _TIMEOUT = 20; //x10-milliseconds
 var
   c, i,
@@ -951,7 +951,7 @@ var
             //-----------------------------------------------------------------------------------
             Procedure SendToHamlib(t:string);
             Begin
-                        tout :=_TIMEOUT; //used away in sleep(10) bloks
+                        tout :=_TIMEOUT; //used away in sleep(10) blocks
                         rpt := _REPEATS;
 
                         while ((rpt > 0) and AllowCW) do
@@ -964,19 +964,30 @@ var
                               repeat
                                 begin
                                   sleep(10);
+                                  if fDebugMode then
+                                    Writeln('Waiting RPRT');
                                   Application.ProcessMessages;
                                   dec(tout);
                                 end;
                               until ((pos('RPRT',Rmsg)>0) or (tout < 1 ));
-                              if fDebugMode then  Writeln('     Ack timeout left: ',tout,'(/',_TIMEOUT,')');
-                              if fDebugMode then  Writeln('     Repeats left: ',rpt,'(/',_REPEATS,')');
+                              tout :=_TIMEOUT;
+                               if fDebugMode then
+                                  Begin
+                                    Writeln('rcvd:',Rmsg);
+                                    Writeln('     Ack timeout left: ',tout,'(/',_TIMEOUT,')x10 msec');
+                                    Writeln('     Repeats left: ',rpt,'(/',_REPEATS,') times');
+                                  end;
                               if pos('-9',Rmsg)>0 then
                                 Begin
+                                 if fDebugMode then
+                                    Writeln('Waiting because of RPRT-9');
                                   dec(rpt);
-                                  sleep(300);
+                                  sleep(50);
                                 end
                                else
                                 rpt :=0;
+                               if fDebugMode then
+                                  Writeln('Ready for next');
                           end;
 
             end;

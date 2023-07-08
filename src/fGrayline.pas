@@ -567,8 +567,8 @@ lat1 := degToRad(BaseLat);
 B    := degToRad(Bearing);
 dist := dist+stp; //div results always at least 1
 distcount:=dist div stp; //we need to calculate in small steps. Otherwise precision errors become too visible
-   writeln;
- for f:=1 to distcount do
+
+for f:=1 to distcount do
   Begin
      lat2 := arcsin(sin(lat1) * cos(stp/R) + cos(lat1) * sin(stp/R) * cos(B));
      lon2 := lon1 +arctan2( sin(B) * sin(stp/R) * cos(lat1),
