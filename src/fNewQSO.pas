@@ -3469,7 +3469,16 @@ begin
   was_call := edtCall.Text;
   edtCall.Text := ''; //calls ClearAll  (except when EDITQSO to be sure that callsign changes do not clear all)
   Sleep(200); //to be sure edtCallChange has time to run;
-  if EditQso then ClearAll;
+
+  if (cqrini.ReadBool('NewQSO','RefreshAfterSave', True) and frmMain.Showing) then
+    begin
+     frmMain.acRefresh.Execute;
+     if not fEditQso then
+                   frmMain.dbgrdMainKeyUp(nil,key,[ssCtrl]); //shows last logged qso
+
+    end;
+  if fEditQso then
+             ClearAll;
   old_ccall := '';
   old_cfreq := '';
   old_cmode := '';
@@ -3477,15 +3486,7 @@ begin
   if cqrini.ReadBool('NewQSO','ClearRIT',False) then
     frmTRXControl.ClearRIT;
 
-  if (cqrini.ReadBool('NewQSO','RefreshAfterSave', True) and frmMain.Showing) then
-   begin
-    frmMain.acRefresh.Execute;
-    if not fEditQso then
-                  frmMain.dbgrdMainKeyUp(nil,key,[ssCtrl]); //shows last logged qso
-
-   end;
-
-  fEditQSO := False;
+  fEditQSO := False; //this should be cleared by clearAll. Needed here ???
   UploadAllQSOOnline;
   if frmWorkedGrids.Showing then frmWorkedGrids.UpdateMap;
   Op := cqrini.ReadString('TMPQSO','OP','');
