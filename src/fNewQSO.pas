@@ -7432,6 +7432,7 @@ begin
                  CWint.DebugMode  :=  CWint.DebugMode  or ((abs(dmData.DebugLevel) and 8) = 8 );
           CWint.Port := cqrini.ReadString('TRX'+n,'RigCtldPort','4532');
           CWint.Device := cqrini.ReadString('TRX'+n,'host','localhost');
+          CWint.HamlibBuffer:=cqrini.ReadBool('CW'+n, 'UseHamlibBuffer', False);
           UseSpeed := cqrini.ReadInteger('CW'+n,'HamLibSpeed',30);
         end;
   end; //case

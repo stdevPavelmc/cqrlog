@@ -18,6 +18,7 @@ type
       fLastErrSt : String;
       fDevice    : String;
       fDebugMode : Boolean;
+      fHamlibBuffer : Boolean;
       fMinSpeed  : Word;
       fMaxSpeed  : Word;
       fPortSpeed : dWord;
@@ -30,6 +31,7 @@ type
       property MinSpeed  : Word read fMinSpeed;
       property MaxSpeed  : Word read fMaxSpeed;
       property PortSpeed : dWord read fPortSpeed write fPortSpeed;
+      property HamlibBuffer : Boolean read  fHamlibBuffer write fHamlibBuffer;
 
       constructor Create; virtual; abstract;
 
@@ -812,7 +814,8 @@ begin
   tcp.OnConnect := @OnHamLibConnect;
   tcp.OnError   := @onHamLibError;
   fMinSpeed     := 5;
-  fMaxSpeed     := 60
+  fMaxSpeed     := 60;
+  fHamlibBuffer := false;
 end;
 
 procedure TCWHamLib.OnHamLibConnect(aSocket: TLSocket);
@@ -1027,7 +1030,8 @@ begin
        AllowCW := true;
         //different rigs support different length of b-command. 10chr should be safe for all
         c:= length(text);
-        if (c>10) or (pos('+',text)>0) or (pos('-',text)>0) then
+        if ((c>10) or (pos('+',text)>0) or (pos('-',text)>0))
+         and (not fHamlibBuffer) then
          Begin
             i := 1;
             if fDebugMode then  Writeln('Ltr send: ');
@@ -1044,7 +1048,7 @@ begin
                end;
                inc(i);
              end;
-            until (i > c);
+            until (i > c) or (not AllowCW);
          end
         else
         Begin

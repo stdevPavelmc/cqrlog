@@ -109,6 +109,7 @@ type
     cb30cm: TCheckBox;
     cgLimit: TCheckGroup;
     cbNoKeyerReset: TCheckBox;
+    chkUseHLBuffer: TCheckBox;
     chkUTC2R: TCheckBox;
     chkShow5M: TCheckBox;
     chkwsjtLoeQ: TCheckBox;
@@ -689,7 +690,6 @@ type
     Label81: TLabel;
     lblRbnWindowOpen: TLabel;
     lblHamlib: TLabel;
-    lblHamlib1: TLabel;
     lbCallW: TLabel;
     lbFreqW: TLabel;
     lbleQSLDnlAddr: TLabel;
@@ -3458,6 +3458,7 @@ Begin
   edtK3NGSerSpeed.Text   := IntToStr(cqrini.ReadInteger('CW'+nr,'K3NGSerSpeed',115200));
   edtK3NGSpeed.Text      := IntToStr(cqrini.ReadInteger('CW'+nr,'K3NGSpeed',30));
   edtHamLibSpeed.Text    := IntToStr(cqrini.ReadInteger('CW'+nr,'HamLibSpeed',30));
+  chkUseHLBuffer.checked := cqrini.ReadBool('CW'+nr, 'UseHamlibBuffer', False);
   CWifLoaded := RigNr;
   if (cqrini.ReadString('TRX'+nr, 'model', '')='') then
     lblNoRigForCW.Visible:=True
@@ -3484,6 +3485,7 @@ Begin
   cqrini.WriteInteger('CW'+nr,'K3NGSerSpeed',StrToInt(edtK3NGSerSpeed.Text));
   cqrini.WriteInteger('CW'+nr,'K3NGSpeed',StrToInt(edtK3NGSpeed.Text));
   cqrini.WriteInteger('CW'+nr,'HamLibSpeed',StrToInt(edtHamLibSpeed.Text));
+  cqrini.WriteBool('CW'+nr, 'UseHamlibBuffer', chkUseHLBuffer.checked);
 end;
 
 procedure TfrmPreferences.InitRigCmb(SetUsedRig:boolean=false);    //initialize radio selectors in TRXControl, CW and Modes
