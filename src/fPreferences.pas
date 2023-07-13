@@ -120,7 +120,7 @@ type
     chkIgnoreQSL: TCheckBox;
     chkDarcDok: TCheckBox;
     chkNewDOKTables: TCheckBox;
-    chkRRunRigCtld: TCheckBox;
+    chkRunRigCtld: TCheckBox;
     chkRSendCWR: TCheckBox;
     chkRVfo: TCheckBox;
     chkRBNMAutoConn: TCheckBox;
@@ -2417,17 +2417,12 @@ end;
 
 procedure TfrmPreferences.cmbModelRigChange(Sender: TObject);
 begin
-   chkRRunRigCtld.Enabled:=True;
+   chkRunRigCtld.Enabled:=True;
 
-  if cmbModelRig.ItemIndex=0 then  //With Hamlib Dummy force rigctld to start
-    Begin
-     chkRRunRigCtld.Checked:=True;
-     chkRRunRigCtld.Enabled:=False;
-    end;
   if cmbModelRig.ItemIndex=1 then  //With Hamlib Net rigctld do not start rigctld (no sense)
     Begin
-     chkRRunRigCtld.Checked:=False;
-     chkRRunRigCtld.Enabled:=False;
+     chkRunRigCtld.Checked:=False;
+     chkRunRigCtld.Enabled:=False;
     end;
    TRXParamsChange(nil);
 end;
@@ -3346,7 +3341,7 @@ Begin
   chkRVfo.Checked:=   cqrini.ReadBool('TRX'+nr, 'ChkVfo', True);
   edtRRigCtldPort.Text := cqrini.ReadString('TRX'+nr, 'RigCtldPort', '4532');
   edtRRigCtldArgs.Text := cqrini.ReadString('TRX'+nr, 'ExtraRigCtldArgs', '');
-  chkRRunRigCtld.Checked := cqrini.ReadBool('TRX'+nr, 'RunRigCtld', False);
+  chkRunRigCtld.Checked := cqrini.ReadBool('TRX'+nr, 'RunRigCtld', False);
   chkRPwrON.Checked := cqrini.ReadBool('TRX'+nr, 'RigPwrON', True);
   chkUTC2R.Checked := cqrini.ReadBool('TRX'+nr, 'UTC2Rig', False);
   edtRHost.Text := cqrini.ReadString('TRX'+nr, 'host', 'localhost');
@@ -3387,7 +3382,7 @@ Begin
   cqrini.WriteBool('TRX'+nr, 'ChkVfo',chkRVfo.Checked);
   cqrini.WriteString('TRX'+nr, 'RigCtldPort', edtRRigCtldPort.Text);
   cqrini.WriteString('TRX'+nr, 'ExtraRigCtldArgs', edtRRigCtldArgs.Text);
-  cqrini.WriteBool('TRX'+nr, 'RunRigCtld', chkRRunRigCtld.Checked);
+  cqrini.WriteBool('TRX'+nr, 'RunRigCtld', chkRunRigCtld.Checked);
   cqrini.WriteBool('TRX'+nr, 'RigPwrON', chkRPwrON.Checked);
   cqrini.WriteBool('TRX'+nr, 'UTC2Rig', chkUTC2R.Checked);
   cqrini.WriteString('TRX'+nr, 'host', edtRHost.Text);
