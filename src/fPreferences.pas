@@ -439,6 +439,10 @@ type
     DateEditCall: TDateEdit;
     DateEditLoc: TDateEdit;
     dlgColor : TColorDialog;
+    edtCbQRZPass: TEdit;
+    edtCbQRZCQPass: TEdit;
+    edtCbQRZUser: TEdit;
+    edtCbQRZCQUser: TEdit;
     edtOperator: TEdit;
     edtCondxTextUrl: TEdit;
     edtDataCmd: TEdit;
@@ -516,8 +520,8 @@ type
     edtFM: TSpinEdit;
     edtImgFiles: TEdit;
     edtHtmlFiles: TEdit;
-    edtCbPass: TEdit;
-    edtCbUser: TEdit;
+    edtCbHamQTHPass: TEdit;
+    edtCbHamQTHUser: TEdit;
     edteQSLName: TEdit;
     edteQSLPass: TEdit;
     edtRotCtldPath: TEdit;
@@ -891,6 +895,7 @@ type
     rbCondxAsImage: TRadioButton;
     rbHamQTH: TRadioButton;
     rbQRZ: TRadioButton;
+    rbQRZCQ: TRadioButton;
     rgBackupType: TRadioGroup;
     rgRSTFrom: TRadioGroup;
     RadioGroup2: TRadioGroup;
@@ -1073,9 +1078,11 @@ type
     function SeekExecFile(MyFile,MyExeFor:String): String;
     function DataModeInput(s:string):string;
     function WarnCheck(chk:boolean):boolean;
+
   public
     { public declarations }
     ActPageIdx : integer;
+
   end;
 
 var
@@ -1099,6 +1106,7 @@ uses dUtils, dData, fMain, fFreq, fQTHProfiles, fSerialPort, fClubSettings, fLoa
   fGrayline, fNewQSO, fBandMap, fBandMapWatch, fDefaultFreq, fKeyTexts, fTRXControl,fRotControl,
   fSplitSettings, uMyIni, fNewQSODefValues, fDXCluster, fCallAlert, fConfigStorage, fPropagation,
   fRadioMemories, dMembership, dLogUpload;
+
 
 
 function TfrmPreferences.WarnCheck(chk:boolean):boolean;
@@ -1520,9 +1528,14 @@ begin
   cqrini.WriteString('FifthClub', 'DateFrom', edtClub5Date.Text);
 
   cqrini.WriteBool('CallBook', 'QRZ', rbQRZ.Checked);
+  cqrini.WriteBool('CallBook', 'QRZCQ', rbQRZCQ.Checked);
   cqrini.WriteBool('Callbook', 'HamQTH', rbHamQTH.Checked);
-  cqrini.WriteString('CallBook', 'CBUser', edtCbUser.Text);
-  cqrini.WriteString('CallBook', 'CBPass', edtCbPass.Text);
+  cqrini.WriteString('CallBook', 'CbHamQTHUser', edtCbHamQTHUser.Text);
+  cqrini.WriteString('CallBook', 'CbHamQTHPass', edtCbHamQTHPass.Text);
+  cqrini.WriteString('CallBook', 'CbQRZUser', edtCbQRZUser.Text);
+  cqrini.WriteString('CallBook', 'CbQRZPass', edtCbQRZPass.Text);
+  cqrini.WriteString('CallBook', 'CbQRZCQUser', edtCbQRZCQUser.Text);
+  cqrini.WriteString('CallBook', 'CbQRZCQPass', edtCbQRZCQPass.Text);
 
   cqrini.WriteInteger('RBN','10db',cmbCl10db.Selected);
   cqrini.WriteInteger('RBN','20db',cmbCl20db.Selected);
@@ -3167,10 +3180,15 @@ begin
   edtClub4Date.Text := cqrini.ReadString('FourthClub', 'DateFrom', C_CLUB_DEFAULT_DATE_FROM);
   edtClub5Date.Text := cqrini.ReadString('FifthClub', 'DateFrom', C_CLUB_DEFAULT_DATE_FROM);
 
-  edtCbUser.Text := cqrini.ReadString('CallBook', 'CBUser', '');
-  edtCbPass.Text := cqrini.ReadString('CallBook', 'CBPass', '');
+  edtCbHamQTHUser.Text := cqrini.ReadString('CallBook', 'CbHamQTHUser', '');
+  edtCbHamQTHPass.Text := cqrini.ReadString('CallBook', 'CbHamQTHPass', '');
+  edtCbQRZUser.Text := cqrini.ReadString('CallBook', 'CbQRZUser', '');
+  edtCbQRZPass.Text := cqrini.ReadString('CallBook', 'CbQRZPass', '');
+  edtCbQRZCQUser.Text := cqrini.ReadString('CallBook', 'CbQRZCQUser', '');
+  edtCbQRZCQPass.Text := cqrini.ReadString('CallBook', 'CbQRZCQPass', '');
   rbHamQTH.Checked := cqrini.ReadBool('Callbook', 'HamQTH', True);
   rbQRZ.Checked := cqrini.ReadBool('Callbook', 'QRZ', False);
+  rbQRZCQ.Checked := cqrini.ReadBool('Callbook', 'QRZCQ', False);
 
   cmbCl10db.Selected        := cqrini.ReadInteger('RBN','10db',clWhite);
   cmbCl20db.Selected        := cqrini.ReadInteger('RBN','20db',clPurple);
@@ -3573,6 +3591,7 @@ Begin
       //TRX, CW and Band lists
 
 end;
+
 
 end.
 

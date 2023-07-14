@@ -7899,7 +7899,7 @@ object frmPreferences: TfrmPreferences
         BorderSpacing.Left = 6
         BorderSpacing.Top = 6
         Caption = ' Reading data from fldigi'
-        ClientHeight = 326
+        ClientHeight = 310
         ClientWidth = 722
         TabOrder = 0
         object Label91: TLabel
@@ -8241,7 +8241,7 @@ object frmPreferences: TfrmPreferences
         Width = 724
         BorderSpacing.Top = 6
         Caption = 'Reading data from wsjtx'
-        ClientHeight = 298
+        ClientHeight = 282
         ClientWidth = 722
         TabOrder = 1
         object GroupBox52: TGroupBox
@@ -8826,63 +8826,149 @@ object frmPreferences: TfrmPreferences
       ClientHeight = 722
       ClientWidth = 836
       object GroupBox38: TGroupBox
-        Left = 13
+        AnchorSideLeft.Control = tabCallbook
+        AnchorSideTop.Control = tabCallbook
+        Left = 6
         Height = 160
-        Top = 8
-        Width = 585
+        Top = 6
+        Width = 650
+        BorderSpacing.Left = 6
+        BorderSpacing.Top = 6
         Caption = ' Callbook search '
-        ClientHeight = 158
-        ClientWidth = 583
+        ClientHeight = 142
+        ClientWidth = 648
         TabOrder = 0
         object rbHamQTH: TRadioButton
-          Left = 6
+          AnchorSideLeft.Control = Label111
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = GroupBox38
+          Left = 93
           Height = 23
-          Top = 7
+          Top = 6
           Width = 121
+          BorderSpacing.Left = 12
+          BorderSpacing.Top = 6
           Caption = 'HamQTH.com '
           Checked = True
           TabOrder = 0
           TabStop = True
         end
         object rbQRZ: TRadioButton
-          Left = 6
+          AnchorSideLeft.Control = edtCbQRZUser
+          AnchorSideTop.Control = rbHamQTH
+          Left = 225
           Height = 23
-          Top = 31
+          Top = 6
           Width = 86
           Caption = 'QRZ.com'
+          TabOrder = 3
+        end
+        object edtCbHamQTHUser: TEdit
+          AnchorSideLeft.Control = Label111
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = rbHamQTH
+          AnchorSideTop.Side = asrBottom
+          Left = 93
+          Height = 34
+          Top = 41
+          Width = 120
+          BorderSpacing.Left = 12
+          BorderSpacing.Top = 12
           TabOrder = 1
         end
-        object edtCbUser: TEdit
-          Left = 96
-          Height = 34
-          Top = 63
-          Width = 134
-          TabOrder = 2
-        end
         object Label111: TLabel
+          AnchorSideLeft.Control = GroupBox38
+          AnchorSideTop.Control = edtCbHamQTHUser
+          AnchorSideTop.Side = asrCenter
           Left = 6
           Height = 17
-          Top = 71
+          Top = 50
           Width = 75
+          BorderSpacing.Left = 6
           Caption = 'User name:'
           ParentColor = False
         end
         object Label112: TLabel
+          AnchorSideLeft.Control = Label111
+          AnchorSideTop.Control = edtCbHamQTHPass
+          AnchorSideTop.Side = asrCenter
           Left = 6
           Height = 17
-          Top = 103
+          Top = 90
           Width = 66
           Caption = 'Password:'
           ParentColor = False
         end
-        object edtCbPass: TEdit
-          Left = 96
+        object edtCbHamQTHPass: TEdit
+          AnchorSideLeft.Control = edtCbHamQTHUser
+          AnchorSideTop.Control = edtCbHamQTHUser
+          AnchorSideTop.Side = asrBottom
+          Left = 93
           Height = 34
-          Top = 97
-          Width = 134
+          Top = 81
+          Width = 120
+          BorderSpacing.Top = 6
           EchoMode = emPassword
           PasswordChar = '*'
-          TabOrder = 3
+          TabOrder = 2
+        end
+        object rbQRZCQ: TRadioButton
+          AnchorSideLeft.Control = edtCbQRZCQUser
+          AnchorSideTop.Control = rbHamQTH
+          Left = 357
+          Height = 23
+          Top = 6
+          Width = 105
+          Caption = 'QRZCQ.com'
+          TabOrder = 6
+        end
+        object edtCbQRZUser: TEdit
+          AnchorSideLeft.Control = edtCbHamQTHUser
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = edtCbHamQTHUser
+          Left = 225
+          Height = 34
+          Top = 41
+          Width = 120
+          BorderSpacing.Left = 12
+          TabOrder = 4
+        end
+        object edtCbQRZCQUser: TEdit
+          AnchorSideLeft.Control = edtCbQRZUser
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = edtCbQRZUser
+          Left = 357
+          Height = 34
+          Top = 41
+          Width = 120
+          BorderSpacing.Left = 12
+          TabOrder = 7
+        end
+        object edtCbQRZPass: TEdit
+          AnchorSideLeft.Control = edtCbQRZUser
+          AnchorSideTop.Control = edtCbHamQTHUser
+          AnchorSideTop.Side = asrBottom
+          Left = 225
+          Height = 34
+          Top = 81
+          Width = 120
+          BorderSpacing.Top = 6
+          EchoMode = emPassword
+          PasswordChar = '*'
+          TabOrder = 5
+        end
+        object edtCbQRZCQPass: TEdit
+          AnchorSideLeft.Control = edtCbQRZCQUser
+          AnchorSideTop.Control = edtCbHamQTHUser
+          AnchorSideTop.Side = asrBottom
+          Left = 357
+          Height = 34
+          Top = 81
+          Width = 120
+          BorderSpacing.Top = 6
+          EchoMode = emPassword
+          PasswordChar = '*'
+          TabOrder = 8
         end
       end
     end
@@ -9218,7 +9304,7 @@ object frmPreferences: TfrmPreferences
         Width = 650
         BorderSpacing.Left = 12
         Caption = ' HamQTH '
-        ClientHeight = 193
+        ClientHeight = 177
         ClientWidth = 648
         TabOrder = 0
         object chkHaUpEnabled: TCheckBox
@@ -9357,7 +9443,7 @@ object frmPreferences: TfrmPreferences
         Width = 650
         BorderSpacing.Top = 3
         Caption = ' ClubLog '
-        ClientHeight = 223
+        ClientHeight = 207
         ClientWidth = 648
         TabOrder = 1
         object chkClUpEnabled: TCheckBox
@@ -9529,7 +9615,7 @@ object frmPreferences: TfrmPreferences
         Width = 650
         BorderSpacing.Top = 3
         Caption = ' HRDLog.net '
-        ClientHeight = 193
+        ClientHeight = 177
         ClientWidth = 648
         TabOrder = 2
         object chkHrUpEnabled: TCheckBox

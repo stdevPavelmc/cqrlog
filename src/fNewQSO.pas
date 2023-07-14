@@ -1878,6 +1878,8 @@ begin
 
   if cqrini.ReadString('Station','Call','') = '' then
      NewLogSplash;
+
+   dmUtils.UpdateCallBookcnf;  //renames old user and pass of ini file
 end;
 
 procedure TfrmNewQSO.tmrEndStartTimer(Sender: TObject);
@@ -7189,9 +7191,11 @@ end;
 procedure TfrmNewQSO.ChangeCallBookCaption;
 begin
   if cqrini.ReadBool('Callbook','HamQTH',True) then
-    lblCallbookInformation.Caption := 'Callbook (HamQTH.com):'
-  else
-    lblCallbookInformation.Caption := 'Callbook (qrz.com):'
+    lblCallbookInformation.Caption := 'Callbook (HamQTH.com):';
+  if cqrini.ReadBool('Callbook','QRZ',True) then
+    lblCallbookInformation.Caption := 'Callbook (qrz.com):';
+  if cqrini.ReadBool('Callbook','QRZCQ',True) then
+    lblCallbookInformation.Caption := 'Callbook (qrzCQ.com):';
 end;
 
 procedure TfrmNewQSO.CalculateLocalSunRiseSunSet;

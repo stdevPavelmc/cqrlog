@@ -111,6 +111,7 @@ type
     fGrayLineOffset: currency;
     fQRZSession: string;
     fHamQTHSession: string;
+    fQRZCQSession: string;
     fSysUTC: boolean;
     SubmodeMode: TStringList;
     ImportMode : TStringlist;
@@ -124,11 +125,14 @@ type
     function nr(ch: char): integer;
     function GetTagValue(Data, tg: string): string;
     function GetQRZSession(var ErrMsg: string): boolean;
+    function GetQRZCQSession(var ErrMsg: string): boolean;
     function GetHamQTHSession(var ErrMsg: string): boolean;
     function GetQRZInfo(call: string;
       var nick, qth, address, zip, grid, state, county, qsl, iota, waz, itu, ErrMsg: string): boolean;
     function GetHamQTHInfo(call: string;
       var nick, qth, address, zip, grid, state, county, qsl, iota, waz, itu, dok, ErrMsg: string): boolean;
+    function GetQRZCQInfo(call: string;
+      var qth, address, zip, grid, state, county, qsl, iota, waz, itu, dok, ErrMsg: string): boolean;
 
   public
     s136: string;
@@ -224,6 +228,7 @@ type
     procedure BandFromDbase;
     procedure UpdateHelpBrowser;
     procedure ModeFromCqr(CqrMode:String;var OutMode,OutSubmode:String;dbg:Boolean);
+    procedure UpdateCallBookcnf;
 
     function  BandFromArray(tmp:Currency):string;
     function  MyDefaultBrowser:String;
@@ -327,7 +332,7 @@ implementation
   {$R *.lfm}
 
 { TdmUtils }
-uses dData, dDXCC, fEnterFreq, fTRXControl, uMyini, fNewQSO;
+uses dData, dDXCC, fEnterFreq, fTRXControl, uMyini, fNewQSO, uVersion;
 
 function TdmUtils.LetterFromMode(mode: string): string;
 begin
@@ -3238,7 +3243,77 @@ begin
     HTTP.Free
   end;
 end;
+function TdmUtils.GetQRZCQInfo(call: string;
+  var  qth, address, zip, grid, state, county, qsl, iota, waz, itu, dok, ErrMsg: string): boolean;
+var
+  http: THTTPSend;
+  req: string = '';
+  m: TStringList;
+begin
+  Result := False;
+  address := '';
+  grid := '';
+  state := '';
+  county := '';
+  qsl := '';
+  ErrMsg := '';
+  if fQRZCQSession = '' then
+  begin
+    if not GetQRZCQSession(ErrMsg) then
+      exit;
+  end;
+  http := THTTPSend.Create;
+  m := TStringList.Create;
+  try
+    http.ProxyHost := cqrini.ReadString('Program', 'Proxy', '');
+    http.ProxyPort := cqrini.ReadString('Program', 'Port', '');
+    http.UserName := cqrini.ReadString('Program', 'User', '');
+    http.Password := cqrini.ReadString('Program', 'Passwd', '');
+    if (call = '') then
+    begin
+      ErrMsg := 'Callsign field empty!';
+      exit;
+    end;
+    req := 'https://ssl.qrzcq.com/xml?s=' + fQRZCQSession + '&callsign=' + GetIDCall(call)+'agent=Cqrlog_'+uVersion.cVERSION;
+    if not HTTP.HTTPMethod('GET', req) then
+      ErrMsg := '(' + IntToStr(http.ResultCode) + '):' + http.ResultString
+    else
+    begin
+      m.LoadFromStream(http.Document);
+      if Pos('<Error>Session Timeout</Error>', m.Text) > 0 then
+      begin
+        fQRZCQSession := '';
+        cqrini.WriteString('CallBook', 'CbQRZCQKey', fQRZCQSession);
+        Result := GetQRZCQInfo(call, qth, address, zip, grid, state,
+          county, qsl, iota, waz, itu, dok, ErrMsg);
+      end
+      else
+      begin
+        if Pos('<Error>Not found:', m.Text) > 0 then
+          exit;
 
+        qth := GetTagValue(m.Text, '<qth>');
+        state := GetTagValue(m.Text, '<state>');
+        zip := GetTagValue(m.Text, '<zip>');
+        address := GetTagValue(m.Text, '<name>') + LineEnding +
+          GetTagValue(m.Text, '<address>') + LineEnding;
+        if (state <> '') then
+          address := address + ', ' + state;
+        address := address + ' ' + zip;
+        county := GetTagValue(m.Text, '<county>');
+        grid := UpperCase(GetTagValue(m.Text, '<locator>'));
+        qsl := GetTagValue(m.Text, '<manager>');
+        iota := GetTagValue(m.Text, '<iota>');
+        waz := GetTagValue(m.Text, '<cq>');
+        itu := GetTagValue(m.Text, '<itu>');
+        dok := GetTagValue(m.Text, '<dok>')
+      end
+    end
+  finally
+    m.Free;
+    HTTP.Free
+  end;
+end;
 procedure TdmUtils.SaveWindowPos(a: TForm);
 var
   section: string = '';
@@ -3780,8 +3855,10 @@ function TdmUtils.GetCallBookData(call: string;
   var nick, qth, address, zip, grid, state, county, qsl, iota, waz, itu, dok,  ErrMsg: string): boolean;
 begin
   if cqrini.ReadBool('Callbook', 'QRZ', False) then
-    Result := GetQRZInfo(call, nick, qth, address, zip, grid, state, county, qsl, iota, waz, itu, ErrMsg)
-  else
+    Result := GetQRZInfo(call, nick, qth, address, zip, grid, state, county, qsl, iota, waz, itu, ErrMsg) ;
+  if cqrini.ReadBool('Callbook', 'QRZCQ', False) then
+    Result := GetQRZCQInfo(call, qth, address, zip, grid, state, county, qsl, iota, waz, itu, dok, ErrMsg) ;
+  if cqrini.ReadBool('Callbook', 'HamQTH', False) then
     Result := GetHamQTHInfo(call, nick, qth, address, zip, grid, state, county, qsl, iota, waz, itu, dok, ErrMsg)
 end;
 
@@ -3804,7 +3881,6 @@ begin
   end;
 end;
 
-
 function TdmUtils.GetQRZSession(var ErrMsg: string): boolean;
 var
   http: THTTPSend;
@@ -3814,8 +3890,8 @@ var
   kpos: word;
 begin
   Result := False;
-  if (cqrini.ReadString('CallBook', 'CBUser', '') = '') or
-    (cqrini.ReadString('CallBook', 'CBPass', '') = '') then
+  if (cqrini.ReadString('CallBook', 'CbQRZUser', '') = '') or
+    (cqrini.ReadString('CallBook', 'CbQRZPass', '') = '') then
   begin
     ErrMsg := 'Empty password or user name';
     exit;
@@ -3828,8 +3904,8 @@ begin
     http.UserName := cqrini.ReadString('Program', 'User', '');
     http.Password := cqrini.ReadString('Program', 'Passwd', '');
     req := 'https://xmldata.qrz.com/xml/1.34?username=' + cqrini.ReadString(
-      'CallBook', 'CBUser', '') + ';password=' + cqrini.ReadString(
-      'CallBook', 'CBPass', '') + ';agent=cqrlog';
+      'CallBook', 'CbQRZUser', '') + ';password=' + cqrini.ReadString(
+      'CallBook', 'CbQRZPass', '') + ';agent=Cqrlog_'+uVersion.cVERSION;
     if not HTTP.HTTPMethod('GET', req) then
       ErrMsg := '(' + IntToStr(http.ResultCode) + '):' + http.ResultString
     else
@@ -3859,16 +3935,19 @@ begin
     HTTP.Free
   end;
 end;
-
-function TdmUtils.GetHamQTHSession(var ErrMsg: string): boolean;
+function TdmUtils.GetQRZCQSession(var ErrMsg: string): boolean;
 var
   http: THTTPSend;
   req: string = '';
   m: TStringList;
+  epos: word;
+  kpos: word;
 begin
+  fQRZCQSession:= cqrini.ReadString('CallBook', 'CbQRZCQKey','');
+  if fQRZCQSession<>'' then exit;
   Result := False;
-  if (cqrini.ReadString('CallBook', 'CBUser', '') = '') or
-    (cqrini.ReadString('CallBook', 'CBPass', '') = '') then
+  if (cqrini.ReadString('CallBook', 'CbQRZCQUser', '') = '') or
+    (cqrini.ReadString('CallBook', 'CbQRZCQPass', '') = '') then
   begin
     ErrMsg := 'Empty password or user name';
     exit;
@@ -3880,8 +3959,62 @@ begin
     http.ProxyPort := cqrini.ReadString('Program', 'Port', '');
     http.UserName := cqrini.ReadString('Program', 'User', '');
     http.Password := cqrini.ReadString('Program', 'Passwd', '');
-    req := 'http://www.hamqth.com/xml.php?u=' + cqrini.ReadString('CallBook', 'CBUser', '') +
-      '&p=' + EncodeURLData(cqrini.ReadString('CallBook', 'CBPass', '')) + '&prg=cqrlog';
+    req := 'https://ssl.qrzcq.com/xml?username=' + cqrini.ReadString(
+      'CallBook', 'CbQRZCQUser', '') + '&password=' + cqrini.ReadString(
+      'CallBook', 'CbQRZCQPass', '') + '&agent=Cqrlog_'+uVersion.cVERSION;
+    if not HTTP.HTTPMethod('GET', req) then
+      ErrMsg := '(' + IntToStr(http.ResultCode) + '):' + http.ResultString
+    else
+    begin
+      m.LoadFromStream(http.Document);
+      if dmData.DebugLevel >= 1 then
+        Writeln(m.Text);
+      //I'd like to parse it as normal XML but it seems XML support in Freepascal
+      //2.4.0 is broken :-(
+      epos := Pos('<Error>', m.Text);
+      if epos > 0 then
+        ErrMsg := copy(m.Text, epos + 7, Pos('</Error>', m.Text) - epos - 7)
+      else
+      begin
+        kpos := Pos('<Key>', m.Text);
+        if kpos > 0 then
+        begin
+          fQRZCQSession := copy(m.Text, kpos + 5, Pos('</Key>', m.Text) - kpos - 5);
+          cqrini.WriteString('CallBook', 'CbQRZCQKey', fQRZCQSession);
+          Result := True;
+        end
+        else
+          ErrMsg := 'Tag "<Key>" not found!';
+      end;
+    end
+  finally
+    m.Free;
+    HTTP.Free
+  end;
+end;
+
+function TdmUtils.GetHamQTHSession(var ErrMsg: string): boolean;
+var
+  http: THTTPSend;
+  req: string = '';
+  m: TStringList;
+begin
+  Result := False;
+  if (cqrini.ReadString('CallBook', 'CbHamQTHUser', '') = '') or
+    (cqrini.ReadString('CallBook', 'CbHamQTHPass', '') = '') then
+  begin
+    ErrMsg := 'Empty password or user name';
+    exit;
+  end;
+  http := THTTPSend.Create;
+  m := TStringList.Create;
+  try
+    http.ProxyHost := cqrini.ReadString('Program', 'Proxy', '');
+    http.ProxyPort := cqrini.ReadString('Program', 'Port', '');
+    http.UserName := cqrini.ReadString('Program', 'User', '');
+    http.Password := cqrini.ReadString('Program', 'Passwd', '');
+    req := 'http://www.hamqth.com/xml.php?u=' + cqrini.ReadString('CallBook', 'CbHamQTHUser', '') +
+      '&p=' + EncodeURLData(cqrini.ReadString('CallBook', 'CbHamQTHPass', '')) + '&prg=Cqrlog_'+uVersion.cVERSION;
     //Writeln(req);
     if not HTTP.HTTPMethod('GET', req) then
       ErrMsg := '(' + IntToStr(http.ResultCode) + '):' + http.ResultString
@@ -4005,7 +4138,6 @@ begin
     HTTP.Free
   end;
 end;
-
 procedure TdmUtils.ShowHamQTHInBrowser(call: string);
 var
   AProcess: TProcess;
@@ -5030,5 +5162,28 @@ Begin
    if num=4 then CreaFile(dmData.HomeDir+C_MODEFILE_DIR+C_READMEMODE_FILE,R_file);
 end;
 
+procedure TdmUtils.UpdateCallBookcnf;
+var
+  c,p:string;
+
+Begin
+  c:= cqrini.ReadString('CallBook', 'CBUser', '');
+if c <> '' then
+  Begin //remove old definition
+    p:= cqrini.ReadString('CallBook', 'CBPass', '');
+    if cqrini.ReadBool('Callbook', 'HamQTH', True) then
+      begin
+        cqrini.WriteString('CallBook', 'CbHamQTHUser', c);
+        cqrini.WriteString('CallBook', 'CbHamQTHPass', p);
+      end
+     else
+      begin
+        cqrini.WriteString('CallBook', 'CbQRZUser', c);
+        cqrini.WriteString('CallBook', 'CbQRZPass', p);
+      end;
+    cqrini.DeleteKey('CallBook', 'CBUser');
+    cqrini.DeleteKey('CallBook', 'CBPass');
+  end;
+end;
 end.
 
