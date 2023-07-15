@@ -1135,7 +1135,7 @@ object frmPreferences: TfrmPreferences
         Top = 326
         Width = 332
         BorderSpacing.Left = 20
-        Caption = 'Enable auto search on HamQTH.com/QRZ.COM'
+        Caption = 'Enable auto search on HamQTH.com/QRZ.COM/QRZCQ.com'
         TabOrder = 4
       end
       object chkShowRecentQSOs: TCheckBox
