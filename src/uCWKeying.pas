@@ -933,12 +933,14 @@ end;
 procedure TCWHamLib.StopSending;
 begin
   AllowCW := false;
-  //not implemented in hamlib command set
+  tcp.SendMessage('+\stop_morse currVFO'+LineEnding);
+  //implemented in hamlib command set from 2023 (at least)
+  //leaving old stop commands still as they may cause no harm but work only with icom and ts480
   //sending 0xFF as text works with Icom
-  tcp.SendMessage('b'+#$0FF+LineEnding);
+    tcp.SendMessage('b'+#$0FF+LineEnding);
   //All chrs are spaces stops cw for kenwood. Empty chrs (max24) in buffer are filled with spaces.
   // (info by ts480 manual, not tested)
-  tcp.SendMessage('b '+LineEnding);
+    tcp.SendMessage('b '+LineEnding);
 end;
 
 procedure TCWHamLib.SendText(text : String);
