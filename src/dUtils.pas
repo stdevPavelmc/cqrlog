@@ -132,7 +132,7 @@ type
     function GetHamQTHInfo(call: string;
       var nick, qth, address, zip, grid, state, county, qsl, iota, waz, itu, dok, ErrMsg: string): boolean;
     function GetQRZCQInfo(call: string;
-      var qth, address, zip, grid, state, county, qsl, iota, waz, itu, dok, ErrMsg: string): boolean;
+      var nick, qth, address, zip, grid, state, county, qsl, iota, waz, itu, dok, ErrMsg: string): boolean;
 
   public
     s136: string;
@@ -3244,13 +3244,15 @@ begin
   end;
 end;
 function TdmUtils.GetQRZCQInfo(call: string;
-  var  qth, address, zip, grid, state, county, qsl, iota, waz, itu, dok, ErrMsg: string): boolean;
+  var  nick, qth, address, zip, grid, state, county, qsl, iota, waz, itu, dok, ErrMsg: string): boolean;
 var
   http: THTTPSend;
   req: string = '';
   m: TStringList;
+  tmp:String;
 begin
   Result := False;
+  nick := '';
   address := '';
   grid := '';
   state := '';
@@ -3274,17 +3276,17 @@ begin
       ErrMsg := 'Callsign field empty!';
       exit;
     end;
-    req := 'https://ssl.qrzcq.com/xml?s=' + fQRZCQSession + '&callsign=' + GetIDCall(call)+'agent=Cqrlog_'+uVersion.cVERSION;
+    req := 'https://ssl.qrzcq.com/xml?s=' + fQRZCQSession + '&callsign=' + GetIDCall(call)+'&agent=Cqrlog_'+uVersion.cVERSION;
     if not HTTP.HTTPMethod('GET', req) then
       ErrMsg := '(' + IntToStr(http.ResultCode) + '):' + http.ResultString
     else
     begin
       m.LoadFromStream(http.Document);
-      if Pos('<Error>Session Timeout</Error>', m.Text) > 0 then
+      if Pos(UpperCase('<Error>Session Timeout</Error>'), UpperCase(m.Text)) > 0 then
       begin
         fQRZCQSession := '';
         cqrini.WriteString('CallBook', 'CbQRZCQKey', fQRZCQSession);
-        Result := GetQRZCQInfo(call, qth, address, zip, grid, state,
+        Result := GetQRZCQInfo(call, nick, qth, address, zip, grid, state,
           county, qsl, iota, waz, itu, dok, ErrMsg);
       end
       else
@@ -3292,6 +3294,20 @@ begin
         if Pos('<Error>Not found:', m.Text) > 0 then
           exit;
 
+        nick:= GetTagValue(m.Text, '<name>');
+        if WordCount(nick,[' ']) >2 then //There may be nickname after true name
+          Begin
+            tmp := ExtractWord(2,nick,[' ']);
+            nick:= ExtractWord(1,nick,[' ']);
+            if ((pos('(',tmp)>0)
+             or (pos('"',tmp)>0)
+             or (pos(#$27,tmp)>0)  // '
+             or (pos('[',tmp)>0)
+             or (pos('{',tmp)>0) ) then //There may be nickname after true name
+               nick:= nick+' '+tmp;
+          end
+         else
+          nick:= ExtractWord(1,nick,[' ']);
         qth := GetTagValue(m.Text, '<qth>');
         state := GetTagValue(m.Text, '<state>');
         zip := GetTagValue(m.Text, '<zip>');
@@ -3857,7 +3873,7 @@ begin
   if cqrini.ReadBool('Callbook', 'QRZ', False) then
     Result := GetQRZInfo(call, nick, qth, address, zip, grid, state, county, qsl, iota, waz, itu, ErrMsg) ;
   if cqrini.ReadBool('Callbook', 'QRZCQ', False) then
-    Result := GetQRZCQInfo(call, qth, address, zip, grid, state, county, qsl, iota, waz, itu, dok, ErrMsg) ;
+    Result := GetQRZCQInfo(call, nick, qth, address, zip, grid, state, county, qsl, iota, waz, itu, dok, ErrMsg) ;
   if cqrini.ReadBool('Callbook', 'HamQTH', False) then
     Result := GetHamQTHInfo(call, nick, qth, address, zip, grid, state, county, qsl, iota, waz, itu, dok, ErrMsg)
 end;
@@ -3944,7 +3960,11 @@ var
   kpos: word;
 begin
   fQRZCQSession:= cqrini.ReadString('CallBook', 'CbQRZCQKey','');
-  if fQRZCQSession<>'' then exit;
+  if fQRZCQSession<>'' then
+                       Begin
+                         Result:=true;
+                         exit;
+                       end;
   Result := False;
   if (cqrini.ReadString('CallBook', 'CbQRZCQUser', '') = '') or
     (cqrini.ReadString('CallBook', 'CbQRZCQPass', '') = '') then
