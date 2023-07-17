@@ -21,7 +21,7 @@ const
   cRELEAS     = 0;
   cBUILD      = 1;
 
-  cBUILD_DATE = '2023-07-15';
+  cBUILD_DATE = '2023-07-17';
 
 implementation
 
