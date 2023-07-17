@@ -5,7 +5,7 @@ unit uRigControl;
 interface
 
 uses
-  Classes, SysUtils, Process, ExtCtrls, lNetComponents, lnet,Forms;
+  Classes, SysUtils, Process, ExtCtrls, lNetComponents, lnet, Forms, strutils;
 
 type TRigMode =  record
     mode : String[10];
@@ -46,6 +46,7 @@ type TRigControl = class
     fPower       : boolean;
     fPowerON	 : boolean;
     fGetVfo      : boolean;
+    fCompoundPoll: Boolean;
 
     AllowCommand        : integer; //for command priority
     ErrorRigctldConnect : Boolean;
@@ -111,6 +112,8 @@ public
 
     //TX offset for transvertor in MHz
     property TXOffset : Double read fTXOffset write fTXOffset;
+    //Char to use between compound commands. Default is space, can be also LineEnding that breaks compound
+    property CompoundPoll : Boolean read fCompoundPoll  write  fCompoundPoll;
 
     function  GetCurrVFO  : TVFO;
     function  GetModePass : TRigMode;
@@ -164,6 +167,7 @@ begin
   fGetVfo      := true;   //defaut these true
   fMorse       := true;
   PowerOffIssued := false;
+  fCompoundPoll:=True;
   if DebugMode then Writeln('All objects created');
   tmrRigPoll.OnTimer       := @OnRigPollTimer;
   RigctldConnect.OnReceive := @OnReceivedRigctldConnect;
@@ -515,7 +519,7 @@ begin
     msg := StringReplace(upcase(trim(msg)),#$09,' ',[rfReplaceAll]); //note the char case upper for now on! Remove TABs
 
     if DebugMode then
-         Writeln('Msg from rig:',StringReplace(msg,LineEnding,'\',[rfReplaceAll]));
+         Writeln('Msg from rig:',msg);//StringReplace(msg,LineEnding,'\',[rfReplaceAll]));
 
     a := Explode(LineEnding,msg);
     for i:=0 to Length(a)-1 do     //this handles received message line by line
@@ -538,6 +542,12 @@ begin
           Hit:=true;
           AllowCommand:=1; //check pending commands
        end;
+
+      if ( (b[0]='TX') and (b[1]='MODE:') ) then   //WFview false rigctld emulating says "TX MODE:"
+        Begin
+          b[0]:=b[1];
+          b[1]:=b[2];
+        end;
 
       if (b[0]='MODE:') then
        Begin
@@ -673,7 +683,6 @@ begin
    end;  //line by line loop
   end; //while msg
 
-
 end;
 procedure TRigControl.OnRigPollTimer(Sender: TObject);
 var
@@ -681,26 +690,64 @@ var
   i       : Integer;
 //-----------------------------------------------------------
 procedure DoRigPoll;
+var
+   f:integer;
+   s:array[1..3] of string=('','','');
+
 begin
  if PowerOffIssued then exit;
  if  ParmHasVfo=2 then
    begin
      if fGetVfo then
-       cmd := '+f'+VfoStr+' +m'+VfoStr+' +v'+VfoStr+LineEnding //chk this with rigctld v3.1
+        begin
+          s[1]:='+f'+VfoStr;
+          s[2]:='+m'+VfoStr;
+          s[3]:='+v'+VfoStr;
+          //cmd := '+f'+VfoStr+' +m'+VfoStr+' +v'+VfoStr+LineEnding //chk this with rigctld v3.1
+        end
       else
-       cmd := '+f'+VfoStr+' +m'+VfoStr+LineEnding //do not ask vfo if rig can't / chk this with rigctld v3.1
+        begin
+          s[1]:='+f'+VfoStr;
+          s[2]:='+m'+VfoStr;
+          //cmd := '+f'+VfoStr+' +m'+VfoStr+LineEnding //do not ask vfo if rig can't
+        end
+
    end
   else
    begin
      if fGetVfo then
-       cmd := '+f'+VfoStr+' +m'+VfoStr+' +v'+LineEnding
+        begin
+          s[1]:='+f'+VfoStr;
+          s[2]:='+m'+VfoStr;
+          s[3]:='+v';
+          //cmd := '+f'+VfoStr+' +m'+VfoStr+' +v'+LineEnding
+        end
       else
-       cmd := '+f'+VfoStr+' +m'+VfoStr+LineEnding //do not ask vfo if rig can't
+      begin
+          s[1]:='+f'+VfoStr;
+          s[2]:='+m'+VfoStr;
+          //cmd := '+f'+VfoStr+' +m'+VfoStr+LineEnding //do not ask vfo if rig can't
+        end
    end;
 
- if DebugMode then
-     Write(LineEnding+'Poll Sending:'+cmd);
- RigctldConnect.SendMessage(cmd);
+
+ if fCompoundPoll then
+       Begin
+        if DebugMode then
+           Write(LineEnding+'Poll Sending:'+s[1]+' '+s[2]+' '+s[3]+LineEnding);
+        RigctldConnect.SendMessage(s[1]+' '+s[2]+' '+s[3]+LineEnding);
+       end
+      else
+        Begin
+          for f:=1 to 3 do
+            Begin
+              if DebugMode and (s[f]<>'') then
+                 Write(LineEnding+'Poll Sending:'+s[f]+LineEnding);
+              if s[f]<>'' then
+                          RigctldConnect.SendMessage(s[f]+LineEnding);
+              sleep(2);
+            end;
+        end;
  AllowCommand:=-1; //waiting for reply
 end;
 

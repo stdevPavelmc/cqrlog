@@ -286,6 +286,9 @@
     <strong>Set UTC to Rig</strong> When checked Cqrlog will send "set_clock" command with current UTC time to rig on next full minute change after initialization.
     <br><strong>Note:</strong> All rigs do not support set_clock command.
     <br><br>
+    <strong>Compound poll</strong> When checked Cqrlog will send rig poll command as one line "+f +m +v". That is Cqrlog default.
+    <br>When unchecked every command will be sent with LineEnding, I.E. in it's own line. This may help poor rigctld emulators like WFview.
+    <br><br>
     <strong>User defined TRXControl buttons</strong> can be defined here. Your defined buttons will be shown in the TRX Control window after
      you select this option using the <strong>Preferences menu/Show Usr buttons</strong> in the <strong>TRXControl window.</strong> 
      <br>
