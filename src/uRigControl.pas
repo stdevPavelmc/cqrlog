@@ -47,6 +47,8 @@ type TRigControl = class
     fPowerON	 : boolean;
     fGetVfo      : boolean;
     fCompoundPoll: Boolean;
+    fVoice       : Boolean;
+    fIsNewHamlib : Boolean;
 
     AllowCommand        : integer; //for command priority
     ErrorRigctldConnect : Boolean;
@@ -98,6 +100,11 @@ public
     //test if rigctld "--vfo" start parameter is used
     property Morse      : Boolean read fMorse;
     //can rig send CW
+    property Voice      : Boolean read fVoice;
+    //can rig launch voice memories
+    property IsNewHamlib: Boolean read fIsNewHamlib;
+    //Is Hamlib version date higer than 2023-06-01
+    //not used internally, but can give info out
     property Power      : Boolean read fPower;
     //can rig switch power
     property PowerON      : Boolean write fPowerON;
@@ -166,6 +173,8 @@ begin
   fPowerON     := true;  //we do this via rigctld startup parameter autopower_on
   fGetVfo      := true;   //defaut these true
   fMorse       := true;
+  fVoice       := false;
+  fIsNewHamlib := false;
   PowerOffIssued := false;
   fCompoundPoll:=True;
   if DebugMode then Writeln('All objects created');
@@ -519,7 +528,7 @@ begin
     msg := StringReplace(upcase(trim(msg)),#$09,' ',[rfReplaceAll]); //note the char case upper for now on! Remove TABs
 
     if DebugMode then
-         Writeln('Msg from rig:',msg);//StringReplace(msg,LineEnding,'\',[rfReplaceAll]));
+         Writeln('Msg from rig:',StringReplace(msg,LineEnding,'|',[rfReplaceAll]));
 
     a := Explode(LineEnding,msg);
     for i:=0 to Length(a)-1 do     //this handles received message line by line
@@ -608,31 +617,43 @@ begin
         end;
 
       //these come from\dump_caps
-      if pos('CAN SET POWER STAT:',a[i])>0 then
+       if pos('HAMLIB VERSION:',a[i])>0 then
+             Begin                   //Old hamlib does not have this line, new has.
+               fIsNewHamlib:= true; //this is enough now to now it exist. Later version number and date can be used if needed
+             end;
+
+       if pos('CAN SET POWER STAT:',a[i])>0 then
        Begin
          fPower:= b[4]='Y';
-         if DebugMode then Writeln('Cqrlog can switch power: ',fPower);
        end;
 
       if pos('CAN GET VFO:',a[i])>0 then
        Begin
          fGetVfo:= b[3]='Y';
-         if DebugMode then Writeln(LineEnding+'Cqrlog can get VFO: ',fGetVfo);
        end;
 
-      if pos('CAN SEND MORSE:',a[i])>0 then //this is the last to check from dump_caps
+      if pos('CAN SEND MORSE:',a[i])>0 then
        Begin
          fMorse:= b[3]='Y';
-         if DebugMode then Writeln('Cqrlog can send Morse: ',fMorse,LineEnding);
-          RigCommand.Clear;
-          Hit:=true;
-          if ((fRigId<10) and fPowerON) then
-             begin
-                            AllowCommand:=8; // if rigctld is remote it can not make auto_power_on
-                            if DebugMode then writeln(msg);
-             end
-                          else
-                            AllowCommand:=1; //check pending commands (should not be any)
+       end;
+
+       if pos('CAN SEND VOICE:',a[i])>0 then
+       Begin
+         fVoice:= b[3]='Y';
+         RigCommand.Clear;
+         Hit:=true;
+         if ((fRigId<10) and fPowerON) then
+               AllowCommand:=8 // if rigctld is remote it can not make auto_power_on
+           else
+               AllowCommand:=1; //check pending commands (should not be any)
+         if DebugMode then
+                   Begin
+                      Writeln(LineEnding,'This is New Hamlib: ',fIsNewHamlib);
+                      Writeln('Cqrlog can switch power: ',fPower);
+                      Writeln('Cqrlog can get VFO: ',fGetVfo);
+                      Writeln('Cqrlog can send Morse: ',fMorse);
+                      Writeln('Cqrlog can launch voice memories: ',fVoice,LineEnding);
+                   end;
          Break;  //break searching from \dump_caps reply
        end;
       //\dump_caps end

@@ -19,6 +19,7 @@ type
       fDevice    : String;
       fDebugMode : Boolean;
       fHamlibBuffer : Boolean;
+      fIsNewHamlib  : Boolean; //Hamlib version date higer than 2023-06-01
       fMinSpeed  : Word;
       fMaxSpeed  : Word;
       fPortSpeed : dWord;
@@ -32,6 +33,7 @@ type
       property MaxSpeed  : Word read fMaxSpeed;
       property PortSpeed : dWord read fPortSpeed write fPortSpeed;
       property HamlibBuffer : Boolean read  fHamlibBuffer write fHamlibBuffer;
+      property IsNewHamlib : Boolean read  fIsNewHamlib; //used internally, but can give info out
 
       constructor Create; virtual; abstract;
 
@@ -127,6 +129,7 @@ type
     private
       ParamChkVfo: boolean;
       WaitChkVfo: integer;
+      WaitHamlib: boolean;
       VfoStr : String;
       AllowCW : Boolean;
       fActive : Boolean;
@@ -168,7 +171,8 @@ begin
   ser           := TBlockserial.Create;
   ser.LinuxLock := False;
   fMinSpeed     := 5;
-  fMaxSpeed     := 60
+  fMaxSpeed     := 60;
+  fIsNewHamlib  :=false;
 end;
 
 procedure TCWWinKeyerUSB.Open;
@@ -824,12 +828,15 @@ begin
   if DebugMode then
      Writeln('CWint connected to hamlib');
 
+  fIsNewHamlib  := false;
+  WaitHamlib    := True;
   VfoStr := '';
   ParamChkVfo :=false;
   WaitChkVfo:=5; // wait max 5 rcvd blocks
   tcp.SendMessage('+\chk_vfo'+LineEnding);
   if DebugMode then
      Writeln('CW send +\chk_vfo');
+
 end;
 
 procedure TCWHamLib.OnReceived(aSocket: TLSocket);
@@ -837,6 +844,7 @@ begin
   if aSocket.GetMessage(Rmsg) > 0 then
    begin
      Rmsg := StringReplace(Rmsg,LineEnding,' ',[rfReplaceAll]);
+
      if (( not ParamChkVfo ) and (WaitChkVfo>0))then
        Begin
          dec(WaitChkVfo);
@@ -847,10 +855,28 @@ begin
            if DebugMode then
                Writeln('CW commands need parameter: ',VfoStr);
            WaitChkVfo:=0;
-           SetSpeed(fSpeed);
+           tcp.SendMessage('+\dump_caps'+LineEnding);
+           if DebugMode then
+             Writeln('CW send +\dump_caps');
          end;
         ParamChkVfo:= WaitChkVfo < 1;
        end;
+
+     if (pos('HAMLIB VERSION:',Uppercase(Rmsg))>0) and WaitHamlib then
+         Begin
+          fIsNewHamlib:=true;
+          WaitHamlib:=False;
+          if DebugMode then
+               Writeln('Hamlib is new');
+         end;
+     if (pos('OVERALL BACKEND WARNINGS:',Uppercase(Rmsg))>0) then //+\dump_caps end
+         Begin
+          WaitHamlib:=False;
+          if DebugMode then
+               Writeln('End of +\dump_caps');
+          SetSpeed(fSpeed);
+         end;
+
      if DebugMode then
          Writeln('HLresp MSG:',Rmsg,':');
    end;
@@ -878,7 +904,7 @@ begin
   tcp.Connect(fDevice,StrToInt(fPort));
 end;
 
-procedure TCWHamLib.WaitMorse;
+procedure TCWHamLib.WaitMorse;  //not used and not confirmed to exist via initialize rig/dump_caps
 begin
   tcp.SendMessage('\wait_morse'+VfoStr+LineEnding);
   if DebugMode then
@@ -933,14 +959,17 @@ end;
 procedure TCWHamLib.StopSending;
 begin
   AllowCW := false;
-  tcp.SendMessage('+\stop_morse currVFO'+LineEnding);
+  if fIsNewHamlib then
+   tcp.SendMessage('+\stop_morse'+VfoStr+LineEnding)
   //implemented in hamlib command set from 2023 (at least)
-  //leaving old stop commands still as they may cause no harm but work only with icom and ts480
+  else
+   Begin
   //sending 0xFF as text works with Icom
     tcp.SendMessage('b'+#$0FF+LineEnding);
   //All chrs are spaces stops cw for kenwood. Empty chrs (max24) in buffer are filled with spaces.
   // (info by ts480 manual, not tested)
-    tcp.SendMessage('b '+LineEnding);
+    tcp.SendMessage('b  '+LineEnding);
+   end;
 end;
 
 procedure TCWHamLib.SendText(text : String);
@@ -953,7 +982,7 @@ var
   rpt : integer;
   Wcw : char;
   dSpd: integer;
-  IsNewHamlib: boolean=false;
+
 
             //-----------------------------------------------------------------------------------
             Procedure SendToHamlib(t:string);
@@ -963,7 +992,8 @@ var
 
                         while ((rpt > 0) and AllowCW) do
                           Begin
-                            if IsNewHamlib then t:=' '+t;
+                            if fIsNewHamlib then
+                                               t:=' '+t;
                             if fDebugMode then
                                Writeln('HLsend MSG: |','b'+t+'|');
                              Rmsg:='';
@@ -987,19 +1017,10 @@ var
                                   end;
                               if pos('-9',Rmsg)>0 then
                                 Begin
-                                 if (t=' ') and not IsNewHamlib then
-                                   Begin
-                                     if fDebugMode then
-                                      Writeln('NOTE: This is New Hamlib. Adding space between b-command and text!');
-                                     IsNewHamlib:=True
-                                   end
-                                 else
-                                  Begin
                                    if fDebugMode then
                                       Writeln('Waiting before repeat because of RPRT-9');
                                     dec(rpt);
                                     sleep(50);
-                                  end;
                                 end
                                else
                                 rpt :=0;

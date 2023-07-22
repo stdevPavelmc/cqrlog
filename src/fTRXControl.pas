@@ -168,6 +168,7 @@ type
     infosetstage : Integer;
     infosetfreq : String;
     RigInUse    : String;  //rig in use. Number as string
+    IsNewHamlib : Boolean;
 
     procedure SynTRX;
 
@@ -1133,6 +1134,7 @@ begin
       end
   else  //radio changed, restart CW interface
     begin
+      IsNewHamlib:=radio.IsNewHamlib;
       //we check this again although preferences prevent false setting
       if ( cqrini.ReadBool('CW', 'NoReset', False) //is set: user does not want reset
         and (cqrini.ReadInteger('CW'+RigInUse, 'Type', 0) <> 4)  //type is not HamLib
