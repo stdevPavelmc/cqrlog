@@ -7832,12 +7832,12 @@ object frmPreferences: TfrmPreferences
           AnchorSideLeft.Side = asrBottom
           AnchorSideTop.Control = edtHamLibSpeed
           Left = 168
-          Height = 55
-          Hint = 'Hamlib July 2023 and after has 1k CW buffer for long strings.'#10'If CW out is jerky and Hamlib > July 2023 cheking this makes'#10'output better. '#10'How ever then speed changes in middle of memory'#10'with +++ ---- do not work.'
+          Height = 23
+          Hint = 'Hamlib July 2023 and after has 1k CW buffer for long strings.'#10'Setting this ignores letter by letter sending on messages '#10'longer than 10 chrs.'
           Top = 23
-          Width = 351
+          Width = 165
           BorderSpacing.Left = 45
-          Caption = 'Use Hamlib 1k buffer. (for Hamlibs after Jul-2023)'#10'This ignores letter by letter sending'#10'on messages longer than 10 chrs.'
+          Caption = 'Use Hamlib 1k buffer'
           OnChange = cmbIfaceTypeChange
           ParentShowHint = False
           ShowHint = True
