@@ -172,7 +172,10 @@ begin
       end;
       mStat.Lines.Add('Import complete ...');
       if chkChangeDate.Checked then
+        Begin
+         edtDateFrom.Caption:= FormatDateTime('YYYY-MM-DD', IncDay(Today, -1));
          cqrini.WriteString('LoTWImp','DateFrom',FormatDateTime('YYYY-MM-DD', IncDay(Today, -1)));
+        end;
       if chkShowNew.Checked then
       begin
         mStat.Lines.Add('');
