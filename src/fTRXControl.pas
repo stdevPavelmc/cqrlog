@@ -197,6 +197,7 @@ type
     procedure LoadBandButtons;
     function ListModeClose : Boolean;
     procedure HLTune(start : Boolean);
+    procedure SendVoice(mem : String);
   end;
 
 var
@@ -1627,6 +1628,13 @@ begin
 
   if ((Upcase(mode)='RTTY') or (Upcase(mode)=Upcase(usermode))) then
      mode := usercmd;
+end;
+procedure TfrmTRXControl.SendVoice(mem : String);
+
+begin
+  if Assigned(radio) then
+   if radio.Voice then
+    radio.SendVoice(mem);
 end;
 
 end.

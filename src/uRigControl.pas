@@ -150,6 +150,7 @@ public
     procedure PwrStBy;
     procedure PttOn;
     procedure PttOff;
+    procedure SendVoice(VMem:String);
     procedure UsrCmd(cmd:String);
 end;
 
@@ -382,6 +383,11 @@ end;
 procedure TRigControl.PttOff;
 begin
   RigCommand.Add('+\set_ptt'+VfoStr+' 0');
+  AllowCommand:=1; //call queue
+end;
+procedure TRigControl.SendVoice(Vmem:String);
+begin
+  RigCommand.Add('+\send_voice_mem'+VfoStr+' '+Vmem);
   AllowCommand:=1; //call queue
 end;
 procedure TRigControl.PwrOn;

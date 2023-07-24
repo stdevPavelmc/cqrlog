@@ -7358,6 +7358,12 @@ const
 var
    AProcess: TProcess;
 begin
+  if cqrini.ReadBool('TRX' + frmTRXControl.RigInUse, 'RigVoice', False) then ///use Hamlib's \send_voice command instead.
+  Begin
+    frmTRXControl.SendVoice(Copy(key_pressed,2,length(key_pressed)-1));
+    exit;
+  end;
+
   if not FileExists(dmData.HomeDir + cVoiceKeyer) then 
   exit;
   
