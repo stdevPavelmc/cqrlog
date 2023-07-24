@@ -110,7 +110,7 @@ begin
            cmbValue.Style:=csDropDown;
          end;
    end;
-   pnlGrpEdt.Color:=clRed;
+   pnlGrpEdt.Color:=$005C5CFF;
    lblInfo.Caption := 'Backup your log! Operations can not be undone!';
    btnCancel.Caption:='Cancel';
    pnlGrpEdt.Repaint;
@@ -119,7 +119,7 @@ end;
 
 procedure TfrmGroupEdit.cmbValueChange(Sender: TObject);
 begin
-  pnlGrpEdt.Color:=clRed;
+  pnlGrpEdt.Color:=$005C5CFF;
   lblInfo.Caption := 'Backup your log! Operations can not be undone!';
   btnCancel.Caption:='Cancel';
   pnlGrpEdt.Repaint;
