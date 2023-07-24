@@ -5,6 +5,9 @@ From folder "compiled" you find ready compiled binary files against official Cqr
 There is also "newupdate.zip" that includes "newupdate.sh", a script that does Cqrlog backup and update for you with selected binary file.
 Same folder has also README.md that holds further informations.
 
+Be aware that this source is "daily snapshot" and can be ahead and have errors compared to folder "compiled" binaries
+---------------
+To get source that is same than ready compiled binaries find and use tag that has same build number than ready compiled binary files have
 
 
 
