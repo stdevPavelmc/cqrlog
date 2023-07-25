@@ -678,7 +678,7 @@ begin
                   case ParseHrdLogOutput(Response,Result) of
                     200 : Result := 'OK';
                     400 : ErrorCode := 2;
-                    403 : ErrorCode := 1;
+                    403 : ErrorCode := 2;
                     500 : ErrorCode := 1;
                     404 : ErrorCode := 2
                   end //case
