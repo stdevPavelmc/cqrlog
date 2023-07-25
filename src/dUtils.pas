@@ -1259,6 +1259,9 @@ end;
 function TdmUtils.IsDateOK(date: string): boolean;
 var
   tmp: string;
+
+//OH1KH:  this 230-0010-20 passes as 2023-01-20 !!!   We have to do something for this !!
+
 begin
   if date = '' then
   begin
@@ -1266,6 +1269,10 @@ begin
     exit;
   end;
   Result := True;
+
+//check separator places first
+  if (date[5]<>'-') or (date[8]<>'-') then
+                                         Result:=false;
 
   tmp := FormatSettings.ShortDateFormat;
   try
