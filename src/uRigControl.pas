@@ -648,8 +648,9 @@ begin
          fVoice:= b[3]='Y';
          RigCommand.Clear;
          Hit:=true;
-         if ((fRigId<10) and fPowerON) then
-               AllowCommand:=8 // if rigctld is remote it can not make auto_power_on
+         if ((fRigId<10) and fPowerON and fPower) then
+               AllowCommand:=8 // if rigctld is remote it can not make auto_power_on as startup paramater
+                               // then we should send set_powerstat 1 if power up is asked and rig can do it
            else
                AllowCommand:=1; //check pending commands (should not be any)
          if DebugMode then
