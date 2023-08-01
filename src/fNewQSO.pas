@@ -1598,8 +1598,7 @@ begin
 
   pgDetails.Pages[1].TabVisible := cqrini.ReadBool('NewQSO','SatelliteMode', False);
   pgDetails.Pages[2].TabVisible := cqrini.ReadBool('NewQSO','SatelliteMode', False);
-  if cqrini.ReadBool('NewQSO','SatelliteMode',False) then
-    frmNewQSO.pgDetails.TabIndex := 1;
+  pgDetails.TabIndex:=  cqrini.ReadInteger('NewQSO','DetailsTabIndex', 0);
 
   //this have to be done here when log is selected (settings at database)
   frmReminder.chRemi.Checked := cqrini.ReadBool('Reminder','chRemi',False);
@@ -1792,6 +1791,7 @@ begin
   cqrini.DeleteKey('TMPQSO','PWR');
   cqrini.DeleteKey('TMPQSO','OP');
   cqrini.WriteBool('NewQSO','AutoMode',chkAutoMode.Checked);
+  cqrini.WriteInteger('NewQSO','DetailsTabIndex', pgDetails.TabIndex);
   SavePosition;
   cqrini.WriteBool('NewQSO','ShowGrd',dbgrdQSOBefore.Visible);
   if cqrini.ReadBool('xplanet','close',False) then
