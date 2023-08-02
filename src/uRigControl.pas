@@ -200,8 +200,13 @@ begin
   if pos('AUTO_POWER',UpperCase(RigCtldArgs))=0 then
    if (RigId>10) then  //only true rigs can do auto_power_on
     begin
-    if fPowerON then RigCtldArgs:= RigCtldArgs+' -C auto_power_on=1'
-     else RigCtldArgs:= RigCtldArgs+' -C auto_power_on=0';
+    if fPowerON then RigCtldArgs:= RigCtldArgs+' -C auto_power_on=1';
+          //2023-08-02 auto_power on is not any more default "1" and it should stay so (by W9MDB)
+          //so we need just set it "1" if user wants, otherwise no parameter added. This should help old Hamlibs
+          //that claim auto_power is wrong parameter and refuse to start.
+          //If there are Hamlibs that defaut to "1" user must set "Extra command line parameters" as
+          //-C auto_power_on=0
+      //else RigCtldArgs:= RigCtldArgs+' -C auto_power_on=0';
     end;
   paramList.DelimitedText := RigCtldArgs;
   rigProcess.Parameters.Clear;
