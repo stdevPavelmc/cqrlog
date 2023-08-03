@@ -1620,18 +1620,17 @@ begin
   frmNewQSO.ClearAfterFreqChange := False;//cqrini.ReadBool('NewQSO','ClearAfterFreqChange',False);
   frmNewQSO.ChangeFreqLimit      := cqrini.ReadFloat('NewQSO','FreqChange',0.010);
 
-
   if not chkSatelliteMode.Checked then
-  begin
-     frmNewQSO.btnClearSatelliteClick(nil);
-     frmNewQSO.pgDetails.TabIndex := 0
-  end
-  else
-  begin
-     frmNewQSO.pgDetails.TabIndex := 1
-  end;
-  frmNewQSO.pgDetails.Pages[1].TabVisible  := chkSatelliteMode.Checked;
-  frmNewQSO.pgDetails.Pages[2].TabVisible  := chkSatelliteMode.Checked;
+     Begin
+      if  (cqrini.ReadInteger('NewQSO','DetailsTabIndex', 0) > 1 ) then
+          cqrini.WriteInteger('NewQSO','DetailsTabIndex',1);
+      frmNewQSO.btnClearSatelliteClick(nil);
+     end;
+
+  frmNewQSO.pgDetails.TabIndex:=  cqrini.ReadInteger('NewQSO','DetailsTabIndex', 0);
+  frmNewQSO.pgDetails.Pages[2].TabVisible := chkSatelliteMode.Checked;
+  frmNewQSO.pgDetails.Pages[3].TabVisible := chkSatelliteMode.Checked;
+
 
   if ReloadFreq then
     dmUtils.InsertFreq(frmNewQSO.cmbFreq);

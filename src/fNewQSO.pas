@@ -361,6 +361,7 @@ type
     sbtnQSL: TSpeedButton;
     sgrdStatistic : TStringGrid;
     btnSunRise: TSpeedButton;
+    sgrdCallStatistic: TStringGrid;
     SpeedButton2: TSpeedButton;
     SpeedButton3: TSpeedButton;
     btnSunSet: TSpeedButton;
@@ -368,6 +369,7 @@ type
     tabDXCCStat : TTabSheet;
     tabSatellite : TTabSheet;
     tabLOConfig: TTabSheet;
+    tabCallStat: TTabSheet;
     tmrADIF: TTimer;
     tmrWsjtSpd: TTimer;
     tmrWsjtx: TTimer;
@@ -577,6 +579,7 @@ type
     procedure mnuIOTAClick(Sender: TObject);
     procedure mnuQSOBeforeClick(Sender: TObject);
     procedure mnuQSOListClick(Sender: TObject);
+    procedure pgDetailsChange(Sender: TObject);
     procedure popEditQSOPopup(Sender: TObject);
     procedure sbtnAttachClick(Sender: TObject);
     procedure sbtnLocatorMapClick(Sender: TObject);
@@ -642,7 +645,6 @@ type
     procedure ShowDXCCInfo(ref_adif : Word = 0);
     procedure ShowFields;
     procedure ChangeReports;
-    procedure ShowStatistic(ref_adif : Word);
     procedure CalculateDistanceEtc;
     procedure SetDateTime(EndTime : Boolean = True);
     procedure CheckCallsignClub;
@@ -658,8 +660,6 @@ type
     procedure ShowCountryInfo;
     procedure InsertNameQTH;
     procedure UpdateFKeyLabels;
-    procedure ClearStatGrid;
-    procedure AddBandsToStatGrid;
     procedure LoadSettings;
     procedure SaveSettings;
     procedure ChangeCallBookCaption;
@@ -1022,38 +1022,6 @@ begin
   finally
     c_running := False
   end
-end;
-
-procedure TfrmNewQSO.ClearStatGrid;
-var
-  i,y : Integer;
-begin
-  for i:= 0 to sgrdStatistic.ColCount-1 do
-    for y := 0 to sgrdStatistic.RowCount-1 do
-      sgrdStatistic.Cells[i,y] := '   ';
-  with sgrdStatistic do
-  begin
-    Cells[0, 1] := 'SSB';
-    Cells[0, 2] := 'CW';
-    Cells[0, 3] := 'DIGI'
-  end
-end;
-
-procedure TfrmNewQSO.AddBandsToStatGrid;
-var
-  i : Integer;
-begin
-  sgrdStatistic.ColCount  := cMaxBandsCount;
-
-  for i:=0 to cMaxBandsCount-1 do
-  begin
-    if dmUtils.MyBands[i][0]='' then
-    begin
-      sgrdStatistic.ColCount  := i+1;
-      break
-    end;
-    sgrdStatistic.Cells[i+1,0] := dmUtils.MyBands[i][1];
-  end;
 end;
 
 procedure TfrmNewQSO.SetDateTime(EndTime : Boolean =  True);
@@ -1450,8 +1418,12 @@ begin
     dmData.qQSOBefore.EnableControls;
   end;
   ChangeCallBookCaption;
-  ClearStatGrid;
-  AddBandsToStatGrid;
+  dmUtils.ClearStatGrid(sgrdStatistic);
+  dmUtils.AddBandsToStatGrid(sgrdStatistic);
+  dmUtils.ClearStatGrid(sgrdCallStatistic);
+  dmUtils.AddBandsToStatGrid(sgrdCallStatistic);
+  tabDXCCStat.Caption:='DXCC statistic';
+  tabCallStat.Caption:='Call statistic';
   ClearGrayLineMapLine;
 
   if not AnyRemoteOn then
@@ -1596,9 +1568,13 @@ begin
     frmDXCluster.BringToFront
   end;
 
-  pgDetails.Pages[1].TabVisible := cqrini.ReadBool('NewQSO','SatelliteMode', False);
-  pgDetails.Pages[2].TabVisible := cqrini.ReadBool('NewQSO','SatelliteMode', False);
-  pgDetails.TabIndex:=  cqrini.ReadInteger('NewQSO','DetailsTabIndex', 0);
+  if not cqrini.ReadBool('NewQSO','SatelliteMode', False) then
+      if  (cqrini.ReadInteger('NewQSO','DetailsTabIndex', 0)>1 ) then
+          cqrini.WriteInteger('NewQSO','DetailsTabIndex',1);
+
+  frmNewQSO.pgDetails.TabIndex:=  cqrini.ReadInteger('NewQSO','DetailsTabIndex', 0);
+  frmNewQSO.pgDetails.Pages[2].TabVisible := cqrini.ReadBool('NewQSO','SatelliteMode', False);
+  frmNewQSO.pgDetails.Pages[3].TabVisible := cqrini.ReadBool('NewQSO','SatelliteMode', False);
 
   //this have to be done here when log is selected (settings at database)
   frmReminder.chRemi.Checked := cqrini.ReadBool('Reminder','chRemi',False);
@@ -1864,7 +1840,8 @@ begin
 
   CurrentMyLoc := cqrini.ReadString('Station','LOC','');
   ClearAll;
-  AddBandsToStatGrid;
+  dmUtils.AddBandsToStatGrid(sgrdStatistic);
+  dmUtils.AddBandsToStatGrid(sgrdCallStatistic);
   edtCall.SetFocus;
   tmrRadio.Enabled := True;
   tmrStart.Enabled := True;
@@ -3591,7 +3568,7 @@ begin
     old_adif := adif;
     ShowCountryInfo;
     ChangeReports;
-    ShowStatistic(adif)
+    dmUtils.ShowStatistic(adif,old_stat_adif,sgrdStatistic);
   end;
 
   CalculateDistanceEtc;
@@ -4244,7 +4221,7 @@ begin
 
       lblHisTime.Caption := dmUtils.HisDateTime(edtDXCCRef.Text);
       ShowCountryInfo;
-      ShowStatistic(q.FieldByName('ADIF').AsInteger);
+      dmUtils.ShowStatistic(q.FieldByName('ADIF').AsInteger,old_stat_adif,sgrdStatistic);
       if dmData.GetIOTAForDXCC(edtCall.Text, lblDXCC.Caption, cmbIOTA, dmUtils.MyStrToDate(edtDate.Text)) then
         lblIOTA.Font.Color := clRed
       else
@@ -5561,7 +5538,10 @@ begin
 
   ShowCountryInfo;
   ChangeReports;
-  ShowStatistic(adif);
+  dmUtils.ShowStatistic(adif,old_stat_adif,sgrdStatistic);
+  dmUtils.ShowStatistic(adif,old_stat_adif,sgrdCallStatistic,edtCall.Text);
+  tabDXCCStat.Caption:=edtDXCCRef.Text+' statistic';
+  tabCallStat.Caption:=edtCall.Text+' statistic';
   CalculateDistanceEtc;
   mComment.Text := dmData.GetComment(edtCall.Text);
   if (lblDXCC.Caption <> '!') and (lblDXCC.Caption <> '#') then
@@ -5978,7 +5958,7 @@ procedure TfrmNewQSO.edtStateExit(Sender: TObject);
 begin
   ShowDXCCInfo();
   ShowCountryInfo;
-  ShowStatistic(adif);
+  dmUtils.ShowStatistic(adif,old_stat_adif,sgrdStatistic);
   CalculateDistanceEtc;
   if (( frmGrayline.Showing ) and (edtCall.Text<>'')) then
     DrawGrayline;
@@ -6078,6 +6058,11 @@ begin
     frmMain.WindowState := wsNormal;
   frmMain.Show;
   frmMain.BringToFront;
+end;
+
+procedure TfrmNewQSO.pgDetailsChange(Sender: TObject);
+begin
+  cqrini.WriteInteger('NewQSO','DetailsTabIndex', pgDetails.TabIndex);
 end;
 
 procedure TfrmNewQSO.popEditQSOPopup(Sender: TObject);
@@ -6318,132 +6303,6 @@ begin
     if Length(edtMyRST.Text) = 2 then
       edtMyRST.Text := edtMyRST.Text + '9'
   end;
-end;
-
-procedure TfrmNewQSO.ShowStatistic(ref_adif : Word);
-var
-  i : Integer;
-  ShowLoTW : Boolean = False;
-  mode : String;
-  QSLR,LoTW,eQSL : String;
-  tmps : String;
-  space: String;
-begin
-  if old_stat_adif = ref_adif then
-    exit;
-  old_stat_adif := ref_adif;
-  sgrdStatistic.ColCount  := cMaxBandsCount;
-
-  ClearStatGrid;
-  AddBandsToStatGrid;
-
-  space := ' ';
-  if cqrini.ReadBool('Fonts','GridDotsInsteadSpaces',False) = True then
-  begin
-    space := '.';
-  end;
-
-  for i:=0 to cMaxBandsCount-1 do
-  begin
-    if dmUtils.MyBands[i][0]='' then
-    begin
-      sgrdStatistic.ColCount  := i+1;
-      break
-    end;
-
-    sgrdStatistic.Cells[i+1,1] := space+space+space;
-    sgrdStatistic.Cells[i+1,2] := space+space+space;
-    sgrdStatistic.Cells[i+1,3] := space+space+space;
-  end;
-
-  if dmData.trQ.Active then
-    dmData.trQ.RollBack;
-  dmData.Q.Close;
-
-  ShowLoTW := cqrini.ReadBool('LoTW','NewQSOLoTW',False);
-  if ShowLoTW then
-    dmData.Q.SQL.Text := 'select band,mode,qsl_r,lotw_qslr,eqsl_qsl_rcvd from cqrlog_main where adif='+
-                         IntToStr(ref_adif) + ' and ((qsl_r='+QuotedStr('Q')+') or '+
-                         '(lotw_qslr = '+QuotedStr('L')+') or (eqsl_qsl_rcvd='+QuotedStr('E')+
-                         ')) group by band,mode,qsl_r,lotw_qslr,eqsl_qsl_rcvd'
-  else
-    dmData.Q.SQL.Text := 'select band,mode,qsl_r,lotw_qslr,eqsl_qsl_rcvd from cqrlog_main where adif='+
-                         IntToStr(ref_adif) + ' and (qsl_r = '+QuotedStr('Q')+') '+
-                         'group by band,mode,qsl_r,lotw_qslr,eqsl_qsl_rcvd';
-  dmData.trQ.StartTransaction;
-  dmData.Q.Open;
-  while not dmData.Q.Eof do
-  begin
-    i    := dmUtils.GetBandPos(dmData.Q.Fields[0].AsString)+1;
-    mode := dmData.Q.Fields[1].AsString;
-    QSLR := dmData.Q.Fields[2].AsString;
-    LoTW := dmData.Q.Fields[3].AsString;
-    eQSL := dmData.Q.Fields[4].AsString;
-    if i > 0 then
-    begin
-      if (Mode = 'SSB') or (Mode='FM') or (Mode='AM') then
-      begin
-        tmps := sgrdStatistic.Cells[i,1] ;
-        if QSLR = 'Q' then
-          tmps[1] := 'Q';
-        if (LoTW = 'L') then
-          tmps[2] := 'L';
-        if (eQSL = 'E') then
-          tmps[3] := 'E';
-       sgrdStatistic.Cells[i,1] := tmps
-      end
-      else begin
-        if (Mode='CW') or (Mode='CWQ') then
-        begin
-          tmps := sgrdStatistic.Cells[i,2] ;
-          if QSLR = 'Q' then
-            tmps[1] := 'Q';
-          if (LoTW = 'L') then
-            tmps[2] := 'L';
-          if (eQSL = 'E') then
-            tmps[3] := 'E';
-          sgrdStatistic.Cells[i,2] := tmps
-        end
-        else begin
-          tmps := sgrdStatistic.Cells[i,3] ;
-          if QSLR = 'Q' then
-            tmps[1] := 'Q';
-          if (LoTW = 'L') then
-            tmps[2] := 'L';
-          if (eQSL = 'E') then
-            tmps[3] := 'E';
-          sgrdStatistic.Cells[i,3] := tmps
-        end
-      end;
-    end;
-    dmData.Q.Next
-  end;
-  dmData.trQ.Rollback;
-
-  dmData.Q.Close;
-  if dmData.trQ.Active then
-    dmData.trQ.Rollback;
-  dmData.Q.SQL.Text := 'select band,mode from cqrlog_main where adif='+
-                       IntToStr(ref_adif) + ' group by band,mode';
-  dmData.trQ.StartTransaction;
-  dmData.Q.Open;
-  while not dmData.Q.Eof do
-  begin
-    i    := dmUtils.GetBandPos(dmData.Q.Fields[0].AsString)+1;
-    mode := dmData.Q.Fields[1].AsString;
-    if i > 0 then
-      begin
-        if ((mode = 'SSB') or (mode = 'FM') or (mode = 'AM')) then
-          if(sgrdStatistic.Cells[i,1] = space+space+space) then sgrdStatistic.Cells[i,1] := ' X ';
-        if ((mode = 'CW') or (mode = 'CWR')) then
-          if (sgrdStatistic.Cells[i,2] = space+space+space) then sgrdStatistic.Cells[i,2] := ' X ';
-        if ((mode <> 'SSB') and (mode <>'FM') and (mode <> 'AM') and (mode <> 'CW') and (mode <> 'CWR')) then
-          if (sgrdStatistic.Cells[i,3] = space+space+space) then sgrdStatistic.Cells[i,3] := ' X '
-      end;
-      dmData.Q.Next;
-  end;
-  dmData.Q.Close;
-  dmData.trQ.Rollback
 end;
 
 procedure TfrmNewQSO.CalculateDistanceEtc;

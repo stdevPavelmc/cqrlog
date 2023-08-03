@@ -229,6 +229,9 @@ type
     procedure UpdateHelpBrowser;
     procedure ModeFromCqr(CqrMode:String;var OutMode,OutSubmode:String;dbg:Boolean);
     procedure UpdateCallBookcnf;
+    procedure ClearStatGrid(g:TStringGrid);
+    procedure AddBandsToStatGrid(g:TStringGrid);
+    procedure ShowStatistic(ref_adif,old_stat_adif:Word; g:TStringGrid; call:String='');
 
     function  BandFromArray(tmp:Currency):string;
     function  MyDefaultBrowser:String;
@@ -5212,5 +5215,175 @@ if c <> '' then
     cqrini.DeleteKey('CallBook', 'CBPass');
   end;
 end;
+
+procedure TdmUtils.ClearStatGrid(g:TStringGrid);
+var
+  i,y : Integer;
+begin
+  for i:= 0 to g.ColCount-1 do
+    for y := 0 to g.RowCount-1 do
+      g.Cells[i,y] := '   ';
+  with g do
+  begin
+    Cells[0, 1] := 'SSB';
+    Cells[0, 2] := 'CW';
+    Cells[0, 3] := 'DIGI'
+  end;
+end;
+
+procedure TdmUtils.AddBandsToStatGrid(g:TStringGrid);
+var
+  i : Integer;
+begin
+  g.ColCount  := cMaxBandsCount;
+
+  for i:=0 to cMaxBandsCount-1 do
+  begin
+    if dmUtils.MyBands[i][0]='' then
+    begin
+      g.ColCount  := i+1;
+      break
+    end;
+    g.Cells[i+1,0] := dmUtils.MyBands[i][1];
+  end;
+end;
+
+
+procedure TdmUtils.ShowStatistic(ref_adif,old_stat_adif:Word; g:TStringGrid; call:String='');
+var
+  i : Integer;
+  ShowLoTW : Boolean = False;
+  mode : String;
+  QSLR,LoTW,eQSL : String;
+  tmps,tmpq : String;
+  space: String;
+
+begin
+  tmpq:='';
+  if call='' then
+   Begin
+    if old_stat_adif = ref_adif then
+      exit;
+    old_stat_adif := ref_adif;
+   end
+  else
+   begin
+   tmpq:=' and callsign='+QuotedStr(call);
+   end;
+
+  g.ColCount  := cMaxBandsCount;
+
+  dmUtils.ClearStatGrid(g);
+  dmUtils.AddBandsToStatGrid(g);
+
+  space := ' ';
+  if cqrini.ReadBool('Fonts','GridDotsInsteadSpaces',False) = True then
+  begin
+    space := '.';
+  end;
+
+  for i:=0 to cMaxBandsCount-1 do
+  begin
+    if dmUtils.MyBands[i][0]='' then
+    begin
+      g.ColCount  := i+1;
+      break
+    end;
+
+    g.Cells[i+1,1] := space+space+space;
+    g.Cells[i+1,2] := space+space+space;
+    g.Cells[i+1,3] := space+space+space;
+  end;
+
+  if dmData.trQ.Active then
+    dmData.trQ.RollBack;
+  dmData.Q.Close;
+
+  ShowLoTW := cqrini.ReadBool('LoTW','NewQSOLoTW',False);
+  if ShowLoTW then
+    dmData.Q.SQL.Text := 'select band,mode,qsl_r,lotw_qslr,eqsl_qsl_rcvd from cqrlog_main where adif='+
+                         IntToStr(ref_adif) + tmpq + ' and ((qsl_r='+QuotedStr('Q')+') or '+
+                         '(lotw_qslr = '+QuotedStr('L')+') or (eqsl_qsl_rcvd='+QuotedStr('E')+
+                         ')) group by band,mode,qsl_r,lotw_qslr,eqsl_qsl_rcvd'
+  else
+    dmData.Q.SQL.Text := 'select band,mode,qsl_r,lotw_qslr,eqsl_qsl_rcvd from cqrlog_main where adif='+
+                         IntToStr(ref_adif) + tmpq + ' and (qsl_r = '+QuotedStr('Q')+') '+
+                         'group by band,mode,qsl_r,lotw_qslr,eqsl_qsl_rcvd';
+  dmData.trQ.StartTransaction;
+  dmData.Q.Open;
+  while not dmData.Q.Eof do
+  begin
+    i    := dmUtils.GetBandPos(dmData.Q.Fields[0].AsString)+1;
+    mode := dmData.Q.Fields[1].AsString;
+    QSLR := dmData.Q.Fields[2].AsString;
+    LoTW := dmData.Q.Fields[3].AsString;
+    eQSL := dmData.Q.Fields[4].AsString;
+    if i > 0 then
+    begin
+      if (Mode = 'SSB') or (Mode='FM') or (Mode='AM') then
+      begin
+        tmps := g.Cells[i,1] ;
+        if QSLR = 'Q' then
+          tmps[1] := 'Q';
+        if (LoTW = 'L') then
+          tmps[2] := 'L';
+        if (eQSL = 'E') then
+          tmps[3] := 'E';
+       g.Cells[i,1] := tmps
+      end
+      else begin
+        if (Mode='CW') or (Mode='CWQ') then
+        begin
+          tmps := g.Cells[i,2] ;
+          if QSLR = 'Q' then
+            tmps[1] := 'Q';
+          if (LoTW = 'L') then
+            tmps[2] := 'L';
+          if (eQSL = 'E') then
+            tmps[3] := 'E';
+          g.Cells[i,2] := tmps
+        end
+        else begin
+          tmps := g.Cells[i,3] ;
+          if QSLR = 'Q' then
+            tmps[1] := 'Q';
+          if (LoTW = 'L') then
+            tmps[2] := 'L';
+          if (eQSL = 'E') then
+            tmps[3] := 'E';
+          g.Cells[i,3] := tmps
+        end
+      end;
+    end;
+    dmData.Q.Next
+  end;
+  dmData.trQ.Rollback;
+
+  dmData.Q.Close;
+  if dmData.trQ.Active then
+    dmData.trQ.Rollback;
+  dmData.Q.SQL.Text := 'select band,mode from cqrlog_main where adif='+
+                       IntToStr(ref_adif) + tmpq +' group by band,mode';
+  dmData.trQ.StartTransaction;
+  dmData.Q.Open;
+  while not dmData.Q.Eof do
+  begin
+    i    := dmUtils.GetBandPos(dmData.Q.Fields[0].AsString)+1;
+    mode := dmData.Q.Fields[1].AsString;
+    if i > 0 then
+      begin
+        if ((mode = 'SSB') or (mode = 'FM') or (mode = 'AM')) then
+          if(g.Cells[i,1] = space+space+space) then g.Cells[i,1] := ' X ';
+        if ((mode = 'CW') or (mode = 'CWR')) then
+          if (g.Cells[i,2] = space+space+space) then g.Cells[i,2] := ' X ';
+        if ((mode <> 'SSB') and (mode <>'FM') and (mode <> 'AM') and (mode <> 'CW') and (mode <> 'CWR')) then
+          if (g.Cells[i,3] = space+space+space) then g.Cells[i,3] := ' X '
+      end;
+      dmData.Q.Next;
+  end;
+  dmData.Q.Close;
+  dmData.trQ.Rollback
+end;
+
 end.
 
