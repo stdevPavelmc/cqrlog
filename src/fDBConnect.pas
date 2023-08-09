@@ -490,6 +490,7 @@ procedure TfrmDBConnect.mnuExportClick(Sender: TObject);
 var
   db : String;
   l  : TStringList;
+  n  : String;
 begin
   if dlgSave.Execute then
   begin
@@ -504,8 +505,11 @@ begin
     try
       dmData.Q.Open;
       l.Text := dmData.Q.Fields[0].AsString;
-      l.SaveToFile(dlgSave.FileName);
-      ShowMessage('Config file saved to '+dlgSave.FileName
+      n:= dlgSave.FileName;
+      if pos('.INI',UpperCase(n))=0 then
+          n:=n+'.ini';
+      l.SaveToFile(n);
+      ShowMessage('Config file saved to '+n
       +#10+#13+#10+#13+'Warning !'+#10+#13+'File may contain passwords'+#10+#13+'in plain text format')
     finally
       dmData.Q.Close;
