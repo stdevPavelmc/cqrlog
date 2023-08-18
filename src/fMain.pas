@@ -81,6 +81,7 @@ type
     acRemoveDupes: TAction;
     acMarkAllClubLog: TAction;
     acMarkAllHrdLog: TAction;
+    acMarkAllUDPLog: TAction;
     acMarkAll: TAction;
     acMarkAlleQSL: TAction;
     acAutoSizeColumns: TAction;
@@ -89,6 +90,7 @@ type
     acUploadAllToLoTW: TAction;
     acUploadToAll: TAction;
     acUploadToHrdLog: TAction;
+    acUploadToUDPLog: TAction;
     acUploadToClubLog: TAction;
     acUploadToHamQTH: TAction;
     acMarkAllHamQTH: TAction;
@@ -346,6 +348,7 @@ type
     procedure acMarkAllExecute(Sender: TObject);
     procedure acMarkAllHamQTHExecute(Sender: TObject);
     procedure acMarkAllHrdLogExecute(Sender: TObject);
+    procedure acMarkAllUDPLogExecute(Sender: TObject);
     procedure acPnlDetailsExecute(Sender: TObject);
     procedure acQRZExecute(Sender: TObject);
     procedure acQSLImageExecute(Sender: TObject);
@@ -362,6 +365,7 @@ type
     procedure acUploadToClubLogExecute(Sender: TObject);
     procedure acUploadToHamQTHExecute(Sender: TObject);
     procedure acUploadToHrdLogExecute(Sender: TObject);
+    procedure acUploadToUDPLogExecute(Sender: TObject);
     procedure dbgrdMainColumnMoved(Sender: TObject; FromIndex, ToIndex: Integer
       );
     procedure dbgrdMainColumnSized(Sender: TObject);
@@ -690,6 +694,10 @@ begin
                   end;
       upHrdLog  : begin
                     frmLogUploadStatus.UploadDataToHrdLog;
+                    WhatUpNext := upUDPLog
+                  end;
+      upUDPLog  : begin
+                    frmLogUploadStatus.UploadDataToUDPLog;
                     tmrUploadAll.Enabled := False
                   end;
     end //case
@@ -1653,6 +1661,11 @@ begin
   dmLogUpload.MarkAsUploaded(C_HRDLOG)
 end;
 
+procedure TfrmMain.acMarkAllUDPLogExecute(Sender: TObject);
+begin
+  dmLogUpload.MarkAsUploaded(C_UDPLOG)
+end;
+
 procedure TfrmMain.acSQLExecute(Sender: TObject);
 begin
   frmSQLConsole := TfrmSQLConsole.Create(self);
@@ -1720,6 +1733,11 @@ end;
 procedure TfrmMain.acUploadToHrdLogExecute(Sender: TObject);
 begin
   frmLogUploadStatus.UploadDataToHrdLog
+end;
+
+procedure TfrmMain.acUploadToUDPLogExecute(Sender: TObject);
+begin
+  frmLogUploadStatus.UploadDataToUDPLog
 end;
 
 procedure TfrmMain.dbgrdMainColumnMoved(Sender: TObject; FromIndex,

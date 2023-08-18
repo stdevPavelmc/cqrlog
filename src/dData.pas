@@ -24,7 +24,7 @@ uses
 
 const
   cDB_LIMIT = 500;
-  cDB_MAIN_VER = 18;
+  cDB_MAIN_VER = 19;
   cDB_COMN_VER = 6;
   cDB_PING_INT = 300;  //ping interval for database connection in seconds
                        //program crashed after long time of inactivity
@@ -175,6 +175,7 @@ type
     function  TableExists(TableName : String) : Boolean;
     function  GetDebugLevel : Integer;
     function  FieldExists(TableName, FieldName : String) : Boolean;
+    function ConstraintExists(TableName, ConstraintName : String) : Boolean;
 
     procedure CreateDBConnections;
     procedure CreateViews;
@@ -2808,6 +2809,7 @@ end;
 procedure TdmData.UpgradeMainDatabase(old_version : Integer);
 var
   err : Boolean = False;
+  max : Integer;
 begin
   if fDebugLevel>=1 then Writeln('[UpgradeMainDatabase] Old version: ', old_version,  '  cDB_MAIN_VER: ', cDB_MAIN_VER);
 
@@ -3188,6 +3190,33 @@ begin
               begin
                 trQ1.StartTransaction;
                 Q1.SQL.Text := 'alter table cqrlog_main add operator varchar(20) null';
+                if fDebugLevel>=1 then Writeln(Q1.SQL.Text);
+                Q1.ExecSQL;
+                trQ1.Commit;
+              end;
+      end;
+
+      if (old_version < 19) then
+            begin
+              if (ConstraintExists('log_changes', 'log_changes_ibfk_1')) then
+              begin
+                trQ1.StartTransaction;
+                Q1.SQL.Text := 'ALTER TABLE log_changes DROP FOREIGN KEY log_changes_ibfk_1';
+                if fDebugLevel>=1 then Writeln(Q1.SQL.Text);
+                Q1.ExecSQL;
+                trQ1.Commit;
+              end;
+
+              // PrepareEmptyLogUploadStatusTables() would have been called
+              // for older versions
+              if (old_version >= 8) then
+              begin
+                trQ1.StartTransaction;
+                Q1.SQL.Text := 'select max(id) from log_changes';
+                Q1.Open;
+                max := Q1.Fields[0].AsInteger;
+                Q1.Close;
+                Q1.SQL.Text := 'insert into upload_status (logname, id_log_changes) values ('+QuotedStr(C_UDPLOG)+','+IntToStr(max)+')';
                 if fDebugLevel>=1 then Writeln(Q1.SQL.Text);
                 Q1.ExecSQL;
                 trQ1.Commit;
@@ -3701,6 +3730,33 @@ begin
   end
 end;
 
+function TdmData.ConstraintExists(TableName, ConstraintName : String) : Boolean;
+const
+  C_SEL = 'select constraint_name from information_schema.table_constraints where table_schema=%s and table_name=%s and constraint_name=%s';
+var
+  t  : TSQLQuery;
+  tr : TSQLTransaction;
+begin
+  Result := True;
+  t := TSQLQuery.Create(nil);
+  tr := TSQLTransaction.Create(nil);
+  try
+    t.Transaction := tr;
+    tr.DataBase   := MainCon;
+    t.DataBase    := MainCon;
+
+    t.SQL.Text := Format(C_SEL,[QuotedStr(fDBName),QuotedStr(TableName), QuotedStr(ConstraintName)]);
+    if fDebugLevel>=1 then Writeln(t.SQL.Text);
+    t.Open;
+    Result := t.RecordCount>0
+  finally
+    t.Close;
+    tr.Rollback;
+    FreeAndNil(t);
+    FreeAndNil(tr)
+  end
+end;
+
 
 procedure TdmData.PrepareEmptyLogUploadStatusTables(lQ : TSQLQuery;lTr : TSQLTransaction);
 var
@@ -3724,6 +3780,10 @@ begin
   lQ.ExecSQL;
 
   lQ.SQL.Text := 'insert into upload_status (logname, id_log_changes) values ('+QuotedStr(C_HRDLOG)+',1)';
+  if fDebugLevel>=1 then Writeln(lQ.SQL.Text);
+  lQ.ExecSQL;
+
+  lQ.SQL.Text := 'insert into upload_status (logname, id_log_changes) values ('+QuotedStr(C_UDPLOG)+',1)';
   if fDebugLevel>=1 then Writeln(lQ.SQL.Text);
   lQ.ExecSQL;
 

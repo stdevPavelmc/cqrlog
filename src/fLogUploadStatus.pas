@@ -44,6 +44,7 @@ type
     procedure UploadDataToHamQTH(ToAll : Boolean = False);
     procedure UploadDataToClubLog(ToAll : Boolean = False);
     procedure UploadDataToHrdLog(ToAll : Boolean = False);
+    procedure UploadDataToUDPLog(ToAll : Boolean = False);
     procedure UploadDataToAll;
     procedure SyncUploadInformation;
   end; 
@@ -106,6 +107,17 @@ begin
                     if (not ToAll) then
                     begin
                       frmLogUploadStatus.SyncMsg := Format(C_IS_NOT_ENABLED,['HRDLog']);
+                      Synchronize(@frmLogUploadStatus.SyncUploadInformation)
+                    end;
+                    Result := False
+                  end
+                end;
+    upUDPLog : begin
+                  if not cqrini.ReadBool('OnlineLog','UdUP',False) then
+                  begin
+                    if (not ToAll) then
+                    begin
+                      frmLogUploadStatus.SyncMsg := Format(C_IS_NOT_ENABLED,['UDPLog']);
                       Synchronize(@frmLogUploadStatus.SyncUploadInformation)
                     end;
                     Result := False
@@ -181,17 +193,22 @@ begin
         begin
           ToMainThread('Uploading '+dmLogUpload.Q.FieldByName('callsign').AsString,'');
           dmLogUpload.PrepareInsertHeader(WhereToUpload,dmLogUpload.Q.Fields[0].AsInteger,dmLogUpload.Q.FieldByName('id_cqrlog_main').AsInteger,data);
-          UpSuccess := dmLogUpload.UploadLogData(dmLogUpload.GetUploadUrl(WhereToUpload,Command),data,Response,ResultCode)
+          UpSuccess := dmLogUpload.UploadLogData(WhereToUpload,Command,data,Response,ResultCode)
         end
 
 
         else if (Command = 'UPDATE') then
         begin
-          ToMainThread('Deleting original '+dmLogUpload.Q.FieldByName('old_callsign').AsString,'');
-
-          if dmLogUpload.Q.FieldByName('upddeleted').asInteger = 1 then
+          if (WhereToUpload=upUDPLog) then
           begin
-            dmLogUpload.PrepareDeleteHeader(WhereToUpload,dmLogUpload.Q.Fields[0].AsInteger,data);
+            UpSuccess  := True;
+            Response   := '';
+            ResultCode := 200
+          end
+          else if dmLogUpload.Q.FieldByName('upddeleted').asInteger = 1 then
+          begin
+            ToMainThread('Deleting original '+dmLogUpload.Q.FieldByName('old_callsign').AsString,'');
+            dmLogUpload.PrepareDeleteHeader(WhereToUpload,dmLogUpload.Q.Fields[0].AsInteger,dmLogUpload.Q.FieldByName('id_cqrlog_main').AsInteger,data);
 
             if dmData.DebugLevel >= 1 then
             begin
@@ -199,7 +216,7 @@ begin
               Writeln(data.Text)
             end;
 
-            UpSuccess := dmLogUpload.UploadLogData(dmLogUpload.GetUploadUrl(WhereToUpload,'DELETE'),data,Response,ResultCode);
+            UpSuccess := dmLogUpload.UploadLogData(WhereToUpload,'DELETE',data,Response,ResultCode);
 
             if dmData.DebugLevel >= 1 then
             begin
@@ -226,14 +243,14 @@ begin
             begin
               ToMainThread('Could not delete original QSO data. Reason: ' + Response,'');
             end
-            else
+            else if (WhereToUpload<>upUDPLog) then
               ToMainThread('','OK');
             AlreadyDel := True;
             data.Clear;
             dmLogUpload.PrepareUserInfoHeader(WhereToUpload,data);
             ToMainThread('Uploading updated '+dmLogUpload.Q.FieldByName('callsign').AsString,'');
             dmLogUpload.PrepareInsertHeader(WhereToUpload,dmLogUpload.Q.Fields[0].AsInteger,dmLogUpload.Q.FieldByName('id_cqrlog_main').AsInteger,data);
-            UpSuccess := dmLogUpload.UploadLogData(dmLogUpload.GetUploadUrl(WhereToUpload,Command),data,Response,ResultCode)
+            UpSuccess := dmLogUpload.UploadLogData(WhereToUpload,Command,data,Response,ResultCode)
           end
           else
             ToMainThread('Update failed! Check Internet connection','')
@@ -241,8 +258,8 @@ begin
         else if (Command = 'DELETE') then
         begin
           ToMainThread('Deleting '+dmLogUpload.Q.FieldByName('old_callsign').AsString,'');
-          dmLogUpload.PrepareDeleteHeader(WhereToUpload,dmLogUpload.Q.Fields[0].AsInteger,data);
-          UpSuccess := dmLogUpload.UploadLogData(dmLogUpload.GetUploadUrl(WhereToUpload,Command),data,Response,ResultCode)
+          dmLogUpload.PrepareDeleteHeader(WhereToUpload,dmLogUpload.Q.Fields[0].AsInteger,dmLogUpload.Q.FieldByName('id_cqrlog_main').AsInteger,data);
+          UpSuccess := dmLogUpload.UploadLogData(WhereToUpload,Command,data,Response,ResultCode)
         end;
 
         if dmData.DebugLevel >= 1 then
@@ -310,7 +327,8 @@ begin
   case WhereToUpload of
     upHamQTH  : Result := C_HAMQTH;
     upClubLog : Result := C_CLUBLOG;
-    upHrdlog  : Result := C_HRDLOG
+    upHrdlog  : Result := C_HRDLOG;
+    upUDPLog  : Result := C_UDPLOG
   end //case
 end;
 
@@ -447,11 +465,17 @@ begin
   UploadDataToOnlineLogs(upHrdLog, ToAll)
 end;
 
+procedure TfrmLogUploadStatus.UploadDataToUDPLog(ToAll : Boolean = False);
+begin
+  UploadDataToOnlineLogs(upUDPLog, ToAll)
+end;
+
 procedure TfrmLogUploadStatus.UploadDataToAll;
 begin
   UploadDataToOnlineLogs(upHamQTH, True);
   UploadDataToOnlineLogs(upClubLog, True);
-  UploadDataToOnlineLogs(upHrdLog, True)
+  UploadDataToOnlineLogs(upHrdLog, True);
+  UploadDataToOnlineLogs(upUDPLog, True)
 end;
 
 end.

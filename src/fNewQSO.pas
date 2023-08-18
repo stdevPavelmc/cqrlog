@@ -87,6 +87,7 @@ type
     acUploadToHrdLog: TAction;
     acUploadToClubLog: TAction;
     acUploadToHamQTH: TAction;
+    acUploadToUDPLog: TAction;
     acTune : TAction;
     btnClearSatellite : TButton;
     cbOffline: TCheckBox;
@@ -408,6 +409,7 @@ type
     procedure acUploadToClubLogExecute(Sender: TObject);
     procedure acUploadToHamQTHExecute(Sender: TObject);
     procedure acUploadToHrdLogExecute(Sender: TObject);
+    procedure acUploadToUDPLogExecute(Sender: TObject);
     procedure acPropExecute(Sender: TObject);
     procedure btnClearSatelliteClick(Sender : TObject);
     procedure cbRxLoChange(Sender: TObject);
@@ -2328,6 +2330,15 @@ begin
                     else begin
                       if cqrini.ReadBool('OnlineLog','HrUpOnline',False) then
                         frmLogUploadStatus.UploadDataToHrdLog
+                    end;
+                    WhatUpNext           := upUDPLog
+                  end;
+      upUDPLog  : begin
+                    if UploadAll then
+                      frmLogUploadStatus.UploadDataToUDPLog(UploadAll)
+                    else begin
+                      if cqrini.ReadBool('OnlineLog','UdUpOnline',False) then
+                        frmLogUploadStatus.UploadDataToUDPLog
                     end;
                     tmrUploadAll.Enabled := False;
                     UploadAll            := False;
@@ -4705,6 +4716,11 @@ end;
 procedure TfrmNewQSO.acUploadToHrdLogExecute(Sender: TObject);
 begin
   frmLogUploadStatus.UploadDataToHrdLog
+end;
+
+procedure TfrmNewQSO.acUploadToUDPLogExecute(Sender: TObject);
+begin
+  frmLogUploadStatus.UploadDataToUDPLog
 end;
 
 procedure TfrmNewQSO.acPropExecute(Sender: TObject);

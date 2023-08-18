@@ -1639,6 +1639,15 @@ object frmMain: TfrmMain
           Action = acMarkAllHrdLog
         end
       end
+      object MenuItem108: TMenuItem
+        Caption = 'UDP Log'
+        object MenuItem109: TMenuItem
+          Action = acUploadToUDPLog
+        end
+        object MenuItem110: TMenuItem
+          Action = acMarkAllUDPLog
+        end
+      end
       object MenuItem94: TMenuItem
         Caption = '-'
       end
@@ -2017,6 +2026,16 @@ object frmMain: TfrmMain
       Category = 'OnlineLog'
       Caption = 'Mark all QSO as uploaded'
       OnExecute = acMarkAllHrdLogExecute
+    end
+    object acUploadToUDPLog: TAction
+      Category = 'OnlineLog'
+      Caption = 'Upload all changes'
+      OnExecute = acUploadToUDPLogExecute
+    end
+    object acMarkAllUDPLog: TAction
+      Category = 'OnlineLog'
+      Caption = 'Mark all QSO as uploaded'
+      OnExecute = acMarkAllUDPLogExecute
     end
     object acUploadToAll: TAction
       Category = 'OnlineLog'
