@@ -615,12 +615,14 @@ begin
     if cqrini.ReadBool('OnlineLog','UdIncExch',True) then
     begin
       data.Add('sntnr='+Q1.FieldByName('stx').AsString);
-      data.Add('rcvnr='+Q1.FieldByName('srx').AsString)
+      data.Add('rcvnr='+Q1.FieldByName('srx').AsString);
+      data.Add('exchange1='+Q1.FieldByName('stx_string').AsString+' '+Q1.FieldByName('srx_string').AsString)
     end
     else
     begin
       data.Add('sntnr=');
       data.Add('rcvnr=');
+      data.Add('exchange1=');
     end;
 
   finally
