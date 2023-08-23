@@ -198,6 +198,7 @@ type
     function ListModeClose : Boolean;
     procedure HLTune(start : Boolean);
     procedure SendVoice(mem : String);
+    procedure StopVoice;
   end;
 
 var
@@ -1635,6 +1636,13 @@ begin
   if Assigned(radio) then
    if radio.Voice then
     radio.SendVoice(mem);
+end;
+procedure TfrmTRXControl.StopVoice;
+
+begin
+  if Assigned(radio) then
+   if radio.Voice then
+    radio.StopVoice;
 end;
 
 end.
