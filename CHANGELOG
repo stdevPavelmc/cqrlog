@@ -15,7 +15,6 @@ Legend:
   + CQRLOG can start directly to Remote mode (Saku, OH1KH)
   + DOK editing in Edit group (Florian, DF2ET)
   + Bandmap improvements (Saku, OH1KH)
-  + Add log upload in N1MM+ UDP message format (Steven, M1SDH)
   - Grayline fixes (Saku, OH1KH)
   - DX cluster CW fixes (Saku, OH1KH)
   - Hamlib CW fixes (Saku, OH1KH)
