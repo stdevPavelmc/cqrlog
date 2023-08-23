@@ -9879,7 +9879,7 @@ object frmPreferences: TfrmPreferences
           Width = 252
           BorderSpacing.Left = 6
           Caption = 'Enable sending UDP Log Messages'
-          OnChange = chkHrUpEnabledChange
+          OnChange = chkUdUpEnabledChange
           TabOrder = 0
         end
         object chkUdUpOnline: TCheckBox
