@@ -5677,7 +5677,10 @@ begin
       end
       else
       begin
-        if Assigned(CWint) then CWint.StopSending;
+        if (cmbMode.Text='CW') and (Assigned(CWint)) then
+                                                             CWint.StopSending;
+        if ((cmbMode.Text='SSB') or (cmbMode.Text='FM') or (cmbMode.Text='AM')) then
+                                                             frmTRXControl.StopVoice;
         EscFirstPressDone   := True;
         tmrESC.Enabled := True
       end

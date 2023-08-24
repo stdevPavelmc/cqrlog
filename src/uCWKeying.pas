@@ -906,7 +906,7 @@ end;
 
 procedure TCWHamLib.WaitMorse;  //not used and not confirmed to exist via initialize rig/dump_caps
 begin
-  tcp.SendMessage('\wait_morse'+VfoStr+LineEnding);
+  tcp.SendMessage('\wait_morse'+LineEnding);
   if DebugMode then
          Writeln('CW: \wait_morse');
 end;
@@ -960,7 +960,7 @@ procedure TCWHamLib.StopSending;
 begin
   AllowCW := false;
   if fIsNewHamlib then
-   tcp.SendMessage('+\stop_morse'+VfoStr+LineEnding)
+   tcp.SendMessage('+\stop_morse'+LineEnding)
   //implemented in hamlib command set from 2023 (at least)
   else
    Begin
