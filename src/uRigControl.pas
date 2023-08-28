@@ -716,6 +716,10 @@ begin
                         '-15': Writeln('NULL RIG handle or any invalid pointer parameter in get arg');
                         '-16': Writeln('Invalid VFO');
                         '-17': Writeln('Argument out of domain of func');
+                        '-18':Writeln('Function deprecated');
+                        '-19':Writeln('Security error password not provided or crypto failure');
+                        '-20':Writeln('Rig is not powered on');
+
            end;
        end;
 
