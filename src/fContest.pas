@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
-  StdCtrls, ExtCtrls, LCLType, Buttons, ComCtrls, ExtDlgs, Menus, Spin, uMyIni;
+  StdCtrls, ExtCtrls, LCLType, Buttons, ComCtrls, ExtDlgs, Menus, Spin, strutils, fscp;
 
 type
 
@@ -206,7 +206,7 @@ implementation
 
 {$R *.lfm}
 
-uses dData, dUtils, dDXCC, fNewQSO, fMain, fWorkedGrids, strutils, fscp, fTRXControl;
+uses dData, dUtils, dDXCC, fNewQSO, fMain, fWorkedGrids, fTRXControl, fCWKeys, fCWType, uMyIni;
 
 procedure TfrmContest.FormKeyDown(Sender: TObject; var Key: word; Shift: TShiftState);
 var
@@ -621,6 +621,9 @@ begin
         lblNRs.Font.Color:=clGreen;
         lblMSGs.Font.Color:=clGreen;
      end;
+   cqrini.WriteBool('CW','S&P',chkSP.Checked);
+   frmCWKeys.fraCWKeys.UpdateFKeyLabels;
+   frmCWType.fraCWKeys1.UpdateFKeyLabels;
 end;
 
 procedure TfrmContest.chkTrueRSTChange(Sender: TObject);
@@ -819,6 +822,9 @@ end;
 procedure TfrmContest.FormClose(Sender: TObject; var CloseAction: TCloseAction);
 Begin
    SaveSettings;
+   cqrini.WriteBool('CW','S&P',True);  //set default CW memories
+   frmCWKeys.fraCWKeys.UpdateFKeyLabels;
+   frmCWType.fraCWKeys1.UpdateFKeyLabels;
 end;
 
 procedure TfrmContest.FormHide(Sender: TObject);
