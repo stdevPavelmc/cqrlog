@@ -112,12 +112,12 @@ Add date to contest name if you keep many contests in same log. That way <b>QSO 
 <li><b>Qsp</b> if checked makes TAB order stop at MSG s. Content of MSG s is taken from last logged MSG r. Cursor is placed at the end of message for possible edit.
   For contests where you have circulating message: At 1st qso you set your own word to send, after that you send previously received word as your next own message. </li>
 <li><b>S&P</b> When Search & Pounce is checked operator launces all CW/Voice messages manually.
-<br>When S&P is not checked program launches message F2 when cursor enters one of RSTr, NRr, or MSGr columns. This way also if true reports are selected F2 is sent after your message is ready.
+<br>When S&P is not checked (in RUN mode) program launches message F2 when cursor enters one of RSTr, NRr, or MSGr columns. This way also if true reports are selected F2 is sent after your message is ready.
 <br>In case duplicate checking is enabled and callsign is duplicate, message F3 is launched instead of F2 and it happens always when cursor leaves callsign column.
 <br>When <i>Enter</i> or <i>Save qso</i> button is pressed program will send message F4.
 <br>Message F1 can be used for CQ that is manually launched.
 <br>When phone modes are used messages are lauched same way but you need very special voice script if you want to include worked station's callsign into F2 and F3 messages, but launcing F4 at QSO save may be useful.
-<br><b>RECOMMENDATION:</b><br> Reserve memory macros F1-F5 for calling operation and F6-F9 for S&P operation.
+<br><b>NOTE:</b> When S&P checkbox changes state then also CW memory sets are switched between "S&P" and "Run".
 <br>See more about <a href="/h26.html">CW messages</a> how to define messages with macros and save/load different setups of CW messages.</li>
 <br>
 <li><b>RST r</b> RST received. Default to 599 (CW) 59 (phone). Can be changed.

@@ -335,7 +335,7 @@ implementation
   {$R *.lfm}
 
 { TdmUtils }
-uses dData, dDXCC, fEnterFreq, fTRXControl, uMyini, fNewQSO, uVersion;
+uses dData, dDXCC, fEnterFreq, fTRXControl, uMyini, fNewQSO, uVersion, fContest;
 
 function TdmUtils.LetterFromMode(mode: string): string;
 begin
@@ -2759,7 +2759,15 @@ begin
   myname := cqrini.ReadString('Station', 'Name', '');
   myqth := cqrini.ReadString('Station', 'QTH', '');
   if key <> '' then
+   Begin
+    if (frmContest.Showing) and ( not (cqrini.ReadBool('CW','S&P',True))) then //if contest and run mode keys are F11-F20
+     Begin
+      if key='F10' then key:='F20'
+       else
+         key:= key[1]+'1'+key[2];
+     end;
     Result := LowerCase(cqrini.ReadString('CW', key, ''))
+   end
   else
     Result := text;
 
@@ -2799,11 +2807,8 @@ begin
 
     Result := StringReplace(Result,'%c',call,[rfReplaceAll, rfIgnoreCase]);
 
-
-
-
-
-    if dmData.DebugLevel>=1 then Writeln('Sending:',Result)
+    if dmData.DebugLevel>=1 then
+                                Writeln('Sending:',Result)
 end;
 
 function TdmUtils.RigGetcmd(r : String) : String;
