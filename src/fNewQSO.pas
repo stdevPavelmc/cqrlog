@@ -661,7 +661,6 @@ type
     procedure CheckQSLImage;
     procedure ShowCountryInfo;
     procedure InsertNameQTH;
-    procedure UpdateFKeyLabels;
     procedure LoadSettings;
     procedure SaveSettings;
     procedure ChangeCallBookCaption;
@@ -756,6 +755,7 @@ type
     procedure UploadAllQSOOnline;
     procedure ReturnToNewQSO;
     procedure InitializeCW;
+    procedure UpdateFKeyLabels;
     procedure RunVK(key_pressed: String);
     procedure RunST(script: String);
   end;
@@ -7063,6 +7063,7 @@ end;
 
 procedure TfrmNewQSO.UpdateFKeyLabels;
 begin
+  frmCWType.fraCWKeys1.UpdateFKeyLabels;
   frmCWKeys.fraCWKeys.UpdateFKeyLabels
 end;
 

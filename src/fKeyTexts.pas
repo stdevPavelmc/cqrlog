@@ -138,6 +138,7 @@ type
     procedure SaveMsgClick(Sender: TObject);
     procedure LoadMsgClick(Sender: TObject);
   private
+    SP   : boolean;
     { private declarations }
   public
     { public declarations }
@@ -197,7 +198,11 @@ begin
   edtCapF19.text  := cqrini.ReadString(C_INI_FILE_SECTION,'CapF19','F9');
   edtCapF20.text  := cqrini.ReadString(C_INI_FILE_SECTION,'CapF20','F10');
 
+  SP                := cqrini.ReadBool('CW','S&P',True);
   rgEnter.ItemIndex := cqrini.ReadInteger(C_INI_FILE_SECTION,'EnterFunction',1);
+  if SP then pgMemories.ActivePageIndex:=0
+    else
+      pgMemories.ActivePageIndex:=1;
 end;
 
 procedure TfrmKeyTexts.FormClose(Sender: TObject; var CloseAction: TCloseAction);
@@ -255,6 +260,7 @@ begin
   cqrini.WriteString(C_INI_FILE_SECTION,'CapF19',edtCapF19.Text);
   cqrini.WriteString(C_INI_FILE_SECTION,'CapF20',edtCapF20.Text);
 
+  cqrini.WriteBool('CW','S&P',SP);
   cqrini.WriteInteger(C_INI_FILE_SECTION,'EnterFunction',rgEnter.ItemIndex);
   cqrini.SaveToDisk;
   ModalResult := mrOK

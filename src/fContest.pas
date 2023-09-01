@@ -622,8 +622,7 @@ begin
         lblMSGs.Font.Color:=clGreen;
      end;
    cqrini.WriteBool('CW','S&P',chkSP.Checked);
-   frmCWKeys.fraCWKeys.UpdateFKeyLabels;
-   frmCWType.fraCWKeys1.UpdateFKeyLabels;
+   frmNewQSO.UpdateFKeyLabels;
 end;
 
 procedure TfrmContest.chkTrueRSTChange(Sender: TObject);
@@ -823,8 +822,7 @@ procedure TfrmContest.FormClose(Sender: TObject; var CloseAction: TCloseAction);
 Begin
    SaveSettings;
    cqrini.WriteBool('CW','S&P',True);  //set default CW memories
-   frmCWKeys.fraCWKeys.UpdateFKeyLabels;
-   frmCWType.fraCWKeys1.UpdateFKeyLabels;
+   frmNewQSO.UpdateFKeyLabels;
 end;
 
 procedure TfrmContest.FormHide(Sender: TObject);

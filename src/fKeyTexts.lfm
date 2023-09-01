@@ -197,9 +197,7 @@ object frmKeyTexts: TfrmKeyTexts
       Height = 509
       Top = 1
       Width = 614
-      ActivePage = tabSeP
       Anchors = [akTop, akLeft, akRight, akBottom]
-      TabIndex = 0
       TabOrder = 0
       object tabSeP: TTabSheet
         AnchorSideLeft.Control = pgMemories
@@ -841,7 +839,7 @@ object frmKeyTexts: TfrmKeyTexts
           BorderSpacing.Left = 6
           BorderSpacing.Top = 6
           Caption = ' F1 '
-          ClientHeight = 86
+          ClientHeight = 70
           ClientWidth = 288
           TabOrder = 0
           object Label17: TLabel
@@ -900,7 +898,7 @@ object frmKeyTexts: TfrmKeyTexts
           Width = 290
           BorderSpacing.Top = 6
           Caption = ' F2'
-          ClientHeight = 86
+          ClientHeight = 70
           ClientWidth = 288
           TabOrder = 1
           object Label37: TLabel
@@ -959,7 +957,7 @@ object frmKeyTexts: TfrmKeyTexts
           Width = 290
           BorderSpacing.Top = 6
           Caption = ' F3'
-          ClientHeight = 86
+          ClientHeight = 70
           ClientWidth = 288
           TabOrder = 2
           object Label39: TLabel
@@ -1018,7 +1016,7 @@ object frmKeyTexts: TfrmKeyTexts
           Width = 290
           BorderSpacing.Top = 6
           Caption = ' F4'
-          ClientHeight = 86
+          ClientHeight = 70
           ClientWidth = 288
           TabOrder = 3
           object Label19: TLabel
@@ -1077,7 +1075,7 @@ object frmKeyTexts: TfrmKeyTexts
           Width = 290
           BorderSpacing.Top = 6
           Caption = ' F5'
-          ClientHeight = 86
+          ClientHeight = 70
           ClientWidth = 288
           TabOrder = 4
           object Label21: TLabel
@@ -1138,7 +1136,7 @@ object frmKeyTexts: TfrmKeyTexts
           BorderSpacing.Top = 6
           BorderSpacing.Right = 6
           Caption = ' F6 '
-          ClientHeight = 86
+          ClientHeight = 70
           ClientWidth = 288
           TabOrder = 5
           object Label23: TLabel
@@ -1198,7 +1196,7 @@ object frmKeyTexts: TfrmKeyTexts
           Anchors = [akTop, akRight]
           BorderSpacing.Top = 6
           Caption = ' F7'
-          ClientHeight = 86
+          ClientHeight = 70
           ClientWidth = 288
           TabOrder = 6
           object Label25: TLabel
@@ -1258,7 +1256,7 @@ object frmKeyTexts: TfrmKeyTexts
           Anchors = [akTop, akRight]
           BorderSpacing.Top = 6
           Caption = ' F8'
-          ClientHeight = 86
+          ClientHeight = 70
           ClientWidth = 288
           TabOrder = 7
           object Label27: TLabel
@@ -1318,7 +1316,7 @@ object frmKeyTexts: TfrmKeyTexts
           Anchors = [akTop, akRight]
           BorderSpacing.Top = 6
           Caption = ' F9'
-          ClientHeight = 86
+          ClientHeight = 70
           ClientWidth = 288
           TabOrder = 8
           object Label29: TLabel
@@ -1378,7 +1376,7 @@ object frmKeyTexts: TfrmKeyTexts
           Anchors = [akTop, akRight]
           BorderSpacing.Top = 6
           Caption = ' F10'
-          ClientHeight = 86
+          ClientHeight = 70
           ClientWidth = 288
           TabOrder = 9
           object Label31: TLabel
