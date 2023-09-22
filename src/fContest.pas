@@ -389,6 +389,11 @@ end;
 
 procedure TfrmContest.btSaveClick(Sender: TObject);
 begin
+  if frmNewQSO.AnyRemoteOn then
+    begin
+      Application.MessageBox('Log is in remote mode, please disable it.','Info ...',mb_ok + mb_IconInformation);
+      exit
+    end;
   tmrScore.Enabled:=false;
   if chkLoc.Checked then
    begin
