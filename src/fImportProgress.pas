@@ -645,7 +645,7 @@ mode := ''; //be sure there is no mode at this point
            'QSLRDATE'   : qslrdate:= data;
           end; //case
        end;  //repeat
-  until pos('<EOR>',uppercase(Buf))=1;
+  until (pos('<EOR>',uppercase(Buf))=1) or (prik='EOR');
   //store original modes
   modeorig:=uppercase(mode);
   submodeorig:=uppercase(submode);
