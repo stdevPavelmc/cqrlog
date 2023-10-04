@@ -9,9 +9,9 @@ Update GLIBC if it is below 2.3.5.
 If you do not want to do that you can compile this source (see 1 folder up) with your current OS version and get it running.
 Note that the source version is usually one step higher than ready compiled versions.
  
- #### NOTE: At the moment there is no new official version source release. That is why Alpha (118) is ***VERY far ahead*** from official.
+ #### NOTE: At the moment there is no new official version source release. That is why Alpha (119) is ***VERY far ahead*** from official.
 From [Changelog](https://htmlpreview.github.io/?https://github.com/OH1KH/cqrlog/blob/loc_testing/src/changelog.html) 
-you can see all changes. It appears also at first start of (118), and can be accessed via "Help" when Cqrlog is running.
+you can see all changes. It appears also at first start of (119), and can be accessed via "Help" when Cqrlog is running.
 
 
 Latest cqrlog alpha test binaries can be found from this folder.
